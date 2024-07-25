@@ -1,0 +1,52 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Rimworld Mod Project",
+            "type": "clr",
+            "request": "launch",
+            "preLaunchTask": "build ${input:rimWorldVersion}",
+            "env": {
+                "HARMONY_LOG_FILE": "${workspaceFolder}\\.savedatafolder\\${input:rimWorldVersion}\\Harmony.log"
+            },
+            "args": [
+                "-savedatafolder=${workspaceFolder}\\.savedatafolder\\${input:rimWorldVersion}",
+                //"-quicktest",
+            ],
+            "program": "D://RimWorld/${input:rimWorldVersion}/RimWorldWin64.exe",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "internalConsoleOptions": "neverOpen",
+            "stopAtEntry": true
+        },
+        { // ignore
+            "name": ".NET Framework Attach",
+            "type": "clr",
+            "request": "attach",
+            "processId": "${command:pickProcess}",
+            "symbolOptions": {
+                "searchPaths": [
+                    ".vscode/obj/Debug/*"
+                ],
+                "searchMicrosoftSymbolServer": false,
+                "searchNuGetOrgSymbolServer": false
+            }
+        }
+    ],
+    "inputs": [
+        {
+            "id": "rimWorldVersion",
+            "type": "pickString",
+            "description": "Rimworld version to launch?",
+            "options": [
+                "1.5",
+                "1.4",
+                "1.3",
+            ],
+            "default": "1.5"
+        }
+    ]
+}
