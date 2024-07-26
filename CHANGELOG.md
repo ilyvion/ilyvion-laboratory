@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+-   Make it so that the CustomFontManager only patches the font system if it's been enabled. This way it won't affect performance if it goes unused.
+
 ## [0.1.0] 2024-07-25
 
 ### Added

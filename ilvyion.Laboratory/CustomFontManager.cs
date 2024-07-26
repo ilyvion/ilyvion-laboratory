@@ -2,6 +2,12 @@ namespace ilvyion.Laboratory;
 
 public class CustomFontManager
 {
+    internal static bool featureEnabled;
+    public static void EnableFeature()
+    {
+        featureEnabled = true;
+    }
+
     private static CustomFontManager? _instance;
     public static CustomFontManager Instance
     {
@@ -252,19 +258,41 @@ public class CustomFontManager
         }
     }
 
+    private static void LogFeatureNotEnabled()
+    {
+        Logger.LogError("CustomFontManager is not active. Make sure you call CustomFontManager.EnableFeature() in your mod's constructor to enable it.");
+    }
+
     public void AddFont(string key, int size, params string[] fonts)
     {
+        if (!featureEnabled)
+        {
+            LogFeatureNotEnabled();
+            return;
+        }
         customFontParams.Add(key, (size, fonts));
     }
 
     public void UseFont(string key)
     {
+        if (!featureEnabled)
+        {
+            LogFeatureNotEnabled();
+            return;
+        }
+
         ClearFont();
         currentFontKey = key;
     }
 
     public void ClearFont()
     {
+        if (!featureEnabled)
+        {
+            LogFeatureNotEnabled();
+            return;
+        }
+
         currentFontKey = null;
         currentFontCached = null;
         currentFontStyleCached = null;

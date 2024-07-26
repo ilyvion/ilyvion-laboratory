@@ -7,8 +7,14 @@ namespace ilvyion.LaboratoryMod;
 /// </summary>
 [HarmonyPatch(typeof(Text))]
 [HarmonyPatch(nameof(Text.LineHeight), MethodType.Getter)]
+[HarmonyPatchCategory("Late")]
 internal static class Verse_Text_LineHeight
 {
+    private static bool Prepare()
+    {
+        return CustomFontManager.featureEnabled;
+    }
+
     private static bool Prefix(ref float __result)
     {
         float? currentLineHeight = CustomFontManager.Instance.CurrentLineHeight;

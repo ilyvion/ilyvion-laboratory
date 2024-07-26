@@ -19,11 +19,24 @@ internal sealed class IlyvionsLaboratoryMod : IlyvionMod
         _mod = this;
 
         // Harmony.DEBUG = true;
-        new Harmony(content.Name).PatchAll(Assembly.GetExecutingAssembly());
+        new Harmony(Content.Name)
+            .PatchAllUncategorized(Assembly.GetExecutingAssembly());
         // Harmony.DEBUG = false;
 
         // Inject reverse patch method pointers where they are needed
         CustomStreamReaderScribeLoader.initLoadingWithCustomStreamReader = Verse_ScribeLoader_InitLoading_Reverse.InitLoadingWithCustomStreamReader;
         CustomStreamScribeSaver.initSavingWithCustomStream = Verse_ScribeSaver_InitSaving_Reverse.InitSavingWithCustomStream;
+    }
+}
+
+[StaticConstructorOnStartup]
+internal static class LatePatching
+{
+    static LatePatching()
+    {
+        // Harmony.DEBUG = true;
+        new Harmony(IlyvionsLaboratoryMod._mod.Content.Name)
+            .PatchCategory(Assembly.GetExecutingAssembly(), "Late");
+        // Harmony.DEBUG = false;
     }
 }

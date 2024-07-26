@@ -7,8 +7,14 @@ namespace ilvyion.LaboratoryMod;
 /// </summary>
 [HarmonyPatch(typeof(Text))]
 [HarmonyPatch(nameof(Text.CurTextAreaReadOnlyStyle), MethodType.Getter)]
+[HarmonyPatchCategory("Late")]
 internal static class Verse_Text_CurTextAreaReadOnlyStyle
 {
+    private static bool Prepare()
+    {
+        return CustomFontManager.featureEnabled;
+    }
+
     private static bool Prefix(ref GUIStyle __result)
     {
         GUIStyle? currentTextAreaReadOnlyStyle = CustomFontManager.Instance.CurrentTextAreaReadOnlyStyle;
