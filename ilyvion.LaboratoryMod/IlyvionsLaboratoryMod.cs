@@ -1,8 +1,8 @@
 
 using System.Reflection;
-using ilvyion.Laboratory;
+using ilyvion.Laboratory;
 
-namespace ilvyion.LaboratoryMod;
+namespace ilyvion.LaboratoryMod;
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage(
     "Microsoft.Performance",

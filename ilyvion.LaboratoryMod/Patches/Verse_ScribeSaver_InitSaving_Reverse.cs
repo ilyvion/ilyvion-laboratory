@@ -1,9 +1,9 @@
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Xml;
-using Logger = ilvyion.Laboratory.Logger;
+using Logger = ilyvion.Laboratory.Logger;
 
-namespace ilvyion.LaboratoryMod;
+namespace ilyvion.LaboratoryMod;
 
 [HarmonyPatch]
 internal static class Verse_ScribeSaver_InitSaving_Reverse

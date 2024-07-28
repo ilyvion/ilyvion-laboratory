@@ -1,7 +1,7 @@
 using LudeonTK;
 using RimWorld;
 
-namespace ilvyion.LaboratoryMod;
+namespace ilyvion.LaboratoryMod;
 
 public static class DebugActions
 {

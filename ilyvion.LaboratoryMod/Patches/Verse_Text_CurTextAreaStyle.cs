@@ -1,14 +1,14 @@
-using ilvyion.Laboratory;
+using ilyvion.Laboratory;
 
-namespace ilvyion.LaboratoryMod;
+namespace ilyvion.LaboratoryMod;
 
 /// <summary>
 /// Used to override the font with the custom font dictated by the CustomFontManager
 /// </summary>
 [HarmonyPatch(typeof(Text))]
-[HarmonyPatch(nameof(Text.CurFontStyle), MethodType.Getter)]
+[HarmonyPatch(nameof(Text.CurTextAreaStyle), MethodType.Getter)]
 [HarmonyPatchCategory("Late")]
-internal static class Verse_Text_CurFontStyle
+internal static class Verse_Text_CurTextAreaStyle
 {
     private static bool Prepare()
     {
@@ -17,13 +17,10 @@ internal static class Verse_Text_CurFontStyle
 
     private static bool Prefix(ref GUIStyle __result)
     {
-        GUIStyle? currentFontStyle = CustomFontManager.Instance.CurrentFontStyle;
-        if (currentFontStyle != null)
+        GUIStyle? currentTextAreaStyle = CustomFontManager.Instance.CurrentTextAreaStyle;
+        if (currentTextAreaStyle != null)
         {
-            currentFontStyle.alignment = Text.Anchor;
-            currentFontStyle.wordWrap = Text.WordWrap;
-
-            __result = currentFontStyle;
+            __result = currentTextAreaStyle;
             return false;
         }
         else

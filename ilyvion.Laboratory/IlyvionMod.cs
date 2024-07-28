@@ -2,7 +2,7 @@
 
 [assembly: InternalsVisibleTo("ilyvion.LaboratoryMod")]
 
-namespace ilvyion.Laboratory;
+namespace ilyvion.Laboratory;
 
 public abstract class IlyvionMod(ModContentPack content) : Mod(content)
 {

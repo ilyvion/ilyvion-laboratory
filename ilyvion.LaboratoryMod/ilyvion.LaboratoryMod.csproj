@@ -82,7 +82,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\ilvyion.Laboratory\ilvyion.Laboratory.csproj" />
+        <ProjectReference Include="..\ilyvion.Laboratory\ilyvion.Laboratory.csproj" />
     </ItemGroup>
 
 </Project>

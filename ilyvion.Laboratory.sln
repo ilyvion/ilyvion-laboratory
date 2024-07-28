@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ilvyion.Laboratory", "ilvyion.Laboratory\ilvyion.Laboratory.csproj", "{6A85FBC9-7ECA-4CFA-93D2-B3F463DA2770}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ilyvion.Laboratory", "ilyvion.Laboratory\ilyvion.Laboratory.csproj", "{6A85FBC9-7ECA-4CFA-93D2-B3F463DA2770}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ilvyion.LaboratoryMod", "ilvyion.LaboratoryMod\ilvyion.LaboratoryMod.csproj", "{CEE919EC-F4AD-424E-B4B8-5E10B7D2B2B5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ilyvion.LaboratoryMod", "ilyvion.LaboratoryMod\ilyvion.LaboratoryMod.csproj", "{CEE919EC-F4AD-424E-B4B8-5E10B7D2B2B5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

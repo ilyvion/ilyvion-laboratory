@@ -8,7 +8,7 @@ $VersionTargetSuffix = "Mods\ilyvion.Laboratory"
 $Target = "$VersionTargetPrefix\$env:RimWorldVersion\$VersionTargetSuffix"
 
 # build dlls
-dotnet build --configuration $Configuration .\ilvyion.LaboratoryMod\ilvyion.LaboratoryMod.csproj
+dotnet build --configuration $Configuration .\ilyvion.LaboratoryMod\ilyvion.LaboratoryMod.csproj
 if ($LASTEXITCODE -gt 0) {
     throw "Build failed"
 }

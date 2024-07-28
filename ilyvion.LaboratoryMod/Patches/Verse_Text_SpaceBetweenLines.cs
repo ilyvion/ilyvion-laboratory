@@ -1,14 +1,14 @@
-using ilvyion.Laboratory;
+using ilyvion.Laboratory;
 
-namespace ilvyion.LaboratoryMod;
+namespace ilyvion.LaboratoryMod;
 
 /// <summary>
 /// Used to override the font with the custom font dictated by the CustomFontManager
 /// </summary>
 [HarmonyPatch(typeof(Text))]
-[HarmonyPatch(nameof(Text.LineHeight), MethodType.Getter)]
+[HarmonyPatch(nameof(Text.SpaceBetweenLines), MethodType.Getter)]
 [HarmonyPatchCategory("Late")]
-internal static class Verse_Text_LineHeight
+internal static class Verse_Text_SpaceBetweenLines
 {
     private static bool Prepare()
     {
@@ -17,10 +17,10 @@ internal static class Verse_Text_LineHeight
 
     private static bool Prefix(ref float __result)
     {
-        float? currentLineHeight = CustomFontManager.Instance.CurrentLineHeight;
-        if (currentLineHeight.HasValue)
+        float? currentSpaceBetweenLines = CustomFontManager.Instance.CurrentSpaceBetweenLines;
+        if (currentSpaceBetweenLines.HasValue)
         {
-            __result = currentLineHeight.Value;
+            __result = currentSpaceBetweenLines.Value;
             return false;
         }
         else

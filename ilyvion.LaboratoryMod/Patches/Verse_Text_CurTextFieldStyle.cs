@@ -1,6 +1,6 @@
-using ilvyion.Laboratory;
+using ilyvion.Laboratory;
 
-namespace ilvyion.LaboratoryMod;
+namespace ilyvion.LaboratoryMod;
 
 /// <summary>
 /// Used to override the font with the custom font dictated by the CustomFontManager

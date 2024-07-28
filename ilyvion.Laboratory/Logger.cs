@@ -1,4 +1,4 @@
-namespace ilvyion.Laboratory;
+namespace ilyvion.Laboratory;
 
 internal static class Logger
 {
