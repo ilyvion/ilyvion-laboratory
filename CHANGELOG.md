@@ -9,8 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
--   Debug action for hot reloading language files
+-   Debug action for hot reloading language files.
 -   Add a "draw UI helpers" debug setting. Does nothing on its own, but is used by dependents to decide whether or not to draw extra UI bits for debugging purposes.
+-   Import Bradson's GUIScope utility class with adaptions to better fit my needs.
 
 ### Changed
 
@@ -18,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
--   The name ilyvion was misspelled in several places and file paths as 'ilvyion'
+-   The name ilyvion was misspelled in several places and file paths as 'ilvyion'.
 
 ## [0.1.0] 2024-07-25
 
