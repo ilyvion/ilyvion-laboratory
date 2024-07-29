@@ -13,6 +13,8 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>5</WarningLevel>
 
+        <NoWarn>CA1708</NoWarn>
+
         <RootNamespace>ilyvion.Laboratory</RootNamespace>
         <AssemblyName>0ilyvion.Laboratory</AssemblyName>
         <VersionPrefix>0.1.0</VersionPrefix>
