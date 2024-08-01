@@ -15,35 +15,6 @@ public static class GUIScope
         public void Dispose() => Widgets.EndGroup();
     }
 
-    private readonly record struct ScrollViewScope : IDisposable
-    {
-        private readonly ScrollViewStatus _scrollViewStatus;
-
-        private readonly float _outRectHeight;
-
-        public readonly Rect Rect;
-
-        public ref float Height => ref _scrollViewStatus.Height;
-
-        public ScrollViewScope(Rect outRect, ScrollViewStatus scrollViewStatus, bool showScrollbars)
-        {
-            _scrollViewStatus = scrollViewStatus;
-            _outRectHeight = outRect.height;
-            Rect = new(0f, 0f, outRect.width, Math.Max(Height, _outRectHeight));
-            if (Height - 0.1f >= outRect.height)
-                Rect.width -= 16f;
-
-            Height = 0f;
-            Widgets.BeginScrollView(outRect, ref _scrollViewStatus.Position, Rect, showScrollbars);
-        }
-
-        public void Dispose() => Widgets.EndScrollView();
-
-        public bool CanCull(float entryHeight, float entryY)
-            => entryY + entryHeight < _scrollViewStatus.Position.y
-                || entryY > _scrollViewStatus.Position.y + _outRectHeight;
-    }
-
     private readonly record struct TextAnchorScope : IDisposable
     {
         private readonly UnityEngine.TextAnchor _default;
@@ -114,11 +85,11 @@ public static class GUIScope
     public static IDisposable WidgetGroup(in Rect rect) =>
         new WidgetGroupScope(rect);
 
-    public static IDisposable ScrollView(
+    public static ScrollViewScope ScrollView(
         Rect outRect,
         ScrollViewStatus scrollViewStatus,
         bool showScrollbars = true) =>
-        new ScrollViewScope(
+        new(
             outRect,
             scrollViewStatus ?? throw new ArgumentNullException(nameof(scrollViewStatus)),
             showScrollbars);
@@ -143,4 +114,35 @@ public class ScrollViewStatus
 {
     internal Vector2 Position;
     internal float Height;
+}
+
+public readonly record struct ScrollViewScope : IDisposable
+{
+    private readonly ScrollViewStatus _scrollViewStatus;
+
+    private readonly float _outRectHeight;
+
+    private readonly Rect _viewRect;
+    public Rect ViewRect => _viewRect;
+
+    public ref float Height => ref _scrollViewStatus.Height;
+
+    public ScrollViewScope(Rect outRect, ScrollViewStatus scrollViewStatus, bool showScrollbars)
+    {
+        _scrollViewStatus = scrollViewStatus
+            ?? throw new ArgumentNullException(nameof(scrollViewStatus));
+        _outRectHeight = outRect.height;
+        _viewRect = new(0f, 0f, outRect.width, Math.Max(Height, _outRectHeight));
+        if (Height - 0.1f >= outRect.height)
+            _viewRect.width -= 16f;
+
+        Height = 0f;
+        Widgets.BeginScrollView(outRect, ref _scrollViewStatus.Position, _viewRect, showScrollbars);
+    }
+
+    public void Dispose() => Widgets.EndScrollView();
+
+    public bool CanCull(float entryHeight, float entryY)
+        => entryY + entryHeight < _scrollViewStatus.Position.y
+            || entryY > _scrollViewStatus.Position.y + _outRectHeight;
 }
