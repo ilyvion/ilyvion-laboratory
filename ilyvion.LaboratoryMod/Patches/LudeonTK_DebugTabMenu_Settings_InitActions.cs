@@ -1,5 +1,8 @@
+#if !v1_3
 using System.Reflection;
+#if v1_5
 using LudeonTK;
+#endif
 
 namespace ilyvion.Laboratory;
 
@@ -17,3 +20,4 @@ internal static class LudeonTK_DebugTabMenu_Settings_InitActions
         }
     }
 }
+#endif
