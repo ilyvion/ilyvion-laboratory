@@ -12,8 +12,7 @@ public static class CustomStreamReaderScribeLoader
     {
         if (initLoadingWithCustomStreamReader == null)
         {
-            Logger.LogError("CustomStreamReaderScribeLoader is not properly initialized. " +
-                "Is the 0ilyvion.Laboratory.dll library in use without the companion mod being active?");
+            Utils.LogMissingInitialization(nameof(CustomStreamReaderScribeLoader));
             return;
         }
         initLoadingWithCustomStreamReader(Scribe.loader, loadStreamReader);

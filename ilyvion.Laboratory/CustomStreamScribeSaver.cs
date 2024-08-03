@@ -12,8 +12,7 @@ public static class CustomStreamScribeSaver
     {
         if (initSavingWithCustomStream == null)
         {
-            Logger.LogError("CustomStreamScribeSaver is not properly initialized. " +
-                "Is the 0ilyvion.Laboratory.dll library in use without the companion mod being active?");
+            Utils.LogMissingInitialization(nameof(CustomStreamScribeSaver));
             return;
         }
         initSavingWithCustomStream(Scribe.saver, saveStream, documentElementName, useIndentation);
