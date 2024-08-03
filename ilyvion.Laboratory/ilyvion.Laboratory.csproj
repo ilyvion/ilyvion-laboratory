@@ -13,7 +13,7 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>5</WarningLevel>
 
-        <NoWarn>CA1708</NoWarn>
+        <NoWarn>CA1305;CA1708;CA1724</NoWarn>
 
         <RootNamespace>ilyvion.Laboratory</RootNamespace>
         <AssemblyName>0ilyvion.Laboratory</AssemblyName>
@@ -32,7 +32,7 @@
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-        <DebugType>full</DebugType>
+        <DebugType>portable</DebugType>
         <Optimize>false</Optimize>
         <DebugSymbols>true</DebugSymbols>
     </PropertyGroup>

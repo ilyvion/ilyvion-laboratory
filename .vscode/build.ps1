@@ -28,3 +28,6 @@ Copy-Item -Path LICENSE.Apache-2.0 $Target
 Copy-Item -Path LICENSE.MIT $Target
 Copy-Item -Path README.md $Target
 Copy-Item -Path LoadFolders.xml $Target
+
+# Trigger auto-hotswap
+New-Item -Path $Target\$env:RimWorldVersion\Assemblies\ilyvion.LaboratoryMod.dll.hotswap -Type file

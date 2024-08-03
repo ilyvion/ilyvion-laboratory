@@ -1,4 +1,5 @@
-#if v1_5
+using ilyvion.Laboratory;
+#if !v1_3 && !v1_4
 using LudeonTK;
 #endif
 using RimWorld;
@@ -7,21 +8,10 @@ namespace ilyvion.LaboratoryMod;
 
 public static class DebugActions
 {
-    [DebugAction(
+    [IlyvionDebugAction(
         "ilyvion",
         "Hot reload languages",
-        false,
-        false,
-#if !v1_3
-        false,
-#endif
-#if !v1_4 && !v1_3
-        false,
-#endif
-#if !v1_3
-        9999,
-        false,
-#endif
+        displayPriority: 9999,
         allowedGameStates = AllowedGameStates.Entry
     )]
     private static void HotReloadLanguages()
@@ -34,21 +24,10 @@ public static class DebugActions
         });
     }
 
-    [DebugAction(
+    [IlyvionDebugAction(
         "ilyvion",
         "Hot reload languages",
-        false,
-        false,
-#if !v1_3
-        false,
-#endif
-#if !v1_4 && !v1_3
-        false,
-#endif
-#if !v1_3
-        9999,
-        false,
-#endif
+        displayPriority: 9999,
         allowedGameStates = AllowedGameStates.Playing
     )]
     private static void HotReloadLanguagesPlaying()

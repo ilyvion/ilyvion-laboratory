@@ -40,3 +40,13 @@ internal static class LatePatching
         // Harmony.DEBUG = false;
     }
 }
+
+[StaticConstructorOnStartup]
+internal static class ResourceLoading
+{
+    static ResourceLoading()
+    {
+        Laboratory.Resources.GraphDot
+            = ContentFinder<Texture2D>.Get("UI/Icons/ilyvion.Laboratory.GraphDot");
+    }
+}

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LanguageData>
+    <ilyvion.Laboratory.Graph.Legend>Legend</ilyvion.Laboratory.Graph.Legend>
+    <ilyvion.Laboratory.Graph.Show>show</ilyvion.Laboratory.Graph.Show>
+    <ilyvion.Laboratory.Graph.Hide>hide</ilyvion.Laboratory.Graph.Hide>
+    <ilyvion.Laboratory.Graph.ClickToEnable>Click to {0} {1} in plot.\nRight click to show only {1}.</ilyvion.Laboratory.Graph.ClickToEnable>
+    <ilyvion.Laboratory.Graph.NoData>No data</ilyvion.Laboratory.Graph.NoData>
+    <ilyvion.Laboratory.Graph.ValueTooltip>{0}: {1}</ilyvion.Laboratory.Graph.ValueTooltip>
+    <ilyvion.Laboratory.Graph.TargetTooltip>{0} target: {1}</ilyvion.Laboratory.Graph.TargetTooltip>
+</LanguageData>

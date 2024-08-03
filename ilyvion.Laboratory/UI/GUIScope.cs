@@ -8,78 +8,173 @@ namespace ilyvion.Laboratory.UI;
 
 public static class GUIScope
 {
-    private readonly record struct WidgetGroupScope : IDisposable
+    private record struct WidgetGroupScope : IDisposable
     {
         public WidgetGroupScope(in Rect rect) => Widgets.BeginGroup(rect);
 
-        public void Dispose() => Widgets.EndGroup();
+        private bool _disposed;
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                Widgets.EndGroup();
+                _disposed = true;
+            }
+        }
     }
 
-    private readonly record struct TextAnchorScope : IDisposable
+    private record struct TextAnchorScope : IDisposable
     {
-        private readonly UnityEngine.TextAnchor _default;
+        private readonly TextAnchor _original;
 
-        public TextAnchorScope(UnityEngine.TextAnchor anchor)
+        public TextAnchorScope(TextAnchor anchor)
         {
-            _default = Text.Anchor;
+            _original = Text.Anchor;
             Text.Anchor = anchor;
         }
 
-        public void Dispose() => Text.Anchor = _default;
+        private bool _disposed;
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                Text.Anchor = _original;
+                _disposed = true;
+            }
+        }
     }
 
-    private readonly record struct WordWrapScope : IDisposable
+    private record struct WordWrapScope : IDisposable
     {
-        private readonly bool _default;
+        private readonly bool _original;
 
         public WordWrapScope(bool wordWrap)
         {
-            _default = Text.WordWrap;
+            _original = Text.WordWrap;
             Text.WordWrap = wordWrap;
         }
 
-        public void Dispose() => Text.WordWrap = _default;
+        private bool _disposed;
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                Text.WordWrap = _original;
+                _disposed = true;
+            }
+        }
     }
 
-    private readonly record struct ColorScope : IDisposable
+    private record struct ColorScope : IDisposable
     {
-        private readonly UnityEngine.Color _default;
+        private readonly Color _original;
 
-        public ColorScope(UnityEngine.Color color)
+        public ColorScope(Color color)
         {
-            _default = GUI.color;
+            _original = GUI.color;
             GUI.color = color;
         }
 
-        public void Dispose() => GUI.color = _default;
+        private bool _disposed;
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                GUI.color = _original;
+                _disposed = true;
+            }
+        }
     }
 
-    private readonly record struct FontScope : IDisposable
+    private record struct FontScope : IDisposable
     {
-        private readonly GameFont _default;
+        private readonly GameFont _original;
 
         public FontScope(GameFont font)
         {
-            _default = Text.Font;
+            _original = Text.Font;
             Text.Font = font;
         }
 
-        public void Dispose() => Text.Font = _default;
+        private bool _disposed;
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                Text.Font = _original;
+                _disposed = true;
+            }
+        }
     }
 
-    private readonly record struct FontSizeScope : IDisposable
+    private record struct FontSizeScope : IDisposable
     {
-        private readonly int _default;
+        private readonly int _original;
 
         public FontSizeScope(int size)
         {
             var curFontStyle = Text.CurFontStyle;
 
-            _default = curFontStyle.fontSize;
+            _original = curFontStyle.fontSize;
             curFontStyle.fontSize = size;
         }
 
-        public void Dispose() => Text.CurFontStyle.fontSize = _default;
+        private bool _disposed;
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                Text.CurFontStyle.fontSize = _original;
+                _disposed = true;
+            }
+        }
+    }
+
+    private readonly record struct MultiScope : IDisposable
+    {
+        private readonly FontSizeScope? _fontSizeScope;
+        private readonly FontScope? _fontScope;
+        private readonly ColorScope? _colorScope;
+        private readonly WordWrapScope? _wordWrapScope;
+        private readonly TextAnchorScope? _textAnchorScope;
+
+        public MultiScope(
+            int? fontSize,
+            GameFont? gameFont,
+            Color? color,
+            bool? wordWrap,
+            TextAnchor? textAnchor)
+        {
+            if (fontSize.HasValue)
+            {
+                _fontSizeScope = new FontSizeScope(fontSize.Value);
+            }
+            if (gameFont.HasValue)
+            {
+                _fontScope = new FontScope(gameFont.Value);
+            }
+            if (color.HasValue)
+            {
+                _colorScope = new ColorScope(color.Value);
+            }
+            if (wordWrap.HasValue)
+            {
+                _wordWrapScope = new WordWrapScope(wordWrap.Value);
+            }
+            if (textAnchor.HasValue)
+            {
+                _textAnchorScope = new TextAnchorScope(textAnchor.Value);
+            }
+        }
+
+        public void Dispose()
+        {
+            _fontSizeScope?.Dispose();
+            _fontScope?.Dispose();
+            _colorScope?.Dispose();
+            _wordWrapScope?.Dispose();
+            _textAnchorScope?.Dispose();
+        }
     }
 
     public static IDisposable WidgetGroup(in Rect rect) =>
@@ -108,6 +203,14 @@ public static class GUIScope
 
     public static IDisposable FontSize(int fontSize) =>
         new FontSizeScope(fontSize);
+
+    public static IDisposable Multiple(
+        int? fontSize = null,
+        GameFont? gameFont = null,
+        Color? color = null,
+        bool? wordWrap = null,
+        TextAnchor? textAnchor = null)
+    => new MultiScope(fontSize, gameFont, color, wordWrap, textAnchor);
 }
 
 public class ScrollViewStatus
