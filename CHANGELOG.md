@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   GraphRenderer for rendering graphs.
 -   GUIScope.Multiple, which serves as a drop-in for Verse.TextBlock, but keep the same API across all three supported RW versions.
 -   IlyvionDebugActionAttribute that works like the DebugActionAttribute, but has the same API across all three supported RW versions.
+-   A circular buffer.
+-   LogDebug method added to IlyvionMod; only logs when the DEBUG symbol is present.
+-   Various useful extension methods.
 
 ## [0.2.0] 2024-08-01
 

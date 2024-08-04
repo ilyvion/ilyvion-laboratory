@@ -1,3 +1,6 @@
+// Parts of the code:
+// Copyright Karel Kroeze, 2020-2020
+
 #if !v1_3 && !v1_4
 using LudeonTK;
 #endif

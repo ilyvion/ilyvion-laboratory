@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("ilyvion.LaboratoryMod")]
 
@@ -23,6 +24,12 @@ public abstract class IlyvionMod(ModContentPack content) : Mod(content)
         {
             Log.Message($"[{Content.Name}][DEV] " + msg);
         }
+    }
+
+    [Conditional("DEBUG")]
+    public virtual void LogDebug(string message)
+    {
+        LogDevMessage(message);
     }
 
     public virtual void LogWarning(string msg)
