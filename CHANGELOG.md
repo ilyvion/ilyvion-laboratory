@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   Extension for muting a color.
 -   Extension for inline dumping the value of any value during debugging.
+-   Scriber method for CircularBuffers.
 
 ## [0.3.0] 2024-08-04
 
