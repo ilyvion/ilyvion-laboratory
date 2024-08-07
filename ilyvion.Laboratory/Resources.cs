@@ -4,5 +4,7 @@ namespace ilyvion.Laboratory;
 
 internal static class Resources
 {
+    // Assigned from StaticConstructorOnStartup in ilyvion.LaboratoryMod project.
+    // Can't find a way to disable the stupid warning for this type, though.
     public static Texture2D GraphDot { get; set; }
 }

@@ -1,6 +1,7 @@
 // Parts of the code:
 // Copyright Karel Kroeze, 2020-2020
 
+using ilyvion.Laboratory.Extensions;
 #if !v1_3 && !v1_4
 using LudeonTK;
 #endif
@@ -335,8 +336,6 @@ public class GraphRenderer
                 : [])
             .ToArray();
 
-        Log.Warning("" + string.Join(", ", distances));
-
         // get the minimum index
         float min = int.MaxValue;
         var minIndex = 0;
@@ -471,13 +470,7 @@ public class GraphSeries
     {
         get
         {
-            if (!_mutedColor.HasValue)
-            {
-                Color.RGBToHSV(Color, out var H, out var S, out var V);
-                S /= 2;
-                V /= 2;
-                _mutedColor = Color.HSVToRGB(H, S, V);
-            }
+            _mutedColor ??= Color.Muted();
             return _mutedColor.Value;
         }
     }
