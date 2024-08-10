@@ -17,7 +17,7 @@
 
         <RootNamespace>ilyvion.Laboratory</RootNamespace>
         <AssemblyName>0ilyvion.Laboratory</AssemblyName>
-        <VersionPrefix>0.3.0</VersionPrefix>
+        <VersionPrefix>0.4.0</VersionPrefix>
 
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 

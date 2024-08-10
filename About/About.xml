@@ -9,7 +9,7 @@
         <li>1.4</li>
         <li>1.5</li>
     </supportedVersions>
-    <modVersion IgnoreIfNoMatchingField="True">0.3.0</modVersion>
+    <modVersion IgnoreIfNoMatchingField="True">0.4.0</modVersion>
     <modDependencies>
         <li>
             <packageId>brrainz.harmony</packageId>
