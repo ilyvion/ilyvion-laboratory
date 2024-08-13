@@ -1,6 +1,6 @@
 namespace ilyvion.Laboratory;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-public sealed class HotSwappableAttribute : Attribute
+internal sealed class HotSwappableAttribute : Attribute
 {
 }
