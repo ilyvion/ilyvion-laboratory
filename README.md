@@ -2,6 +2,8 @@
 
 ilyvion's Laboratory is a library/framework mod for use by my other mods to avoid code duplication across my mods. Anyone is free to make use of this as a dependency, but I don't want to promise that things won't break for third parties, so depend on it at your own risk. I'll do my utmost to prevent breakage, though, so there's a very low (but still non-zero) chance you'll be screwed.
 
+Just to be perfectly clear: **_I take no responsibility whatsoever if your mod blows up due to me making a change to this mod — depend on it at your own risk and don't @ me if something breaks for you!_**
+
 ## License
 
 Licensed under either of

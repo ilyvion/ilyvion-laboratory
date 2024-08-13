@@ -2,7 +2,6 @@ using ilyvion.Laboratory;
 #if !v1_3 && !v1_4
 using LudeonTK;
 #endif
-using RimWorld;
 
 namespace ilyvion.LaboratoryMod;
 
