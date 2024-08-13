@@ -1,3 +1,6 @@
+// Parts of the code:
+// Copyright Karel Kroeze, 2017-2020
+
 namespace ilyvion.Laboratory.UI;
 
 public static class IlyvionWidgets
@@ -118,6 +121,54 @@ public static class IlyvionWidgets
 #endif
             );
         }
+    }
+
+    public static void Label(
+        Rect rect,
+        string label,
+        TextAnchor textAnchor = TextAnchor.UpperLeft,
+        GameFont gameFont = GameFont.Small,
+        Color? color = null,
+        float leftMargin = 0f,
+        bool wordWrap = true)
+    {
+        rect.xMin += leftMargin;
+        using var _ = GUIScope.Multiple(null, gameFont, color ?? Color.white, wordWrap, textAnchor);
+        Widgets.Label(rect, label);
+    }
+
+    public static void Label(
+        Rect rect,
+        string label,
+        string? tooltip,
+        TextAnchor textAnchor = TextAnchor.UpperLeft,
+        GameFont gameFont = GameFont.Small,
+        Color? color = null,
+        float leftMargin = 0f,
+        bool wordWrap = true)
+    {
+        if (!tooltip.NullOrEmpty())
+        {
+            TooltipHandler.TipRegion(rect, tooltip);
+        }
+
+        Label(rect, label, textAnchor, gameFont, color, leftMargin, wordWrap);
+    }
+
+    public static void Label(
+        ref Vector2 position,
+        float width,
+        float height,
+        string label,
+        TextAnchor textAnchor = TextAnchor.UpperLeft,
+        GameFont gameFont = GameFont.Small,
+        Color? color = null,
+        float leftMmargin = 0f,
+        bool wrap = true)
+    {
+        var labelRect = new Rect(position.x, position.y, width, height);
+        position.y += height;
+        Label(labelRect, label, textAnchor, gameFont, color, leftMmargin, wrap);
     }
 }
 
