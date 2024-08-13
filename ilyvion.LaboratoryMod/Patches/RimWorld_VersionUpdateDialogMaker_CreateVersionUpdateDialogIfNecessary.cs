@@ -14,6 +14,11 @@ internal static class RimWorld_VersionUpdateDialogMaker_CreateVersionUpdateDialo
         }
         VersionCheck.RequiredVersionRequests = null;
 
+        if (requiredVersionRequests.Count == 0)
+        {
+            return;
+        }
+
         var modRequirements = string.Join("\n\t- ", requiredVersionRequests.Select(r =>
             $"{r.Key} requires at least v{r.Value}"));
 
