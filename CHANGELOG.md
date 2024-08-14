@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   Version check mechanism. Something to make me more comfortable with releasing mods that depend on this mod; even if something goes wrong, at least the user will get an explanation.
 -   Import Widgets_Labels class' methods from Colony Manager Redux.
 -   Import CacheValue(s) classes from Colony Manager Redux.
+-   Utility methods/types for dealing with arrays and ArrayPools.
 
 ## [0.4.0] 2024-08-10
 
