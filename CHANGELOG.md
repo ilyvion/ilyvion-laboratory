@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   Import CacheValue(s) classes from Colony Manager Redux.
 -   Utility methods/types for dealing with arrays and ArrayPools.
 -   CustomBackCompatibility utility class for doing custom type replacements on game load.
+-   EnumerableExtensions.MinAndMax for calculating both the min and the max value of an IEnumerable in a single pass.
 
 ## [0.4.0] 2024-08-10
 
