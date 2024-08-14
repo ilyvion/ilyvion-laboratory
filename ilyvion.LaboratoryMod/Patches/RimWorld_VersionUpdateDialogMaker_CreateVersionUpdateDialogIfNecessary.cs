@@ -1,4 +1,6 @@
-namespace ilyvion.Laboratory;
+using ilyvion.Laboratory;
+
+namespace ilyvion.LaboratoryMod;
 
 [HarmonyPatch(
     typeof(VersionUpdateDialogMaker),

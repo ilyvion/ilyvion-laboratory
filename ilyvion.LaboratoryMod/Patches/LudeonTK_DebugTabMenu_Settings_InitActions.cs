@@ -3,8 +3,9 @@ using System.Reflection;
 #if !v1_4
 using LudeonTK;
 #endif
+using ilyvion.Laboratory;
 
-namespace ilyvion.Laboratory;
+namespace ilyvion.LaboratoryMod;
 
 [HarmonyPatch(typeof(DebugTabMenu_Settings), nameof(DebugTabMenu_Settings.InitActions))]
 internal static class LudeonTK_DebugTabMenu_Settings_InitActions
