@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] 2024-08-18
+
 ### Added
 
--   MultiTickCoroutineManager: a GameComponent that orchestrates the registration and execution of, as the name suggests, multi-tick coroutines, i.e. tasks that span multiple ticks. Heavily modeled (as a concept, all code original) after the Unity Coroutine type. Makes use of the fact that C# allows you to write IEnumerables using yield (return|break) keywords, allowing natural "break points" in a task. Created mainly to alleviate per-tick strain in the Colony Manager Redux, but I can see myself making use of this in many other situations going forward where you have too much work to perform for a single tick to handle well.
+-   MultiTickCoroutineManager: a GameComponent that orchestrates the registration and execution of, as the name suggests, multi-tick coroutines, i.e. tasks that span multiple ticks. Heavily modeled (as a concept, all code original) after the Unity Coroutine type. Makes use of the fact that C# allows you to write IEnumerables using yield (return|break) keywords, allowing natural 'break points' in a task. Created mainly to alleviate per-tick strain in the Colony Manager Redux, but I can see myself making use of this in many other situations going forward where you have too much work to perform for a single tick to handle well.
 
 ## [0.5.0] 2024-08-15
 
@@ -63,7 +65,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   First implementation of the library.
 
-[Unreleased]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.4.0...v0.6.0
 [0.5.0]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.2.0...v0.3.0

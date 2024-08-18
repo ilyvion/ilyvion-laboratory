@@ -69,6 +69,7 @@ jobs:
               id: markdown_steam
               uses: ilyvion/steamdown@main
               with:
+                  escape-quotes: true
                   markdown: ${{ steps.changelog_reader.outputs.changes }}
 
             - name: Upload to Steam Workshop
