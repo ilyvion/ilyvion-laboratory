@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace ilyvion.Laboratory;
 
 internal static class Logger
@@ -12,6 +14,19 @@ internal static class Logger
         if (Prefs.DevMode)
         {
             Log.Message($"[ilyvion's Laboratory][DEV] " + msg);
+        }
+    }
+
+    static readonly string[] enabledDebugLogCategories = [
+        //"Coroutines"
+    ];
+
+    [Conditional("DEBUG")]
+    public static void LogDebug(string message, string? category = null)
+    {
+        if (category == null || enabledDebugLogCategories.Contains(category))
+        {
+            LogDevMessage(message);
         }
     }
 
