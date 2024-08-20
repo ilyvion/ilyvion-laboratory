@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+-   PatchOperationFindModById. Does what it says. Alternative to vanilla's PatchOperationFindMod but relies on mod id rather than on mod name, which, at least in theory, is more stable/less likely to change.
+
 ## [0.6.0] 2024-08-18
 
 ### Added
