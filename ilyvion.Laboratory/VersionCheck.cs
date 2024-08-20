@@ -41,6 +41,8 @@ public static class VersionCheck
 
     public static Version OurVersion => Assembly.GetExecutingAssembly().GetName().Version;
 
+    [Obsolete("By the time we try to call this, it's already too late. " +
+        "Use the VersionCheckDef in a Def XML file instead.")]
     public static void ShowRequiresAtLeastVersionMessageFor(
         Version requiredVersion,
         string modName)

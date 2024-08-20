@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+-   Change the version check mechanism from using a method call to using a VersionCheckDef declared in a Defs XML file. The failing assembly won't even get to load to call VersionCheck.ShowRequiresAtLeastVersionMessageFor if we need it, making it useless, and this also makes it so that mods that only need XML features can still specify a version requirement without having to add a whole assembly jus for that.
+
 ## [0.7.0] 2024-08-20
 
 ### Added

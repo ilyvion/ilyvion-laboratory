@@ -10,6 +10,18 @@ internal static class RimWorld_VersionUpdateDialogMaker_CreateVersionUpdateDialo
     static void Postfix()
     {
         var requiredVersionRequests = VersionCheck.RequiredVersionRequests;
+
+        foreach (var item in DefDatabase<VersionCheckDef>.AllDefs)
+        {
+            if (item.majorVersion == -1 || item.minorVersion == -1 || item.modName == null)
+            {
+                continue;
+            }
+
+            requiredVersionRequests ??= [];
+            requiredVersionRequests.Add(item.modName, new(item.majorVersion, item.minorVersion));
+        }
+
         if (requiredVersionRequests == null)
         {
             return;
@@ -22,7 +34,7 @@ internal static class RimWorld_VersionUpdateDialogMaker_CreateVersionUpdateDialo
         }
 
         var modRequirements = string.Join("\n\t- ", requiredVersionRequests.Select(r =>
-            $"{r.Key} requires at least v{r.Value}"));
+            $"{r.Key} requires at least version {r.Value}"));
 
         Find.WindowStack.Add(new Dialog_MessageBox(
             $"Some mod(s) have indicated that they require a newer version of " +
