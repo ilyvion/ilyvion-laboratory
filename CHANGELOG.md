@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] 2024-08-20
+
 ### Changed
 
 -   Change the version check mechanism from using a method call to using a VersionCheckDef declared in a Defs XML file. The failing assembly won't even get to load to call VersionCheck.ShowRequiresAtLeastVersionMessageFor if we need it, making it useless, and this also makes it so that mods that only need XML features can still specify a version requirement without having to add a whole assembly jus for that.
@@ -75,7 +77,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   First implementation of the library.
 
-[Unreleased]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.7.0...HEAD
+[Unreleased]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.8.0...HEAD
+[0.8.0]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.4.0...v0.5.0
