@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+-   It is now possible to cancel multi-tick coroutines in the middle of execution.
+
 ### Fixed
 
 -   Only register required version request when mismatch

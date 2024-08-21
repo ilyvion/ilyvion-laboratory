@@ -28,6 +28,7 @@ public class MultiTickCoroutineManager : GameComponent
         RunSingleTick(_coroutines);
     }
 
+    private static CoroutineHandle? currentlyRunningCoroutine;
     private static void RunSingleTick(List<CoroutineHandle> coroutines)
     {
         // Bail early when there's nothing to do
@@ -37,7 +38,7 @@ public class MultiTickCoroutineManager : GameComponent
             return;
         }
 
-        // Attempt avoiding unnecessary allocations by using stackalloc if the
+        // Attempt avoiding unnecessary GC allocations by using stackalloc if the
         // coroutine count is reasonable.
         Span<bool> finishedCoroutines = coRoutineCount < 256
             ? stackalloc bool[coRoutineCount]
@@ -55,14 +56,15 @@ public class MultiTickCoroutineManager : GameComponent
             if (coroutine.ShouldRun())
             {
                 Logger.LogDebug($"...YES! Resuming!", "Coroutines");
+                currentlyRunningCoroutine = coroutine;
                 coroutine.Resume();
-                anyFinished |= finishedCoroutines[i] = coroutine.IsCompleted;
+                currentlyRunningCoroutine = null;
             }
             else
             {
                 Logger.LogDebug($"...NO! Skipping!", "Coroutines");
-                finishedCoroutines[i] = false;
             }
+            anyFinished |= finishedCoroutines[i] = coroutine.IsCompleted;
         }
         if (anyFinished)
         {
@@ -95,6 +97,7 @@ public class MultiTickCoroutineManager : GameComponent
         Logger.LogDebug($"Creating CoroutineHandle for {debugHandle}", "Coroutines");
         CoroutineHandle handle = new(
             coroutine.GetEnumerator(),
+            currentlyRunningCoroutine,
             debugHandle,
             coroutineFinishedCallback,
             coroutineFailedCallback);
@@ -113,8 +116,12 @@ public class MultiTickCoroutineManager : GameComponent
             throw new ArgumentNullException(nameof(coroutine));
         }
 
-        immediateCompletionList.Add(
-            new(coroutine.GetEnumerator(), $"Immediate({coroutine.GetHashCode()})", null, null));
+        immediateCompletionList.Add(new(
+            coroutine.GetEnumerator(),
+            null,
+            $"Immediate({coroutine.GetHashCode()})",
+            null,
+            null));
 
         while (immediateCompletionList.Count > 0)
         {
@@ -147,6 +154,12 @@ public class CoroutineHandle
         }
     }
 
+    private readonly CoroutineHandle? _parent;
+    internal CoroutineHandle? Parent => _parent;
+
+    private readonly List<CoroutineHandle> _children = [];
+    internal List<CoroutineHandle> Children => _children;
+
     private readonly string _debugHandle;
     internal string DebugHandle => _debugHandle;
 
@@ -157,11 +170,14 @@ public class CoroutineHandle
 
     internal CoroutineHandle(
         IEnumerator<IResumeCondition> coroutine,
+        CoroutineHandle? parent,
         string debugHandle,
         Action? coroutineFinishedCallback,
         Action<Exception>? coroutineFailedCallback)
     {
         _coroutine = coroutine;
+        _parent = parent;
+        parent?._children.Add(this);
         _debugHandle = debugHandle;
         _coroutineFinishedCallback = coroutineFinishedCallback;
         _coroutineFailedCallback = coroutineFailedCallback;
@@ -225,6 +241,18 @@ public class CoroutineHandle
             _coroutine = null;
         }
 #pragma warning restore CA1031
+    }
+
+    public void Cancel()
+    {
+        Logger.LogDebug($"Cancelling coroutine {_debugHandle}", "Coroutines");
+        foreach (var child in _children)
+        {
+            child.Cancel();
+        }
+        _children.Clear();
+        _coroutine?.Dispose();
+        _coroutine = null;
     }
 }
 
