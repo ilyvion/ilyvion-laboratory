@@ -18,8 +18,13 @@ internal static class RimWorld_VersionUpdateDialogMaker_CreateVersionUpdateDialo
                 continue;
             }
 
+            var requiredVersion = new Version(item.majorVersion, item.minorVersion);
+
             requiredVersionRequests ??= [];
-            requiredVersionRequests.Add(item.modName, new(item.majorVersion, item.minorVersion));
+            if (!VersionCheck.IsAtLeastVersion(requiredVersion))
+            {
+                requiredVersionRequests.Add(item.modName, requiredVersion);
+            }
         }
 
         if (requiredVersionRequests == null)
