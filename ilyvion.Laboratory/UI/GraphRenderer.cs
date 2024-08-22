@@ -580,7 +580,7 @@ internal class GraphTest_Dialog : Window
 
         inRect.yMin += 32f + listing.MaxColumnHeightSeen;
 
-        var tabs = new List<TabRecord>() {
+        var tabs = new List<Verse.TabRecord>() {
             new("Empty", () =>
             {
                 _currentTab = 0;
