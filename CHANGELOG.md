@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.0] 2024-08-23
+
 ### Added
 
 -   Provide DrawIfUIHelpers to automate functionality. Now consumers only have to provide a closure that will get called at the right time, but also won't be called when the mod isn't compiled without the DEBUG symbol, so it becomes effectively free to pepper your code with it where you need it.
@@ -98,7 +100,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   First implementation of the library.
 
-[Unreleased]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.10.0...HEAD
+[Unreleased]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.11.0...HEAD
+[0.11.0]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.7.0...v0.8.0
