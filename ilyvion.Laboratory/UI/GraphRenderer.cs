@@ -372,7 +372,7 @@ public class GraphRenderer
 
             var distance = (realpos - mousePosition).magnitude;
 
-            if (IlyvionDebugViewSettings.DrawUIHelpers)
+            IlyvionDebugViewSettings.DrawIfUIHelpers(() =>
             {
                 var mousePosRect = new Rect(
                     mousePosition.x - Resources.GraphDot.width / 2f,
@@ -391,7 +391,7 @@ public class GraphRenderer
                 Widgets.Label(labelRect, "" + unitPosition + "\n" + distance);
 
                 Widgets.DrawLine(mousePosition, realpos, Color.white, 1f);
-            }
+            });
 
             if (distance < 100)
             {
