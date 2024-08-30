@@ -9,7 +9,7 @@ using LudeonTK;
 namespace ilyvion.Laboratory.UI;
 
 [HotSwappable]
-public class GraphRenderer
+public class GraphRenderer(GraphSeries[] series)
 {
     private const float Spacing = 6f;
     public Color BackgroundColour { get; set; } = new(0f, 0f, 0f, .2f);
@@ -20,8 +20,8 @@ public class GraphRenderer
     public bool Interactive { get; set; } = true;
 
 #pragma warning disable CA1819
-    public GraphSeries[] Series { get; set; }
-    public bool[] ShownSeries { get; set; }
+    public GraphSeries[] Series { get; set; } = series;
+    public bool[] ShownSeries { get; set; } = series.Select(_ => true).ToArray();
 #pragma warning restore CA1819
 
     /// <summary>
@@ -40,12 +40,6 @@ public class GraphRenderer
     public string YAxisUnitLabel { get; set; } = string.Empty;
 
     public Texture2D MouseOverIndicatorTexture { get; set; } = Resources.GraphDot;
-
-    public GraphRenderer(GraphSeries[] series)
-    {
-        Series = series;
-        ShownSeries = series.Select(_ => true).ToArray();
-    }
 
     private float yAxisLabelsMaxWidth;
     public void DrawGraph(
@@ -491,14 +485,14 @@ public class GraphException : Exception
 [HotSwappable]
 internal class GraphTest_Dialog : Window
 {
-    private GraphRenderer _emptyGraphRenderer = new([]);
-    private GraphRenderer _singleGraphRenderer = new([
+    private readonly GraphRenderer _emptyGraphRenderer = new([]);
+    private readonly GraphRenderer _singleGraphRenderer = new([
         new()
         {
             Label = "Series 1"
         }
     ]);
-    private GraphRenderer _multipleGraphRenderer = new([
+    private readonly GraphRenderer _multipleGraphRenderer = new([
         new()
         {
             Label = "Series 1",
@@ -518,7 +512,7 @@ internal class GraphTest_Dialog : Window
     {
         DrawTargetLine = true,
     };
-    private GraphRenderer _multipleWithHiddenGraphRenderer = new([
+    private readonly GraphRenderer _multipleWithHiddenGraphRenderer = new([
         new()
         {
             Label = "Series 1",

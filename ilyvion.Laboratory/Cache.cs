@@ -38,7 +38,7 @@ public class CachedValues<TKey, TValue>(int updateInterval = 250)
         _cacheEntries.Add(key, cacheEntry);
     }
 
-    public bool TryGetValue(TKey key, out TValue? value)
+    public bool TryGetValue(TKey key, [NotNullWhen(true)] out TValue? value)
     {
         if (_cacheEntries.TryGetValue(key, out var cacheEntry))
         {
