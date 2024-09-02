@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+-   Multi-tick coroutines now immediately start coroutines that are added while coroutines are already being executed. This prevents an issue where a lot of calls to nested coroutines would postpone the execution of each coroutine by a tick, which unnecessarily paused coroutine execution when it wasn't necessary. If you need to pause execution immediately when a coroutine starts for some reason, you can immediately yield with e.g. ResumeImmediately.Singleton and it won't run proper until the next tick.
+
 ## [0.11.0] 2024-08-23
 
 ### Added

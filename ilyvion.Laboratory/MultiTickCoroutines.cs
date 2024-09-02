@@ -32,42 +32,55 @@ public class MultiTickCoroutineManager : GameComponent
     private static void RunSingleTick(List<CoroutineHandle> coroutines)
     {
         // Bail early when there's nothing to do
-        int coRoutineCount = coroutines.Count;
-        if (coRoutineCount == 0)
+        int coroutineCount = coroutines.Count;
+        if (coroutineCount == 0)
         {
             return;
         }
 
         // Attempt avoiding unnecessary GC allocations by using stackalloc if the
         // coroutine count is reasonable.
-        Span<bool> finishedCoroutines = coRoutineCount < 256
-            ? stackalloc bool[coRoutineCount]
-            : new bool[coRoutineCount];
+        Span<bool> finishedCoroutines = coroutineCount < 256
+            ? stackalloc bool[coroutineCount]
+            : new bool[coroutineCount];
 
-        Logger.LogDebug($"Running {coRoutineCount} coroutines", "Coroutines");
+        Logger.LogDebug($"Running {coroutineCount} coroutines", "Coroutines");
 
         bool anyFinished = false;
-        for (int i = 0; i < coRoutineCount; i++)
-        {
-            var coroutine = coroutines[i];
+        RunCoroutines(coroutines, 0, coroutineCount, finishedCoroutines, ref anyFinished);
 
-            Logger.LogDebug($"Checking if we should run coroutine {coroutine.DebugHandle}...",
-                "Coroutines");
-            if (coroutine.ShouldRun())
-            {
-                Logger.LogDebug($"...YES! Resuming!", "Coroutines");
-                currentlyRunningCoroutine = coroutine;
-                coroutine.Resume();
-                currentlyRunningCoroutine = null;
-            }
-            else
-            {
-                Logger.LogDebug($"...NO! Skipping!", "Coroutines");
-            }
-            anyFinished |= finishedCoroutines[i] = coroutine.IsCompleted;
+        List<bool>? additionallyFinishedCoroutines = coroutines.Count > coroutineCount
+            ? []
+            : null;
+        int additionalCoroutinesStartIndex = 0;
+        while (coroutines.Count > coroutineCount)
+        {
+            // New coroutines were added by the coroutines that were ran. These should also be run
+            // in this same tick.
+            int newCoroutineCount = coroutines.Count - coroutineCount;
+            Logger.LogDebug($"Running additional {newCoroutineCount} coroutines", "Coroutines");
+
+            additionallyFinishedCoroutines!.AddRange(
+                Enumerable.Repeat(false, newCoroutineCount));
+            Span<bool> additionallyFinishedCoroutinesSpan = additionallyFinishedCoroutines._items;
+            additionallyFinishedCoroutinesSpan =
+                additionallyFinishedCoroutinesSpan.Slice(
+                    additionalCoroutinesStartIndex, newCoroutineCount);
+
+            RunCoroutines(
+                coroutines,
+                coroutineCount,
+                coroutines.Count,
+                additionallyFinishedCoroutinesSpan,
+                ref anyFinished);
+
+            additionalCoroutinesStartIndex += newCoroutineCount;
+            coroutineCount += newCoroutineCount;
         }
+
         if (anyFinished)
         {
+            additionalCoroutinesStartIndex = finishedCoroutines.Length;
             for (int i = finishedCoroutines.Length - 1; i >= 0; i--)
             {
                 if (finishedCoroutines[i])
@@ -76,7 +89,52 @@ public class MultiTickCoroutineManager : GameComponent
                         $"Removing coroutine {coroutines[i].DebugHandle} " +
                         "as it reported being finished", "Coroutines");
                     coroutines.RemoveAt(i);
+                    additionalCoroutinesStartIndex--;
                 }
+            }
+
+            if (additionallyFinishedCoroutines != null)
+            {
+                for (int i = additionallyFinishedCoroutines.Count - 1; i >= 0; i--)
+                {
+                    if (additionallyFinishedCoroutines[i])
+                    {
+                        int coroutineIndex = additionalCoroutinesStartIndex + i;
+
+                        Logger.LogDebug(
+                            $"Removing coroutine {coroutines[coroutineIndex].DebugHandle} " +
+                            "as it reported being finished", "Coroutines");
+                        coroutines.RemoveAt(coroutineIndex);
+                    }
+                }
+            }
+        }
+
+        static void RunCoroutines(
+            List<CoroutineHandle> coroutines,
+            int start,
+            int end,
+            Span<bool> finishedCoroutines,
+            ref bool anyFinished)
+        {
+            for (int i = start; i < end; i++)
+            {
+                var coroutine = coroutines[i];
+
+                Logger.LogDebug($"Checking if we should run coroutine {coroutine.DebugHandle}...",
+                    "Coroutines");
+                if (coroutine.ShouldRun())
+                {
+                    Logger.LogDebug($"...YES! Resuming!", "Coroutines");
+                    currentlyRunningCoroutine = coroutine;
+                    coroutine.Resume();
+                    currentlyRunningCoroutine = null;
+                }
+                else
+                {
+                    Logger.LogDebug($"...NO! Skipping!", "Coroutines");
+                }
+                anyFinished |= finishedCoroutines[i - start] = coroutine.IsCompleted;
             }
         }
     }
@@ -154,7 +212,7 @@ public class CoroutineHandle
         }
     }
 
-    private readonly CoroutineHandle? _parent;
+    private CoroutineHandle? _parent;
     internal CoroutineHandle? Parent => _parent;
 
     private readonly List<CoroutineHandle> _children = [];
@@ -237,8 +295,7 @@ public class CoroutineHandle
             Logger.LogDebug($"Cleaning up coroutine {_debugHandle} since it finished",
                 "Coroutines");
             _coroutineFinishedCallback?.Invoke();
-            _coroutine?.Dispose();
-            _coroutine = null;
+            Cleanup();
         }
 #pragma warning restore CA1031
     }
@@ -250,6 +307,12 @@ public class CoroutineHandle
         {
             child.Cancel();
         }
+        Cleanup();
+    }
+
+    private void Cleanup()
+    {
+        _parent = null;
         _children.Clear();
         _coroutine?.Dispose();
         _coroutine = null;
