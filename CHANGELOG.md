@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.0] 2024-09-04
+
 ### Changed
 
 -   Multi-tick coroutines now immediately start coroutines that are added while coroutines are already being executed. This prevents an issue where a lot of calls to nested coroutines would postpone the execution of each coroutine by a tick, which unnecessarily paused coroutine execution when it wasn't necessary. If you need to pause execution immediately when a coroutine starts for some reason, you can immediately yield with e.g. ResumeImmediately.Singleton and it won't run proper until the next tick.
@@ -104,7 +106,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   First implementation of the library.
 
-[Unreleased]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.11.0...HEAD
+[Unreleased]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.12.0...HEAD
+[0.12.0]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.8.0...v0.9.0
