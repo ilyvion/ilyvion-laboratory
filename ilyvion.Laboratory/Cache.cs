@@ -2,6 +2,7 @@
 // Copyright Karel Kroeze, 2018-2020
 
 using System.Diagnostics.CodeAnalysis;
+using ilyvion.Laboratory.Coroutines;
 
 namespace ilyvion.Laboratory;
 
@@ -75,20 +76,20 @@ public class CachedValue<T>
     private readonly int _updateInterval;
     private readonly Func<T>? _updater;
     private T? _cached;
-    private int? _timeSet;
+    private int? _lastUpdateTick;
 
     public CachedValue(T initial, int updateInterval = 250)
     {
         _updateInterval = updateInterval;
         _cached = initial;
-        _timeSet = null;
+        _lastUpdateTick = null;
     }
 
     public CachedValue(Func<T>? updater, int updateInterval = 250)
     {
         _updateInterval = updateInterval;
         _updater = updater;
-        _timeSet = null;
+        _lastUpdateTick = null;
     }
 
     public T Value
@@ -107,7 +108,8 @@ public class CachedValue<T>
 
     public bool TryGetValue([NotNullWhen(true)] out T? value)
     {
-        if (_timeSet.HasValue && Find.TickManager.TicksGame - _timeSet.Value <= _updateInterval)
+        if (_lastUpdateTick.HasValue &&
+            Find.TickManager.TicksGame - _lastUpdateTick.Value <= _updateInterval)
         {
             value = _cached ?? throw new InvalidOperationException("_cached was null");
             return true;
@@ -127,7 +129,7 @@ public class CachedValue<T>
     public T Update(T value)
     {
         _cached = value;
-        _timeSet = Find.TickManager.TicksGame;
+        _lastUpdateTick = Find.TickManager.TicksGame;
         return _cached;
     }
 
@@ -141,6 +143,68 @@ public class CachedValue<T>
 
     public void Invalidate()
     {
-        _timeSet = null;
+        _lastUpdateTick = null;
     }
+}
+
+public class MultiTickCachedValue<T>
+{
+    private T _cached;
+    private readonly Func<AnyBoxed<T?>, IEnumerable<IResumeCondition>> _updaterCoroutine;
+    private readonly int _updateInterval;
+    private readonly bool _allowNull;
+    private int _lastUpdateTick = -1;
+    private CoroutineHandle? _updaterCoroutineHandle;
+
+    public MultiTickCachedValue(
+        T initial, Func<AnyBoxed<T?>,
+        IEnumerable<IResumeCondition>> updaterCoroutine,
+        int updateInterval = 250,
+        bool allowNull = false)
+    {
+        _cached = initial;
+        _updaterCoroutine = updaterCoroutine;
+        _updateInterval = updateInterval;
+        _allowNull = allowNull;
+    }
+
+    // NOTE: DoesNotReturnIf is *technically* incorrect here; but there is no DoesNotReturnNullIf,
+    // which is what I'd really want, and the behavior of the null analysis for the two would be
+    // identical anyway, which is why I use it.
+    public CoroutineHandle? DoUpdateIfNeeded([DoesNotReturnIf(true)] bool force = false)
+    {
+        if (_updaterCoroutineHandle == null)
+        {
+            if (force || _lastUpdateTick == -1
+                || Find.TickManager.TicksGame - _lastUpdateTick > _updateInterval)
+            {
+                _updaterCoroutineHandle =
+                    MultiTickCoroutineManager.StartCoroutine(
+                        UpdateValueCoroutine(),
+                        () => _lastUpdateTick = Find.TickManager.TicksGame,
+                        debugHandle:
+                            $"{nameof(MultiTickCachedValue<T>)}.{nameof(UpdateValueCoroutine)}");
+            }
+        }
+        return _updaterCoroutineHandle;
+    }
+
+    private IEnumerable<IResumeCondition> UpdateValueCoroutine()
+    {
+        using var _ = new DoOnDispose(() => _updaterCoroutineHandle = null);
+
+        AnyBoxed<T?> newCount = new(default);
+        yield return _updaterCoroutine(newCount)
+            .ResumeWhenOtherCoroutineIsCompleted();
+
+        if (newCount.Value == null && !_allowNull)
+        {
+            throw new InvalidOperationException($"{nameof(MultiTickCachedValue<T>)}'s updater" +
+                "must return a non-null value");
+        }
+
+        _cached = newCount.Value!;
+    }
+
+    public T Value => _cached;
 }

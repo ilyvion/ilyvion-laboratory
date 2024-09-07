@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+-   Multi-tick version of the CacheValue class for caching values that take multiple ticks to calculate.
+
 ## [0.12.0] 2024-09-04
 
 ### Changed
