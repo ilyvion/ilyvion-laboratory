@@ -92,7 +92,7 @@ internal static class Verse_ScribeSaver_InitSaving_Reverse
                 // if (useIndentation) {
                 new(OpCodes.Ldarg_3),
                 //     <old code>
-                new(OpCodes.Brtrue_S,xmlWriterSetIndentLabel),
+                new(OpCodes.Brtrue_S, xmlWriterSetIndentLabel),
                 // } else {
                 //     <skip old code>
                 new(OpCodes.Br_S, xmlWriterIndentCharsLabel)
