@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+-   Import some enumerable utilities from https://github.com/LogosBible/Logos.Utility (mainly for the LazyOrderBy methods)
+
 ## [0.13.0] 2024-09-07
 
 ### Added
