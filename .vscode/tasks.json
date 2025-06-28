@@ -8,7 +8,7 @@
                 "kind": "build",
                 "isDefault": false
             },
-            "command": ".vscode/buildAll.ps1",
+            "command": ".vscode/buildAll.sh",
             "problemMatcher": []
         },
         {
@@ -18,9 +18,22 @@
                 "kind": "build",
                 "isDefault": false
             },
-            "command": ".vscode/build.ps1",
+            "command": ".vscode/build.sh",
             "args": [
                 "${input:rimWorldVersion}"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "build 1.6",
+            "type": "shell",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "command": ".vscode/build.sh",
+            "args": [
+                "1.6"
             ],
             "problemMatcher": []
         },
@@ -31,7 +44,7 @@
                 "kind": "build",
                 "isDefault": true
             },
-            "command": ".vscode/build.ps1",
+            "command": ".vscode/build.sh",
             "args": [
                 "1.5"
             ],
@@ -44,7 +57,7 @@
                 "kind": "build",
                 "isDefault": false
             },
-            "command": ".vscode/build.ps1",
+            "command": ".vscode/build.sh",
             "args": [
                 "1.4"
             ],
@@ -57,7 +70,7 @@
                 "kind": "build",
                 "isDefault": false
             },
-            "command": ".vscode/build.ps1",
+            "command": ".vscode/build.sh",
             "args": [
                 "1.3"
             ],
@@ -70,11 +83,12 @@
             "type": "pickString",
             "description": "Rimworld version to build?",
             "options": [
+                "1.6",
                 "1.5",
                 "1.4",
                 "1.3",
             ],
-            "default": "1.5"
+            "default": "1.6"
         }
     ]
 }
