@@ -7,7 +7,9 @@ namespace ilyvion.LaboratoryMod;
 /// </summary>
 [HarmonyPatch(typeof(Text))]
 [HarmonyPatch(nameof(Text.CurFontStyle), MethodType.Getter)]
+#if !v1_3 && !v1_4
 [HarmonyPatchCategory("Late")]
+#endif
 internal static class Verse_Text_CurFontStyle
 {
     private static bool Prepare()

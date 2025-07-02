@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+-   Lock Harmony to correct versions for 1.3 and 1.4 and then fix code to be compatible.
+
 ## [0.15.0] 2025-06-28
 
 ### Added

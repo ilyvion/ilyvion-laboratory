@@ -7,7 +7,9 @@ namespace ilyvion.LaboratoryMod;
 /// </summary>
 [HarmonyPatch(typeof(Text))]
 [HarmonyPatch(nameof(Text.CurTextAreaStyle), MethodType.Getter)]
+#if !v1_3 && !v1_4
 [HarmonyPatchCategory("Late")]
+#endif
 internal static class Verse_Text_CurTextAreaStyle
 {
     private static bool Prepare()

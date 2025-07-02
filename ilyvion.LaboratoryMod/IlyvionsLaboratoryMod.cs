@@ -19,8 +19,13 @@ internal sealed class IlyvionsLaboratoryMod : IlyvionMod
         _mod = this;
 
         // Harmony.DEBUG = true;
+#if !v1_3 && !v1_4
         new Harmony(Content.Name)
             .PatchAllUncategorized(Assembly.GetExecutingAssembly());
+#else
+        new Harmony(Content.Name)
+            .PatchAll(Assembly.GetExecutingAssembly());
+#endif
         // Harmony.DEBUG = false;
 
         // Inject reverse patch method pointers where they are needed
@@ -29,6 +34,7 @@ internal sealed class IlyvionsLaboratoryMod : IlyvionMod
     }
 }
 
+#if !v1_3 && !v1_4
 [StaticConstructorOnStartup]
 internal static class LatePatching
 {
@@ -40,6 +46,7 @@ internal static class LatePatching
         // Harmony.DEBUG = false;
     }
 }
+#endif
 
 [StaticConstructorOnStartup]
 internal static class ResourceLoading
