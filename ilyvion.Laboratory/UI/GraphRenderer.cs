@@ -646,7 +646,7 @@ internal class GraphTest_Dialog : Window
 internal static class GraphTestDebugAction
 {
     [IlyvionDebugAction(
-        "ilyvion's Laboratory",
+        IlyvionDebugActionAttribute.IlyvionLaboratoryCategory,
         "Show graph test dialog",
         allowedGameStates = AllowedGameStates.Playing)]
     private static void ShowGraphTestDialog()

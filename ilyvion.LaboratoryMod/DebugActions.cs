@@ -8,7 +8,7 @@ namespace ilyvion.LaboratoryMod;
 public static class DebugActions
 {
     [IlyvionDebugAction(
-        "ilyvion",
+        IlyvionDebugActionAttribute.IlyvionLaboratoryCategory,
         "Hot reload languages",
         displayPriority: 9999,
         allowedGameStates = AllowedGameStates.Entry
@@ -24,7 +24,7 @@ public static class DebugActions
     }
 
     [IlyvionDebugAction(
-        "ilyvion",
+        IlyvionDebugActionAttribute.IlyvionLaboratoryCategory,
         "Hot reload languages",
         displayPriority: 9999,
         allowedGameStates = AllowedGameStates.Playing
