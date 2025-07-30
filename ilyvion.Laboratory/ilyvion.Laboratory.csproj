@@ -106,6 +106,7 @@
     </ItemGroup>
     <ItemGroup>
         <Publicize Include="mscorlib:System.Collections.Generic.List`1._items" />
+        <Publicize Include="Assembly-CSharp:Verse.XmlInheritance+XmlInheritanceNode" />
     </ItemGroup>
 
 </Project>

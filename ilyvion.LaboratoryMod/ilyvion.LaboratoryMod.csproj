@@ -95,10 +95,19 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
+        <PackageReference Include="Krafs.Publicizer" Version="2.2.1">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\ilyvion.Laboratory\ilyvion.Laboratory.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <Publicize Include="Assembly-CSharp:Verse.XmlInheritance.GetBestParentFor" />
+        <Publicize Include="Assembly-CSharp:Verse.XmlInheritance+XmlInheritanceNode" />
+        <Publicize Include="Assembly-CSharp:Verse.XmlInheritance.unresolvedNodes" />
     </ItemGroup>
 
 </Project>

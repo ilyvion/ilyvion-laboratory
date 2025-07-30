@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+-   CodeInstructionsExtensions.CallMatches for use with transpilers so you can do things like `i.CallMatches(m => m.Name == "SortBy")`.
+-   Custom ParentName Handler support, so you can set a Def's ParentName to `::<full path to type that implements ilyvion.Laboratory.ParentNameHandlers.ICustomParentNameHandler>:<the data to pass to the handler's GetBestParentFor's parentNameData parameter>`.
+-   Custom ParentName Handler that lets you select a parent using XPath; an example of use is `<ThingDef ParentName="::ilyvion.Laboratory.ParentNameHandlers.XPathParent:[defName='GrowthVat']">` which will select the match of `/Def/ThingDef[defName='GrowthVat']`. (This feature isn't well tested and might not yet be ready for production use; use with caution for anything but simple testing.)
+
 ## [0.15.2] 2025-07-20
 
 ### Changed
