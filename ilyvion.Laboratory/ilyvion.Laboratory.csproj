@@ -13,7 +13,7 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>5</WarningLevel>
 
-        <NoWarn>CA1305;CA1708;CA1724</NoWarn>
+        <NoWarn>CA1305;CA1708;CA1724;IDE0008;IDE0021;IDE0022;IDE0023</NoWarn>
 
         <RootNamespace>ilyvion.Laboratory</RootNamespace>
         <AssemblyName>0ilyvion.Laboratory</AssemblyName>
