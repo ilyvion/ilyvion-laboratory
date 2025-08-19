@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+-   ConditionalWeakTable class that has the same API as 1.6 for use with older RimWorld versions.
+
 ## [0.16.0] - 2025-07-30
 
 ### Added
