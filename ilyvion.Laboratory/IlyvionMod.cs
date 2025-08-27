@@ -49,4 +49,59 @@ public abstract class IlyvionMod(ModContentPack content) : Mod(content)
             {e}
         """);
     }
+
+    public virtual void LogMessageOnce(string msg, ref bool hasLogged)
+    {
+        if (!hasLogged)
+        {
+            LogMessage(msg);
+            hasLogged = true;
+        }
+    }
+
+    public virtual void LogDevMessageOnce(string msg, ref bool hasLogged)
+    {
+        if (!hasLogged)
+        {
+            LogDevMessage(msg);
+            hasLogged = true;
+        }
+    }
+
+    [Conditional("DEBUG")]
+    public virtual void LogDebugOnce(string message, ref bool hasLogged)
+    {
+        if (!hasLogged)
+        {
+            LogDebug(message);
+            hasLogged = true;
+        }
+    }
+
+    public virtual void LogWarningOnce(string msg, ref bool hasLogged)
+    {
+        if (!hasLogged)
+        {
+            LogWarning(msg);
+            hasLogged = true;
+        }
+    }
+
+    public virtual void LogErrorOnce(string msg, ref bool hasLogged)
+    {
+        if (!hasLogged)
+        {
+            LogError(msg);
+            hasLogged = true;
+        }
+    }
+
+    public virtual void LogExceptionOnce(string msg, Exception e, ref bool hasLogged)
+    {
+        if (!hasLogged)
+        {
+            LogException(msg, e);
+            hasLogged = true;
+        }
+    }
 }

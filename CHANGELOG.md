@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+-   Log*Once utility logging methods on IlyvionMod that takes a ref bool to only log something once.
+
 ## [0.17.0] - 2025-08-19
 
 ### Added
