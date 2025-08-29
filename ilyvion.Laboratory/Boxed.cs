@@ -7,9 +7,18 @@ namespace ilyvion.Laboratory;
 /// </summary>
 /// <typeparam name="T">the boxed value type</typeparam>
 /// <param name="initialValue">the boxed value type's initial value</param>
-public class Boxed<T>(T initialValue = default) where T : struct
+public class Boxed<T>(T initialValue = default)
+    where T : struct
 {
-    public T Value { get; set; } = initialValue;
+    private T value = initialValue;
+    public T Value
+    {
+        get => value;
+        set => this.value = value;
+    }
+
+    [SinceVersion(0, 19, 0)]
+    public ref T RefValue => ref value;
 
     public AnyBoxed<T> ToAnyBoxed()
     {
@@ -18,6 +27,7 @@ public class Boxed<T>(T initialValue = default) where T : struct
 
 #pragma warning disable CA2225, CA1062
     public static implicit operator T(Boxed<T> b) => b.Value;
+
     public static explicit operator Boxed<T>(T v) => new(v);
 #pragma warning restore CA1062, CA2225
 }
@@ -31,10 +41,19 @@ public class Boxed<T>(T initialValue = default) where T : struct
 /// <param name="initialValue">the boxed value type's initial value</param>
 public class AnyBoxed<T>(T initialValue)
 {
-    public T Value { get; set; } = initialValue;
+    private T value = initialValue;
+    public T Value
+    {
+        get => value;
+        set => this.value = value;
+    }
+
+    [SinceVersion(0, 19, 0)]
+    public ref T RefValue => ref value;
 
 #pragma warning disable CA2225, CA1062
     public static implicit operator T(AnyBoxed<T> b) => b.Value;
+
     public static explicit operator AnyBoxed<T>(T v) => new(v);
 #pragma warning restore CA1062, CA2225
 }
