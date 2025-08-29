@@ -7,160 +7,163 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.19.0] - 2025-08-29
+
 ### Added
 
-- ValueRef fields on Boxed and AnyBoxed type.
+- ValueRef fields on Boxed and AnyBoxed type for ref-based access.
 
 ## [0.18.0] - 2025-08-27
 
 ### Added
 
--   Log*Once utility logging methods on IlyvionMod that takes a ref bool to only log something once.
+- Log\*Once utility logging methods on IlyvionMod that takes a ref bool to only log something once.
 
 ## [0.17.0] - 2025-08-19
 
 ### Added
 
--   ConditionalWeakTable class that has the same API as 1.6 for use with older RimWorld versions.
+- ConditionalWeakTable class that has the same API as 1.6 for use with older RimWorld versions.
 
 ## [0.16.0] - 2025-07-30
 
 ### Added
 
--   CodeInstructionsExtensions.CallMatches for use with transpilers so you can do things like `i.CallMatches(m => m.Name == "SortBy")`.
--   Custom ParentName Handler support, so you can set a Def's ParentName to `::<full path to type that implements ilyvion.Laboratory.ParentNameHandlers.ICustomParentNameHandler>:<the data to pass to the handler's GetBestParentFor's parentNameData parameter>`.
--   Custom ParentName Handler that lets you select a parent using XPath; an example of use is `<ThingDef ParentName="::ilyvion.Laboratory.ParentNameHandlers.XPathParent:[defName='GrowthVat']">` which will select the match of `/Def/ThingDef[defName='GrowthVat']`. (This feature isn't well tested and might not yet be ready for production use; use with caution for anything but simple testing.)
+- CodeInstructionsExtensions.CallMatches for use with transpilers so you can do things like `i.CallMatches(m => m.Name == "SortBy")`.
+- Custom ParentName Handler support, so you can set a Def's ParentName to `::<full path to type that implements ilyvion.Laboratory.ParentNameHandlers.ICustomParentNameHandler>:<the data to pass to the handler's GetBestParentFor's parentNameData parameter>`.
+- Custom ParentName Handler that lets you select a parent using XPath; an example of use is `<ThingDef ParentName="::ilyvion.Laboratory.ParentNameHandlers.XPathParent:[defName='GrowthVat']">` which will select the match of `/Def/ThingDef[defName='GrowthVat']`. (This feature isn't well tested and might not yet be ready for production use; use with caution for anything but simple testing.)
 
 ## [0.15.2] 2025-07-20
 
 ### Changed
 
--   Harmonize the category name used across the mod.
+- Harmonize the category name used across the mod.
 
 ## [0.15.1] 2025-07-02
 
 ### Fixed
 
--   Lock Harmony to correct versions for 1.3 and 1.4 and then fix code to be compatible.
+- Lock Harmony to correct versions for 1.3 and 1.4 and then fix code to be compatible.
 
 ## [0.15.0] 2025-06-28
 
 ### Added
 
--   Rimworld 1.6 support.
+- Rimworld 1.6 support.
 
 ## [0.14.0] 2024-09-12
 
 ### Added
 
--   Import some enumerable utilities from https://github.com/LogosBible/Logos.Utility (mainly for the LazyOrderBy methods)
+- Import some enumerable utilities from https://github.com/LogosBible/Logos.Utility (mainly for the LazyOrderBy methods)
 
 ## [0.13.0] 2024-09-07
 
 ### Added
 
--   Multi-tick version of the CacheValue class for caching values that take multiple ticks to calculate.
+- Multi-tick version of the CacheValue class for caching values that take multiple ticks to calculate.
 
 ## [0.12.0] 2024-09-04
 
 ### Changed
 
--   Multi-tick coroutines now immediately start coroutines that are added while coroutines are already being executed. This prevents an issue where a lot of calls to nested coroutines would postpone the execution of each coroutine by a tick, which unnecessarily paused coroutine execution when it wasn't necessary. If you need to pause execution immediately when a coroutine starts for some reason, you can immediately yield with e.g. ResumeImmediately.Singleton and it won't run proper until the next tick.
+- Multi-tick coroutines now immediately start coroutines that are added while coroutines are already being executed. This prevents an issue where a lot of calls to nested coroutines would postpone the execution of each coroutine by a tick, which unnecessarily paused coroutine execution when it wasn't necessary. If you need to pause execution immediately when a coroutine starts for some reason, you can immediately yield with e.g. ResumeImmediately.Singleton and it won't run proper until the next tick.
 
 ## [0.11.0] 2024-08-23
 
 ### Added
 
--   Provide DrawIfUIHelpers to automate functionality. Now consumers only have to provide a closure that will get called at the right time, but also won't be called when the mod isn't compiled without the DEBUG symbol, so it becomes effectively free to pepper your code with it where you need it.
+- Provide DrawIfUIHelpers to automate functionality. Now consumers only have to provide a closure that will get called at the right time, but also won't be called when the mod isn't compiled without the DEBUG symbol, so it becomes effectively free to pepper your code with it where you need it.
 
 ## [0.10.0] 2024-08-22
 
 ### Added
 
--   Improved tab/tabrecords.
--   Util type DoOnDispose.
+- Improved tab/tabrecords.
+- Util type DoOnDispose.
 
 ## [0.9.0] 2024-08-21
 
 ### Added
 
--   It is now possible to cancel multi-tick coroutines in the middle of execution.
+- It is now possible to cancel multi-tick coroutines in the middle of execution.
 
 ### Fixed
 
--   Only register required version request when mismatch
+- Only register required version request when mismatch
 
 ## [0.8.0] 2024-08-20
 
 ### Changed
 
--   Change the version check mechanism from using a method call to using a VersionCheckDef declared in a Defs XML file. The failing assembly won't even get to load to call VersionCheck.ShowRequiresAtLeastVersionMessageFor if we need it, making it useless, and this also makes it so that mods that only need XML features can still specify a version requirement without having to add a whole assembly jus for that.
+- Change the version check mechanism from using a method call to using a VersionCheckDef declared in a Defs XML file. The failing assembly won't even get to load to call VersionCheck.ShowRequiresAtLeastVersionMessageFor if we need it, making it useless, and this also makes it so that mods that only need XML features can still specify a version requirement without having to add a whole assembly jus for that.
 
 ## [0.7.0] 2024-08-20
 
 ### Added
 
--   PatchOperationFindModById. Does what it says. Alternative to vanilla's PatchOperationFindMod but relies on mod id rather than on mod name, which, at least in theory, is more stable/less likely to change.
+- PatchOperationFindModById. Does what it says. Alternative to vanilla's PatchOperationFindMod but relies on mod id rather than on mod name, which, at least in theory, is more stable/less likely to change.
 
 ## [0.6.0] 2024-08-18
 
 ### Added
 
--   MultiTickCoroutineManager: a GameComponent that orchestrates the registration and execution of, as the name suggests, multi-tick coroutines, i.e. tasks that span multiple ticks. Heavily modeled (as a concept, all code original) after the Unity Coroutine type. Makes use of the fact that C# allows you to write IEnumerables using yield (return|break) keywords, allowing natural 'break points' in a task. Created mainly to alleviate per-tick strain in the Colony Manager Redux, but I can see myself making use of this in many other situations going forward where you have too much work to perform for a single tick to handle well.
+- MultiTickCoroutineManager: a GameComponent that orchestrates the registration and execution of, as the name suggests, multi-tick coroutines, i.e. tasks that span multiple ticks. Heavily modeled (as a concept, all code original) after the Unity Coroutine type. Makes use of the fact that C# allows you to write IEnumerables using yield (return|break) keywords, allowing natural 'break points' in a task. Created mainly to alleviate per-tick strain in the Colony Manager Redux, but I can see myself making use of this in many other situations going forward where you have too much work to perform for a single tick to handle well.
 
 ## [0.5.0] 2024-08-15
 
 ### Added
 
--   Version check mechanism. Something to make me more comfortable with releasing mods that depend on this mod; even if something goes wrong, at least the user will get an explanation.
--   Import Widgets_Labels class' methods from Colony Manager Redux.
--   Import CacheValue(s) classes from Colony Manager Redux.
--   Utility methods/types for dealing with arrays and ArrayPools.
--   CustomBackCompatibility utility class for doing custom type replacements on game load.
--   EnumerableExtensions.MinAndMax for calculating both the min and the max value of an IEnumerable in a single pass.
+- Version check mechanism. Something to make me more comfortable with releasing mods that depend on this mod; even if something goes wrong, at least the user will get an explanation.
+- Import Widgets_Labels class' methods from Colony Manager Redux.
+- Import CacheValue(s) classes from Colony Manager Redux.
+- Utility methods/types for dealing with arrays and ArrayPools.
+- CustomBackCompatibility utility class for doing custom type replacements on game load.
+- EnumerableExtensions.MinAndMax for calculating both the min and the max value of an IEnumerable in a single pass.
 
 ## [0.4.0] 2024-08-10
 
 ### Added
 
--   Extension for muting a color.
--   Extension for inline dumping the value of any value during debugging.
--   Scriber method for CircularBuffers.
+- Extension for muting a color.
+- Extension for inline dumping the value of any value during debugging.
+- Scriber method for CircularBuffers.
 
 ## [0.3.0] 2024-08-04
 
 ### Added
 
--   GraphRenderer for rendering graphs.
--   GUIScope.Multiple, which serves as a drop-in for Verse.TextBlock, but keep the same API across all three supported RW versions.
--   IlyvionDebugActionAttribute that works like the DebugActionAttribute, but has the same API across all three supported RW versions.
--   A circular buffer.
--   LogDebug method added to IlyvionMod; only logs when the DEBUG symbol is present.
--   Various useful extension methods.
+- GraphRenderer for rendering graphs.
+- GUIScope.Multiple, which serves as a drop-in for Verse.TextBlock, but keep the same API across all three supported RW versions.
+- IlyvionDebugActionAttribute that works like the DebugActionAttribute, but has the same API across all three supported RW versions.
+- A circular buffer.
+- LogDebug method added to IlyvionMod; only logs when the DEBUG symbol is present.
+- Various useful extension methods.
 
 ## [0.2.0] 2024-08-01
 
 ### Added
 
--   Debug action for hot reloading language files.
--   Add a "draw UI helpers" debug setting. Does nothing on its own, but is used by dependents to decide whether or not to draw extra UI bits for debugging purposes.
--   Import Bradson's GUIScope utility class with adaptions to better fit my needs.
+- Debug action for hot reloading language files.
+- Add a "draw UI helpers" debug setting. Does nothing on its own, but is used by dependents to decide whether or not to draw extra UI bits for debugging purposes.
+- Import Bradson's GUIScope utility class with adaptions to better fit my needs.
 
 ### Changed
 
--   Make it so that the CustomFontManager only patches the font system if it's been enabled. This way it won't affect performance if it goes unused.
+- Make it so that the CustomFontManager only patches the font system if it's been enabled. This way it won't affect performance if it goes unused.
 
 ### Fixed
 
--   The name ilyvion was misspelled in several places and file paths as 'ilvyion'.
+- The name ilyvion was misspelled in several places and file paths as 'ilvyion'.
 
 ## [0.1.0] 2024-07-25
 
 ### Added
 
--   First implementation of the library.
+- First implementation of the library.
 
-[Unreleased]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.18.0...HEAD
+[Unreleased]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.19.0...HEAD
+[0.19.0]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.18.0..v0.19.0
 [0.18.0]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.17.0..v0.18.0
 [0.17.0]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.16.0..v0.17.0
 [0.16.0]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.15.2..v0.16.0
