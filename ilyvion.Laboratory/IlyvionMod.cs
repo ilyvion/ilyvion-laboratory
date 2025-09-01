@@ -8,6 +8,7 @@ namespace ilyvion.Laboratory;
 public abstract class IlyvionMod(ModContentPack content) : Mod(content)
 {
     protected virtual bool HasSettings => false;
+
     public override string SettingsCategory()
     {
         return HasSettings ? Content.Name : "";
@@ -20,9 +21,15 @@ public abstract class IlyvionMod(ModContentPack content) : Mod(content)
 
     public virtual void LogDevMessage(string msg)
     {
+        LogDevMessage(() => msg);
+    }
+
+    [SinceVersion(0, 20, 0)]
+    public virtual void LogDevMessage(Func<string> produceMsg)
+    {
         if (Prefs.DevMode)
         {
-            Log.Message($"[{Content.Name}][DEV] " + msg);
+            Log.Message($"[{Content.Name}][DEV] " + produceMsg());
         }
     }
 
@@ -30,6 +37,13 @@ public abstract class IlyvionMod(ModContentPack content) : Mod(content)
     public virtual void LogDebug(string message)
     {
         LogDevMessage(message);
+    }
+
+    [Conditional("DEBUG")]
+    [SinceVersion(0, 20, 0)]
+    public virtual void LogDebug(Func<string> produceMsg)
+    {
+        LogDevMessage(produceMsg);
     }
 
     public virtual void LogWarning(string msg)
@@ -44,10 +58,12 @@ public abstract class IlyvionMod(ModContentPack content) : Mod(content)
 
     public virtual void LogException(string msg, Exception e)
     {
-        Log.Error($"""
-            {msg}
-            {e}
-        """);
+        Log.Error(
+            $"""
+                {msg}
+                {e}
+            """
+        );
     }
 
     public virtual void LogMessageOnce(string msg, ref bool hasLogged)

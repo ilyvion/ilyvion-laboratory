@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- LogDevMessage and LogDebug with lambda only that are only called when dev mode is enabled which is useful to avoid doing potentially expensive calculations for the sake of logging when it's not.
+
 ## [0.19.0] - 2025-08-29
 
 ### Added
