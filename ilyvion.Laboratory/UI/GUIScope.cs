@@ -130,6 +130,29 @@ public static class GUIScope
         }
     }
 
+    private record struct FontStyleScope : IDisposable
+    {
+        private readonly FontStyle _original;
+
+        public FontStyleScope(FontStyle fontStyle)
+        {
+            var curFontStyle = Text.CurFontStyle;
+
+            _original = curFontStyle.fontStyle;
+            curFontStyle.fontStyle = fontStyle;
+        }
+
+        private bool _disposed;
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                Text.CurFontStyle.fontStyle = _original;
+                _disposed = true;
+            }
+        }
+    }
+
     private readonly record struct MultiScope : IDisposable
     {
         private readonly FontSizeScope? _fontSizeScope;
@@ -203,6 +226,9 @@ public static class GUIScope
 
     public static IDisposable FontSize(int fontSize) =>
         new FontSizeScope(fontSize);
+
+    public static IDisposable FontStyle(FontStyle fontStyle) =>
+        new FontStyleScope(fontStyle);
 
     public static IDisposable Multiple(
         int? fontSize = null,
