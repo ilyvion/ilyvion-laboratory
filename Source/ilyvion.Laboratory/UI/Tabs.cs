@@ -19,6 +19,7 @@ public class TabRecord : Verse.TabRecord
 {
     public Tab Tab { get; }
     public AccessTools.FieldRef<Tab> CurrentTab { get; }
+
     public TabRecord(Tab tab, AccessTools.FieldRef<Tab> currentTab)
         : base(ValidateTabTitle(tab), null, null)
     {

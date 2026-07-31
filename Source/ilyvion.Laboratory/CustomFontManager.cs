@@ -3,6 +3,7 @@ namespace ilyvion.Laboratory;
 public class CustomFontManager
 {
     internal static bool featureEnabled;
+
     public static void EnableFeature()
     {
         featureEnabled = true;
@@ -53,7 +54,10 @@ public class CustomFontManager
             {
                 if (customFontParams.TryGetValue(currentFontKey, out var fontParams))
                 {
-                    currentFontCached = Font.CreateDynamicFontFromOSFont(fontParams.fonts, fontParams.size);
+                    currentFontCached = Font.CreateDynamicFontFromOSFont(
+                        fontParams.fonts,
+                        fontParams.size
+                    );
                     customFonts.Add(currentFontKey, currentFontCached);
                 }
             }
@@ -107,13 +111,19 @@ public class CustomFontManager
                 return null;
             }
 
-            if (customFontSpaceBetweenLines.TryGetValue(currentFontKey, out var currentSpaceBetweenLines))
+            if (
+                customFontSpaceBetweenLines.TryGetValue(
+                    currentFontKey,
+                    out var currentSpaceBetweenLines
+                )
+            )
             {
                 currentSpaceBetweenLinesCached = currentSpaceBetweenLines;
             }
             else
             {
-                currentSpaceBetweenLines = Text.CalcHeight("W\nW", 999f) - Text.CalcHeight("W", 999f) * 2f;
+                currentSpaceBetweenLines =
+                    Text.CalcHeight("W\nW", 999f) - Text.CalcHeight("W", 999f) * 2f;
                 currentSpaceBetweenLinesCached = currentSpaceBetweenLines;
                 customFontSpaceBetweenLines.Add(currentFontKey, currentSpaceBetweenLines);
             }
@@ -233,7 +243,12 @@ public class CustomFontManager
                 return null;
             }
 
-            if (!customTextAreaReadOnlyStyles.TryGetValue(currentFontKey, out currentTextAreaReadOnlyStyleCached))
+            if (
+                !customTextAreaReadOnlyStyles.TryGetValue(
+                    currentFontKey,
+                    out currentTextAreaReadOnlyStyleCached
+                )
+            )
             {
                 var currentFont = CurrentFont;
                 if (currentFont != null)
@@ -250,7 +265,10 @@ public class CustomFontManager
                     currentTextAreaReadOnlyStyleCached.hover.background = null;
                     currentTextAreaReadOnlyStyleCached.onFocused.background = null;
                     currentTextAreaReadOnlyStyleCached.focused.background = null;
-                    customTextAreaReadOnlyStyles.Add(currentFontKey, currentTextAreaReadOnlyStyleCached);
+                    customTextAreaReadOnlyStyles.Add(
+                        currentFontKey,
+                        currentTextAreaReadOnlyStyleCached
+                    );
                 }
             }
 
@@ -260,7 +278,9 @@ public class CustomFontManager
 
     private static void LogFeatureNotEnabled()
     {
-        Logger.LogError("CustomFontManager is not active. Make sure you call CustomFontManager.EnableFeature() in your mod's constructor to enable it.");
+        Logger.LogError(
+            "CustomFontManager is not active. Make sure you call CustomFontManager.EnableFeature() in your mod's constructor to enable it."
+        );
     }
 
     public void AddFont(string key, int size, params string[] fonts)

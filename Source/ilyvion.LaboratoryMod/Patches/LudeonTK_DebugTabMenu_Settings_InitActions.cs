@@ -14,7 +14,9 @@ internal static class LudeonTK_DebugTabMenu_Settings_InitActions
     {
         FieldInfo[] fields = typeof(IlyvionDebugViewSettings).GetFields(AccessTools.all);
 
-        var addNodeMethod = Traverse.Create(__instance).Method("AddNode", paramTypes: [typeof(FieldInfo), typeof(string)]);
+        var addNodeMethod = Traverse
+            .Create(__instance)
+            .Method("AddNode", paramTypes: [typeof(FieldInfo), typeof(string)]);
         foreach (FieldInfo fi in fields)
         {
             _ = addNodeMethod.GetValue(fi, IlyvionDebugActionAttribute.IlyvionLaboratoryCategory);

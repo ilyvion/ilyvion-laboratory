@@ -15,9 +15,18 @@ internal class OrderedEnumerable<TSource> : IOrderedEnumerable<TSource>
         m_elementComparer = elementComparer;
     }
 
-    public IOrderedEnumerable<TSource> CreateOrderedEnumerable<TKey>(Func<TSource, TKey> keySelector, IComparer<TKey> comparer, bool descending)
+    public IOrderedEnumerable<TSource> CreateOrderedEnumerable<TKey>(
+        Func<TSource, TKey> keySelector,
+        IComparer<TKey> comparer,
+        bool descending
+    )
     {
-        ElementComparer<TSource, TKey> elementComparer = new(keySelector, comparer ?? Comparer<TKey>.Default, descending, null);
+        ElementComparer<TSource, TKey> elementComparer = new(
+            keySelector,
+            comparer ?? Comparer<TKey>.Default,
+            descending,
+            null
+        );
         return new OrderedEnumerable<TSource>(m_source, m_elementComparer.Append(elementComparer));
     }
 
@@ -56,7 +65,10 @@ internal class OrderedEnumerable<TSource> : IOrderedEnumerable<TSource>
                     InsertionSort(sourceIndexes, currentRange.First, currentRange.Last);
 
                 // yield all the items in this sorted sub-array
-                System.Diagnostics.Debug.Assert(currentRange.First == index, "currentRange.First != index");
+                System.Diagnostics.Debug.Assert(
+                    currentRange.First == index,
+                    "currentRange.First != index"
+                );
                 while (index <= currentRange.Last)
                 {
                     yield return array[sourceIndexes[index]];
@@ -66,7 +78,12 @@ internal class OrderedEnumerable<TSource> : IOrderedEnumerable<TSource>
             else
             {
                 // recursive case: pick a pivot in the array and partition the array around it
-                int pivotIndex = Partition(random, sourceIndexes, currentRange.First, currentRange.Last);
+                int pivotIndex = Partition(
+                    random,
+                    sourceIndexes,
+                    currentRange.First,
+                    currentRange.Last
+                );
 
                 // "recurse" by pushing the ranges that still need to be processed (in reverse order) on to the stack
                 stack.Push(new Range(pivotIndex + 1, currentRange.Last));
@@ -187,7 +204,12 @@ internal abstract class ElementComparer<TSource>
 // Source: <https://github.com/LogosBible/Logos.Utility/blob/master/src/Logos.Utility/ElementComparer.cs>
 internal class ElementComparer<TSource, TKey> : ElementComparer<TSource>
 {
-    public ElementComparer(Func<TSource, TKey> keySelector, IComparer<TKey> comparer, bool descending, ElementComparer<TSource>? next)
+    public ElementComparer(
+        Func<TSource, TKey> keySelector,
+        IComparer<TKey> comparer,
+        bool descending,
+        ElementComparer<TSource>? next
+    )
     {
         m_keySelector = keySelector;
         m_comparer = comparer;
@@ -227,7 +249,12 @@ internal class ElementComparer<TSource, TKey> : ElementComparer<TSource>
     {
         // append the new ordering to the tail of the current chain
         var newNext = m_next == null ? next : m_next.Append(next);
-        return new ElementComparer<TSource, TKey>(m_keySelector, m_comparer, m_isDescending, newNext);
+        return new ElementComparer<TSource, TKey>(
+            m_keySelector,
+            m_comparer,
+            m_isDescending,
+            newNext
+        );
     }
 
     readonly Func<TSource, TKey> m_keySelector;

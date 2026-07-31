@@ -5,7 +5,10 @@ internal sealed class ConditionalWeakTable<TKey, TValue> : IEnumerable<KeyValueP
     where TKey : class
     where TValue : class
 {
-    private readonly System.Runtime.CompilerServices.ConditionalWeakTable<TKey, TValue> innerConditionalWeakTable = new();
+    private readonly System.Runtime.CompilerServices.ConditionalWeakTable<
+        TKey,
+        TValue
+    > innerConditionalWeakTable = new();
     private readonly HashSet<System.WeakReference<TKey>> keyReferences = [];
 
     public void Add(TKey key, TValue value)
@@ -45,7 +48,13 @@ internal sealed class ConditionalWeakTable<TKey, TValue> : IEnumerable<KeyValueP
         return innerConditionalWeakTable.GetOrCreateValue(key);
     }
 
-    public TValue GetValue(TKey key, System.Runtime.CompilerServices.ConditionalWeakTable<TKey, TValue>.CreateValueCallback createValueCallback)
+    public TValue GetValue(
+        TKey key,
+        System.Runtime.CompilerServices.ConditionalWeakTable<
+            TKey,
+            TValue
+        >.CreateValueCallback createValueCallback
+    )
     {
         _ = keyReferences.Add(new System.WeakReference<TKey>(key));
         return innerConditionalWeakTable.GetValue(key, createValueCallback);

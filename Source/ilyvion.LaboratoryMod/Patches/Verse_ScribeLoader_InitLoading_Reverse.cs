@@ -13,28 +13,44 @@ internal static class Verse_ScribeLoader_InitLoading_Reverse
     }
 
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-    private static readonly MethodInfo _method_LogException = SymbolExtensions.GetMethodInfo(() => LogException(default));
+    private static readonly MethodInfo _method_LogException = SymbolExtensions.GetMethodInfo(() =>
+        LogException(default)
+    );
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 
     [HarmonyReversePatch]
     [HarmonyPatch(typeof(ScribeLoader), nameof(ScribeLoader.InitLoading))]
-    internal static void InitLoadingWithCustomStreamReader(ScribeLoader scribeLoader, StreamReader streamReader)
+    internal static void InitLoadingWithCustomStreamReader(
+        ScribeLoader scribeLoader,
+        StreamReader streamReader
+    )
     {
-        IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        IEnumerable<CodeInstruction> Transpiler(
+            IEnumerable<CodeInstruction> instructions,
+            ILGenerator generator
+        )
         {
             var codeMatcher = new CodeMatcher(instructions, generator);
 
             // Locate where the original StreamReader is instantiated
-            codeMatcher.SearchForward(i => i.opcode == OpCodes.Newobj && codeMatcher.Operand is ConstructorInfo c && c.DeclaringType == typeof(StreamReader));
+            codeMatcher.SearchForward(i =>
+                i.opcode == OpCodes.Newobj
+                && codeMatcher.Operand is ConstructorInfo c
+                && c.DeclaringType == typeof(StreamReader)
+            );
             if (!codeMatcher.IsValid)
             {
-                Log.Error("Could not reverse patch ScribeLoader.InitLoading, IL does not match expectations: instantiation of StreamReader not found [newobj].");
+                Log.Error(
+                    "Could not reverse patch ScribeLoader.InitLoading, IL does not match expectations: instantiation of StreamReader not found [newobj]."
+                );
                 return codeMatcher.Instructions();
             }
             codeMatcher.Advance(-1);
             if (!codeMatcher.IsValid || codeMatcher.Instruction.opcode != OpCodes.Ldarg_1)
             {
-                Log.Error("Could not reverse patch ScribeLoader.InitLoading, IL does not match expectations: instantiation of StreamReader not found [ldarg.1].");
+                Log.Error(
+                    "Could not reverse patch ScribeLoader.InitLoading, IL does not match expectations: instantiation of StreamReader not found [ldarg.1]."
+                );
                 return codeMatcher.Instructions();
             }
             var streamReaderInstantiationStartPosition = codeMatcher.Pos;
@@ -43,14 +59,19 @@ internal static class Verse_ScribeLoader_InitLoading_Reverse
             codeMatcher.Advance(2);
             if (!codeMatcher.IsValid || codeMatcher.Instruction.opcode != OpCodes.Stloc_0)
             {
-                Log.Error("Could not reverse patch ScribeLoader.InitLoading, IL does not match expectations: instantiation of StreamReader not found [stloc.0].");
+                Log.Error(
+                    "Could not reverse patch ScribeLoader.InitLoading, IL does not match expectations: instantiation of StreamReader not found [stloc.0]."
+                );
                 return codeMatcher.Instructions();
             }
             var streamReaderInstantiationEndPosition = codeMatcher.Pos;
 
             // With the prep-work out of the way, let's go!
             // Remove the creation of the StreamReader using the file path
-            codeMatcher.RemoveInstructionsInRange(streamReaderInstantiationStartPosition, streamReaderInstantiationEndPosition);
+            codeMatcher.RemoveInstructionsInRange(
+                streamReaderInstantiationStartPosition,
+                streamReaderInstantiationEndPosition
+            );
 
             // Store our custom stream reader in the expected local.
             codeMatcher.Start();
@@ -64,7 +85,9 @@ internal static class Verse_ScribeLoader_InitLoading_Reverse
             codeMatcher.SearchForward(i => i.opcode == OpCodes.Stloc_3);
             if (!codeMatcher.IsValid)
             {
-                Log.Error("Could not reverse patch ScribeLoader.InitLoading, IL does not match expectations: storing of Exception not found [stloc.3].");
+                Log.Error(
+                    "Could not reverse patch ScribeLoader.InitLoading, IL does not match expectations: storing of Exception not found [stloc.3]."
+                );
                 return codeMatcher.Instructions();
             }
 
@@ -74,7 +97,9 @@ internal static class Verse_ScribeLoader_InitLoading_Reverse
             codeMatcher.SearchForward(i => i.opcode == OpCodes.Ldarg_0);
             if (!codeMatcher.IsValid)
             {
-                Log.Error("Could not reverse patch ScribeLoader.InitLoading, IL does not match expectations: accessing this not found after storing Exception [ldarg.0].");
+                Log.Error(
+                    "Could not reverse patch ScribeLoader.InitLoading, IL does not match expectations: accessing this not found after storing Exception [ldarg.0]."
+                );
                 return codeMatcher.Instructions();
             }
             codeMatcher.Advance(-1);
@@ -86,10 +111,7 @@ internal static class Verse_ScribeLoader_InitLoading_Reverse
             // Insert our own Log.Error message
             codeMatcher.Start();
             codeMatcher.Advance(logErrorStartPosition);
-            codeMatcher.Insert([
-                new(OpCodes.Ldloc_3),
-                new(OpCodes.Call, _method_LogException),
-            ]);
+            codeMatcher.Insert([new(OpCodes.Ldloc_3), new(OpCodes.Call, _method_LogException)]);
 
             return codeMatcher.Instructions();
         }

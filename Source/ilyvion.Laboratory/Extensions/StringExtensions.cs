@@ -8,8 +8,10 @@ namespace ilyvion.Laboratory.Extensions;
 [HotSwappable]
 public static class StringExtensions
 {
-    private static readonly Dictionary<Pair<string, float>, (bool fits, Vector2 textSize)> _fitsCache =
-        [];
+    private static readonly Dictionary<
+        Pair<string, float>,
+        (bool fits, Vector2 textSize)
+    > _fitsCache = [];
 
     public static string Bold(this TaggedString text)
     {

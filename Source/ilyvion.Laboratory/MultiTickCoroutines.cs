@@ -19,9 +19,7 @@ public class MultiTickCoroutineManager : GameComponent
 {
     private readonly List<CoroutineHandle> _coroutines = [];
 
-    public MultiTickCoroutineManager(Game _)
-    {
-    }
+    public MultiTickCoroutineManager(Game _) { }
 
     public override void GameComponentTick()
     {
@@ -29,6 +27,7 @@ public class MultiTickCoroutineManager : GameComponent
     }
 
     private static CoroutineHandle? currentlyRunningCoroutine;
+
     private static void RunSingleTick(List<CoroutineHandle> coroutines)
     {
         // Bail early when there's nothing to do
@@ -40,18 +39,15 @@ public class MultiTickCoroutineManager : GameComponent
 
         // Attempt avoiding unnecessary GC allocations by using stackalloc if the
         // coroutine count is reasonable.
-        Span<bool> finishedCoroutines = coroutineCount < 256
-            ? stackalloc bool[coroutineCount]
-            : new bool[coroutineCount];
+        Span<bool> finishedCoroutines =
+            coroutineCount < 256 ? stackalloc bool[coroutineCount] : new bool[coroutineCount];
 
         Logger.LogDebug($"Running {coroutineCount} coroutines", "Coroutines");
 
         bool anyFinished = false;
         RunCoroutines(coroutines, 0, coroutineCount, finishedCoroutines, ref anyFinished);
 
-        List<bool>? additionallyFinishedCoroutines = coroutines.Count > coroutineCount
-            ? []
-            : null;
+        List<bool>? additionallyFinishedCoroutines = coroutines.Count > coroutineCount ? [] : null;
         int additionalCoroutinesStartIndex = 0;
         while (coroutines.Count > coroutineCount)
         {
@@ -60,19 +56,20 @@ public class MultiTickCoroutineManager : GameComponent
             int newCoroutineCount = coroutines.Count - coroutineCount;
             Logger.LogDebug($"Running additional {newCoroutineCount} coroutines", "Coroutines");
 
-            additionallyFinishedCoroutines!.AddRange(
-                Enumerable.Repeat(false, newCoroutineCount));
+            additionallyFinishedCoroutines!.AddRange(Enumerable.Repeat(false, newCoroutineCount));
             Span<bool> additionallyFinishedCoroutinesSpan = additionallyFinishedCoroutines._items;
-            additionallyFinishedCoroutinesSpan =
-                additionallyFinishedCoroutinesSpan.Slice(
-                    additionalCoroutinesStartIndex, newCoroutineCount);
+            additionallyFinishedCoroutinesSpan = additionallyFinishedCoroutinesSpan.Slice(
+                additionalCoroutinesStartIndex,
+                newCoroutineCount
+            );
 
             RunCoroutines(
                 coroutines,
                 coroutineCount,
                 coroutines.Count,
                 additionallyFinishedCoroutinesSpan,
-                ref anyFinished);
+                ref anyFinished
+            );
 
             additionalCoroutinesStartIndex += newCoroutineCount;
             coroutineCount += newCoroutineCount;
@@ -86,8 +83,10 @@ public class MultiTickCoroutineManager : GameComponent
                 if (finishedCoroutines[i])
                 {
                     Logger.LogDebug(
-                        $"Removing coroutine {coroutines[i].DebugHandle} " +
-                        "as it reported being finished", "Coroutines");
+                        $"Removing coroutine {coroutines[i].DebugHandle} "
+                            + "as it reported being finished",
+                        "Coroutines"
+                    );
                     coroutines.RemoveAt(i);
                     additionalCoroutinesStartIndex--;
                 }
@@ -102,8 +101,10 @@ public class MultiTickCoroutineManager : GameComponent
                         int coroutineIndex = additionalCoroutinesStartIndex + i;
 
                         Logger.LogDebug(
-                            $"Removing coroutine {coroutines[coroutineIndex].DebugHandle} " +
-                            "as it reported being finished", "Coroutines");
+                            $"Removing coroutine {coroutines[coroutineIndex].DebugHandle} "
+                                + "as it reported being finished",
+                            "Coroutines"
+                        );
                         coroutines.RemoveAt(coroutineIndex);
                     }
                 }
@@ -115,14 +116,17 @@ public class MultiTickCoroutineManager : GameComponent
             int start,
             int end,
             Span<bool> finishedCoroutines,
-            ref bool anyFinished)
+            ref bool anyFinished
+        )
         {
             for (int i = start; i < end; i++)
             {
                 var coroutine = coroutines[i];
 
-                Logger.LogDebug($"Checking if we should run coroutine {coroutine.DebugHandle}...",
-                    "Coroutines");
+                Logger.LogDebug(
+                    $"Checking if we should run coroutine {coroutine.DebugHandle}...",
+                    "Coroutines"
+                );
                 if (coroutine.ShouldRun())
                 {
                     Logger.LogDebug($"...YES! Resuming!", "Coroutines");
@@ -143,7 +147,8 @@ public class MultiTickCoroutineManager : GameComponent
         IEnumerable<IResumeCondition> coroutine,
         Action? coroutineFinishedCallback = null,
         Action<Exception>? coroutineFailedCallback = null,
-        string? debugHandle = null)
+        string? debugHandle = null
+    )
     {
         if (coroutine == null)
         {
@@ -158,28 +163,34 @@ public class MultiTickCoroutineManager : GameComponent
             currentlyRunningCoroutine,
             debugHandle,
             coroutineFinishedCallback,
-            coroutineFailedCallback);
-        Logger.LogDebug($"Adding CoroutineHandle for {debugHandle} to MultiTickCoroutineManager",
-            "Coroutines");
+            coroutineFailedCallback
+        );
+        Logger.LogDebug(
+            $"Adding CoroutineHandle for {debugHandle} to MultiTickCoroutineManager",
+            "Coroutines"
+        );
         Current.Game.GetComponent<MultiTickCoroutineManager>()._coroutines.Add(handle);
         return handle;
     }
 
     private static readonly List<CoroutineHandle> immediateCompletionList = [];
-    public static void RunCoroutineImmediatelyToCompletion(
-        IEnumerable<IResumeCondition> coroutine)
+
+    public static void RunCoroutineImmediatelyToCompletion(IEnumerable<IResumeCondition> coroutine)
     {
         if (coroutine == null)
         {
             throw new ArgumentNullException(nameof(coroutine));
         }
 
-        immediateCompletionList.Add(new(
-            coroutine.GetEnumerator(),
-            null,
-            $"Immediate({coroutine.GetHashCode()})",
-            null,
-            null));
+        immediateCompletionList.Add(
+            new(
+                coroutine.GetEnumerator(),
+                null,
+                $"Immediate({coroutine.GetHashCode()})",
+                null,
+                null
+            )
+        );
 
         while (immediateCompletionList.Count > 0)
         {
@@ -187,6 +198,7 @@ public class MultiTickCoroutineManager : GameComponent
         }
     }
 }
+
 public static class MultiTickCoroutineManagerExtensions
 {
     public static void RunImmediatelyToCompletion(this IEnumerable<IResumeCondition> coroutine)
@@ -203,13 +215,11 @@ public class CoroutineHandle
     private bool _isStarted;
 
     public bool IsStarted => _isStarted;
+
     [MemberNotNullWhen(false, nameof(_coroutine))]
     public bool IsCompleted
     {
-        get
-        {
-            return _coroutine == null;
-        }
+        get { return _coroutine == null; }
     }
 
     private CoroutineHandle? _parent;
@@ -231,7 +241,8 @@ public class CoroutineHandle
         CoroutineHandle? parent,
         string debugHandle,
         Action? coroutineFinishedCallback,
-        Action<Exception>? coroutineFailedCallback)
+        Action<Exception>? coroutineFailedCallback
+    )
     {
         _coroutine = coroutine;
         _parent = parent;
@@ -269,8 +280,9 @@ public class CoroutineHandle
     {
         if (IsCompleted)
         {
-            Logger.LogWarning($"Called Resume on coroutine {_debugHandle} " +
-                "after it already finished");
+            Logger.LogWarning(
+                $"Called Resume on coroutine {_debugHandle} " + "after it already finished"
+            );
             return;
         }
 
@@ -292,8 +304,10 @@ public class CoroutineHandle
 
         if (finished)
         {
-            Logger.LogDebug($"Cleaning up coroutine {_debugHandle} since it finished",
-                "Coroutines");
+            Logger.LogDebug(
+                $"Cleaning up coroutine {_debugHandle} since it finished",
+                "Coroutines"
+            );
             _coroutineFinishedCallback?.Invoke();
             Cleanup();
         }
@@ -341,6 +355,7 @@ public interface IResumeCondition
 public class ResumeImmediately : IResumeCondition
 {
     public static ResumeImmediately Singleton { get; } = new();
+
     public bool ShouldResume() => true;
 
     private ResumeImmediately() { }
@@ -352,6 +367,7 @@ public class ResumeImmediately : IResumeCondition
 public class ResumeAfterTicks(int ticksToWait) : IResumeCondition
 {
     private int _ticksLeft = ticksToWait;
+
     public bool ShouldResume()
     {
         return _ticksLeft-- == 0;
@@ -362,8 +378,7 @@ public class ResumeAfterTicks(int ticksToWait) : IResumeCondition
 /// Resumes the returning coroutine after the coroutine given by the provided handle has finished
 /// running.
 /// </summary>
-public class ResumeWhenOtherCoroutineIsCompleted(CoroutineHandle handle)
-    : IResumeCondition
+public class ResumeWhenOtherCoroutineIsCompleted(CoroutineHandle handle) : IResumeCondition
 {
     private readonly CoroutineHandle _handle = handle;
 
@@ -372,24 +387,29 @@ public class ResumeWhenOtherCoroutineIsCompleted(CoroutineHandle handle)
         return _handle.IsCompleted;
     }
 }
+
 public static class ResumeWhenOtherCoroutineIsCompletedExtensions
 {
     public static ResumeWhenOtherCoroutineIsCompleted ResumeWhenOtherCoroutineIsCompleted(
         this IEnumerable<IResumeCondition> coroutine,
         Action? coroutineFinishedCallback = null,
         Action<Exception>? coroutineFailedCallback = null,
-        string? debugHandle = null)
+        string? debugHandle = null
+    )
     {
-        return MultiTickCoroutineManager.StartCoroutine(
-            coroutine,
-            coroutineFinishedCallback,
-            coroutineFailedCallback,
-            debugHandle)
+        return MultiTickCoroutineManager
+            .StartCoroutine(
+                coroutine,
+                coroutineFinishedCallback,
+                coroutineFailedCallback,
+                debugHandle
+            )
             .ResumeWhenOtherCoroutineIsCompleted();
     }
 
     public static ResumeWhenOtherCoroutineIsCompleted ResumeWhenOtherCoroutineIsCompleted(
-        this CoroutineHandle coroutineHandle)
+        this CoroutineHandle coroutineHandle
+    )
     {
         return new ResumeWhenOtherCoroutineIsCompleted(coroutineHandle);
     }

@@ -4,8 +4,10 @@ public static class Utils
 {
     internal static void LogMissingInitialization(string problematicType)
     {
-        Logger.LogError($"{problematicType} is not properly initialized. " +
-            $"Is the {Constants.AssemblyName} library in use without the companion mod being active?");
+        Logger.LogError(
+            $"{problematicType} is not properly initialized. "
+                + $"Is the {Constants.AssemblyName} library in use without the companion mod being active?"
+        );
     }
 
     /// <summary>
@@ -20,7 +22,12 @@ public static class Utils
         return Mathf.CeilToInt((value + 1) / unit) * unit;
     }
 
-    public static string FormatCount(float value, string suffix, int threshold = 1000, string[]? unitSuffixes = null)
+    public static string FormatCount(
+        float value,
+        string suffix,
+        int threshold = 1000,
+        string[]? unitSuffixes = null
+    )
     {
         unitSuffixes ??= ["", "k", "M", "G"];
 

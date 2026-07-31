@@ -4,14 +4,18 @@ namespace ilyvion.Laboratory.Extensions;
 
 public static class ArrayPoolExtensions
 {
-    public static SelfReturningRent<T> RentWithSelfReturn<T>(this ArrayPool<T> arrayPool, int minimumLength)
+    public static SelfReturningRent<T> RentWithSelfReturn<T>(
+        this ArrayPool<T> arrayPool,
+        int minimumLength
+    )
     {
         return new SelfReturningRent<T>(arrayPool, minimumLength);
     }
 }
 
 public struct SelfReturningRent<T>(ArrayPool<T> arrayPool, int minimumLength)
-    : IDisposable, IEquatable<SelfReturningRent<T>>
+    : IDisposable,
+        IEquatable<SelfReturningRent<T>>
 {
     private readonly ArrayPool<T> arrayPool = arrayPool;
     private T[]? arr = arrayPool.Rent(minimumLength);
@@ -21,14 +25,8 @@ public struct SelfReturningRent<T>(ArrayPool<T> arrayPool, int minimumLength)
 
     public readonly T this[int index]
     {
-        get
-        {
-            return arr![index];
-        }
-        set
-        {
-            arr![index] = value;
-        }
+        get { return arr![index]; }
+        set { arr![index] = value; }
     }
 
     public void Dispose()

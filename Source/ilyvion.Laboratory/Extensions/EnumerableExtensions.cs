@@ -46,13 +46,12 @@ public static class EnumerableExtensions
     {
         var (min, max) = source.Aggregate(
             ((int?)null, (int?)null),
-            (acc, value) => (
-                acc.Item1.HasValue
-                    ? Mathf.Min(acc.Item1.Value, value)
-                    : value,
-                acc.Item2.HasValue
-                    ? Mathf.Max(acc.Item2.Value, value)
-                    : value));
+            (acc, value) =>
+                (
+                    acc.Item1.HasValue ? Mathf.Min(acc.Item1.Value, value) : value,
+                    acc.Item2.HasValue ? Mathf.Max(acc.Item2.Value, value) : value
+                )
+        );
 
         return (min ?? 0, max ?? 0);
     }

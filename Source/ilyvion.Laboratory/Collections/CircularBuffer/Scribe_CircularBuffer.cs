@@ -19,12 +19,21 @@ public static class Scribe_CircularBuffer
         }
     }
 
-    public static void Look<T>(ref CircularBuffer<T>? circularBuffer, string label, LookMode lookMode = LookMode.Undefined)
+    public static void Look<T>(
+        ref CircularBuffer<T>? circularBuffer,
+        string label,
+        LookMode lookMode = LookMode.Undefined
+    )
     {
         Look(ref circularBuffer, saveDestroyedThings: false, label, lookMode);
     }
 
-    public static void Look<T>(ref CircularBuffer<T>? circularBuffer, bool saveDestroyedThings, string label, LookMode lookMode = LookMode.Undefined)
+    public static void Look<T>(
+        ref CircularBuffer<T>? circularBuffer,
+        bool saveDestroyedThings,
+        string label,
+        LookMode lookMode = LookMode.Undefined
+    )
     {
         CircularBufferSerialized<T>? serialized = null;
         if (Scribe.mode == LoadSaveMode.Saving && circularBuffer != null)
@@ -32,11 +41,14 @@ public static class Scribe_CircularBuffer
             serialized = new CircularBufferSerialized<T>()
             {
                 capacity = circularBuffer.Capacity,
-                values = [.. circularBuffer]
+                values = [.. circularBuffer],
             };
         }
         Scribe_Deep.Look(ref serialized, saveDestroyedThings, label);
-        if ((lookMode != LookMode.Reference || Scribe.mode != LoadSaveMode.ResolvingCrossRefs) && (lookMode == LookMode.Reference || Scribe.mode != LoadSaveMode.LoadingVars))
+        if (
+            (lookMode != LookMode.Reference || Scribe.mode != LoadSaveMode.ResolvingCrossRefs)
+            && (lookMode == LookMode.Reference || Scribe.mode != LoadSaveMode.LoadingVars)
+        )
         {
             return;
         }

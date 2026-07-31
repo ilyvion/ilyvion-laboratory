@@ -13,6 +13,7 @@ public static class GUIScope
         public WidgetGroupScope(in Rect rect) => Widgets.BeginGroup(rect);
 
         private bool _disposed;
+
         public void Dispose()
         {
             if (!_disposed)
@@ -34,6 +35,7 @@ public static class GUIScope
         }
 
         private bool _disposed;
+
         public void Dispose()
         {
             if (!_disposed)
@@ -55,6 +57,7 @@ public static class GUIScope
         }
 
         private bool _disposed;
+
         public void Dispose()
         {
             if (!_disposed)
@@ -76,6 +79,7 @@ public static class GUIScope
         }
 
         private bool _disposed;
+
         public void Dispose()
         {
             if (!_disposed)
@@ -97,6 +101,7 @@ public static class GUIScope
         }
 
         private bool _disposed;
+
         public void Dispose()
         {
             if (!_disposed)
@@ -120,6 +125,7 @@ public static class GUIScope
         }
 
         private bool _disposed;
+
         public void Dispose()
         {
             if (!_disposed)
@@ -143,6 +149,7 @@ public static class GUIScope
         }
 
         private bool _disposed;
+
         public void Dispose()
         {
             if (!_disposed)
@@ -166,7 +173,8 @@ public static class GUIScope
             GameFont? gameFont,
             Color? color,
             bool? wordWrap,
-            TextAnchor? textAnchor)
+            TextAnchor? textAnchor
+        )
         {
             if (fontSize.HasValue)
             {
@@ -200,43 +208,38 @@ public static class GUIScope
         }
     }
 
-    public static IDisposable WidgetGroup(in Rect rect) =>
-        new WidgetGroupScope(rect);
+    public static IDisposable WidgetGroup(in Rect rect) => new WidgetGroupScope(rect);
 
     public static ScrollViewScope ScrollView(
         Rect outRect,
         ScrollViewStatus scrollViewStatus,
-        bool showScrollbars = true) =>
+        bool showScrollbars = true
+    ) =>
         new(
             outRect,
             scrollViewStatus ?? throw new ArgumentNullException(nameof(scrollViewStatus)),
-            showScrollbars);
+            showScrollbars
+        );
 
-    public static IDisposable TextAnchor(TextAnchor textAnchor) =>
-        new TextAnchorScope(textAnchor);
+    public static IDisposable TextAnchor(TextAnchor textAnchor) => new TextAnchorScope(textAnchor);
 
-    public static IDisposable WordWrap(bool wordWrap) =>
-        new WordWrapScope(wordWrap);
+    public static IDisposable WordWrap(bool wordWrap) => new WordWrapScope(wordWrap);
 
-    public static IDisposable Color(Color color) =>
-        new ColorScope(color);
+    public static IDisposable Color(Color color) => new ColorScope(color);
 
-    public static IDisposable Font(GameFont gameFont) =>
-        new FontScope(gameFont);
+    public static IDisposable Font(GameFont gameFont) => new FontScope(gameFont);
 
-    public static IDisposable FontSize(int fontSize) =>
-        new FontSizeScope(fontSize);
+    public static IDisposable FontSize(int fontSize) => new FontSizeScope(fontSize);
 
-    public static IDisposable FontStyle(FontStyle fontStyle) =>
-        new FontStyleScope(fontStyle);
+    public static IDisposable FontStyle(FontStyle fontStyle) => new FontStyleScope(fontStyle);
 
     public static IDisposable Multiple(
         int? fontSize = null,
         GameFont? gameFont = null,
         Color? color = null,
         bool? wordWrap = null,
-        TextAnchor? textAnchor = null)
-    => new MultiScope(fontSize, gameFont, color, wordWrap, textAnchor);
+        TextAnchor? textAnchor = null
+    ) => new MultiScope(fontSize, gameFont, color, wordWrap, textAnchor);
 }
 
 public class ScrollViewStatus
@@ -258,8 +261,8 @@ public readonly record struct ScrollViewScope : IDisposable
 
     public ScrollViewScope(Rect outRect, ScrollViewStatus scrollViewStatus, bool showScrollbars)
     {
-        _scrollViewStatus = scrollViewStatus
-            ?? throw new ArgumentNullException(nameof(scrollViewStatus));
+        _scrollViewStatus =
+            scrollViewStatus ?? throw new ArgumentNullException(nameof(scrollViewStatus));
         _outRectHeight = outRect.height;
         _viewRect = new(0f, 0f, outRect.width, Math.Max(Height, _outRectHeight));
         if (Height - 0.1f >= outRect.height)
@@ -271,7 +274,7 @@ public readonly record struct ScrollViewScope : IDisposable
 
     public void Dispose() => Widgets.EndScrollView();
 
-    public bool CanCull(float entryHeight, float entryY)
-        => entryY + entryHeight < _scrollViewStatus.Position.y
-            || entryY > _scrollViewStatus.Position.y + _outRectHeight;
+    public bool CanCull(float entryHeight, float entryY) =>
+        entryY + entryHeight < _scrollViewStatus.Position.y
+        || entryY > _scrollViewStatus.Position.y + _outRectHeight;
 }

@@ -10,8 +10,10 @@ public static class CodeInstructionsExtensions
     {
         return methodPredicate is null
             ? throw new ArgumentNullException(nameof(methodPredicate))
-            : ((code.opcode == OpCodes.Call || code.opcode == OpCodes.Callvirt)
+            : (
+                (code.opcode == OpCodes.Call || code.opcode == OpCodes.Callvirt)
                 && code.operand is MethodInfo methodInfo
-                && methodPredicate(methodInfo));
+                && methodPredicate(methodInfo)
+            );
     }
 }

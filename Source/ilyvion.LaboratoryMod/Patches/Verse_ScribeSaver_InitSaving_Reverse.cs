@@ -14,40 +14,69 @@ internal static class Verse_ScribeSaver_InitSaving_Reverse
     }
 
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-    private static readonly MethodInfo _method_LogException = SymbolExtensions.GetMethodInfo(() => LogException(default));
+    private static readonly MethodInfo _method_LogException = SymbolExtensions.GetMethodInfo(() =>
+        LogException(default)
+    );
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-    private static readonly FieldInfo _field_Scribe_Mode = AccessTools.Field(typeof(Scribe), "mode");
-    private static readonly FieldInfo _field_ScribeSaver_SaveStream = AccessTools.Field(typeof(ScribeSaver), "saveStream");
-    private static readonly MethodInfo _method_XmlwriterSettings_setIndent = AccessTools.PropertySetter(typeof(XmlWriterSettings), nameof(XmlWriterSettings.Indent));
+    private static readonly FieldInfo _field_Scribe_Mode = AccessTools.Field(
+        typeof(Scribe),
+        "mode"
+    );
+    private static readonly FieldInfo _field_ScribeSaver_SaveStream = AccessTools.Field(
+        typeof(ScribeSaver),
+        "saveStream"
+    );
+    private static readonly MethodInfo _method_XmlwriterSettings_setIndent =
+        AccessTools.PropertySetter(typeof(XmlWriterSettings), nameof(XmlWriterSettings.Indent));
 
     [HarmonyReversePatch]
     [HarmonyPatch(typeof(ScribeSaver), nameof(ScribeSaver.InitSaving))]
-    internal static void InitSavingWithCustomStream(ScribeSaver scribeLoader, Stream stream, string documentElementName, bool useIndentation)
+    internal static void InitSavingWithCustomStream(
+        ScribeSaver scribeLoader,
+        Stream stream,
+        string documentElementName,
+        bool useIndentation
+    )
     {
-        IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        IEnumerable<CodeInstruction> Transpiler(
+            IEnumerable<CodeInstruction> instructions,
+            ILGenerator generator
+        )
         {
             var codeMatcher = new CodeMatcher(instructions, generator);
 
             // Locate where Scribe.mode is assigned.
-            codeMatcher.SearchForward(i => i.opcode == OpCodes.Stsfld && i.operand is FieldInfo f && f == _field_Scribe_Mode);
+            codeMatcher.SearchForward(i =>
+                i.opcode == OpCodes.Stsfld && i.operand is FieldInfo f && f == _field_Scribe_Mode
+            );
             if (!codeMatcher.IsValid)
             {
-                Log.Error("Could not reverse patch ScribeSaver.InitSaving, IL does not match expectations: assignment of Scribe.mode not found.");
+                Log.Error(
+                    "Could not reverse patch ScribeSaver.InitSaving, IL does not match expectations: assignment of Scribe.mode not found."
+                );
                 return codeMatcher.Instructions();
             }
             codeMatcher.Advance(1);
             if (!codeMatcher.IsValid || codeMatcher.Instruction.opcode != OpCodes.Ldarg_1)
             {
-                Log.Error("Could not reverse patch ScribeSaver.InitSaving, IL does not match expectations: instantiation of FileStream not found [ldarg.1].");
+                Log.Error(
+                    "Could not reverse patch ScribeSaver.InitSaving, IL does not match expectations: instantiation of FileStream not found [ldarg.1]."
+                );
                 return codeMatcher.Instructions();
             }
             var fileStreamCreateStartPos = codeMatcher.Pos;
 
             // stfld indicates the end of the FileStream creation
-            codeMatcher.SearchForward(i => i.opcode == OpCodes.Stfld && i.operand is FieldInfo f && f == _field_ScribeSaver_SaveStream);
+            codeMatcher.SearchForward(i =>
+                i.opcode == OpCodes.Stfld
+                && i.operand is FieldInfo f
+                && f == _field_ScribeSaver_SaveStream
+            );
             if (!codeMatcher.IsValid)
             {
-                Log.Error("Could not reverse patch ScribeSaver.InitSaving, IL does not match expectations: instantiation of FileStream not found [stfld].");
+                Log.Error(
+                    "Could not reverse patch ScribeSaver.InitSaving, IL does not match expectations: instantiation of FileStream not found [stfld]."
+                );
                 return codeMatcher.Instructions();
             }
             codeMatcher.Advance(-1);
@@ -71,16 +100,24 @@ internal static class Verse_ScribeSaver_InitSaving_Reverse
             codeMatcher.SearchForward(i => i.opcode == OpCodes.Ldloc_1);
             if (!codeMatcher.IsValid)
             {
-                Log.Error("Could not reverse patch ScribeSaver.InitSaving, IL does not match expectations: setting XmlWriterSettings fields not found [ldloc.1].");
+                Log.Error(
+                    "Could not reverse patch ScribeSaver.InitSaving, IL does not match expectations: setting XmlWriterSettings fields not found [ldloc.1]."
+                );
                 return codeMatcher.Instructions();
             }
             var setXmlWriterSetIndentStartPos = codeMatcher.Pos;
             codeMatcher.CreateLabel(out var xmlWriterSetIndentLabel);
 
-            codeMatcher.SearchForward(i => i.opcode == OpCodes.Callvirt && i.operand is MethodInfo m && m == _method_XmlwriterSettings_setIndent);
+            codeMatcher.SearchForward(i =>
+                i.opcode == OpCodes.Callvirt
+                && i.operand is MethodInfo m
+                && m == _method_XmlwriterSettings_setIndent
+            );
             if (!codeMatcher.IsValid)
             {
-                Log.Error("Could not reverse patch ScribeSaver.InitSaving, IL does not match expectations: setting XmlWriterSettings fields not found [callvirt].");
+                Log.Error(
+                    "Could not reverse patch ScribeSaver.InitSaving, IL does not match expectations: setting XmlWriterSettings fields not found [callvirt]."
+                );
                 return codeMatcher.Instructions();
             }
             codeMatcher.Advance(1);
@@ -95,7 +132,7 @@ internal static class Verse_ScribeSaver_InitSaving_Reverse
                 new(OpCodes.Brtrue_S, xmlWriterSetIndentLabel),
                 // } else {
                 //     <skip old code>
-                new(OpCodes.Br_S, xmlWriterIndentCharsLabel)
+                new(OpCodes.Br_S, xmlWriterIndentCharsLabel),
                 // }
             ]);
 
@@ -103,7 +140,9 @@ internal static class Verse_ScribeSaver_InitSaving_Reverse
             codeMatcher.SearchForward(i => i.opcode == OpCodes.Stloc_2);
             if (!codeMatcher.IsValid)
             {
-                Log.Error("Could not reverse patch ScribeSaver.InitSaving, IL does not match expectations: storing of Exception not found [stloc.2].");
+                Log.Error(
+                    "Could not reverse patch ScribeSaver.InitSaving, IL does not match expectations: storing of Exception not found [stloc.2]."
+                );
                 return codeMatcher.Instructions();
             }
 
@@ -113,7 +152,9 @@ internal static class Verse_ScribeSaver_InitSaving_Reverse
             codeMatcher.SearchForward(i => i.opcode == OpCodes.Ldarg_0);
             if (!codeMatcher.IsValid)
             {
-                Log.Error("Could not reverse patch ScribeLoader.InitLoading, IL does not match expectations: accessing this not found after storing Exception [ldarg.0].");
+                Log.Error(
+                    "Could not reverse patch ScribeLoader.InitLoading, IL does not match expectations: accessing this not found after storing Exception [ldarg.0]."
+                );
                 return codeMatcher.Instructions();
             }
             codeMatcher.Advance(-1);
@@ -125,10 +166,7 @@ internal static class Verse_ScribeSaver_InitSaving_Reverse
             // Insert our own Log.Error message
             codeMatcher.Start();
             codeMatcher.Advance(logErrorStartPosition);
-            codeMatcher.Insert([
-                new(OpCodes.Ldloc_2),
-                new(OpCodes.Call, _method_LogException),
-            ]);
+            codeMatcher.Insert([new(OpCodes.Ldloc_2), new(OpCodes.Call, _method_LogException)]);
 
             return codeMatcher.Instructions();
         }

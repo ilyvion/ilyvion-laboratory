@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
         <RootNamespace>ilyvion.LaboratoryMod</RootNamespace>
         <AssemblyName>ilyvion.LaboratoryMod</AssemblyName>
@@ -13,5 +12,4 @@
         <Publicize Include="Assembly-CSharp:Verse.XmlInheritance+XmlInheritanceNode" />
         <Publicize Include="Assembly-CSharp:Verse.XmlInheritance.unresolvedNodes" />
     </ItemGroup>
-
 </Project>

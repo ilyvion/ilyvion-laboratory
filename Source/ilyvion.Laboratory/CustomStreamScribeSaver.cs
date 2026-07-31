@@ -8,7 +8,11 @@ public static class CustomStreamScribeSaver
     /// Lets you do the equivalent of Scribe.saver.InitSaving() but with a custom
     /// Stream as the target instead of a file path.
     /// </summary>
-    public static void InitSaving(Stream saveStream, string documentElementName, bool useIndentation = true)
+    public static void InitSaving(
+        Stream saveStream,
+        string documentElementName,
+        bool useIndentation = true
+    )
     {
         if (initSavingWithCustomStream == null)
         {

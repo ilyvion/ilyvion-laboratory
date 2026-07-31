@@ -42,10 +42,8 @@ public class GraphRenderer(GraphSeries[] series)
     public Texture2D MouseOverIndicatorTexture { get; set; } = Resources.GraphDot;
 
     private float yAxisLabelsMaxWidth;
-    public void DrawGraph(
-        in Rect rect,
-        in int[][] data,
-        in int[]?[]? targetData)
+
+    public void DrawGraph(in Rect rect, in int[][] data, in int[]?[]? targetData)
     {
         if (data == null)
         {
@@ -64,7 +62,8 @@ public class GraphRenderer(GraphSeries[] series)
             Widgets.DrawRectFast(plotRect, BackgroundColour);
             using var _m = GUIScope.Multiple(
                 textAnchor: TextAnchor.MiddleCenter,
-                color: Color.grey);
+                color: Color.grey
+            );
             Widgets.Label(rect, NoDataLabel);
             return;
         }
@@ -72,22 +71,31 @@ public class GraphRenderer(GraphSeries[] series)
         var entries = data[0].Length;
         if (MaxEntries.HasValue && entries > MaxEntries.Value)
         {
-            throw new GraphException($"{nameof(data)} has more entries ({entries}) than {nameof(MaxEntries)} allows ({MaxEntries})");
+            throw new GraphException(
+                $"{nameof(data)} has more entries ({entries}) than {nameof(MaxEntries)} allows ({MaxEntries})"
+            );
         }
 
-#pragma warning disable CA1062 
+#pragma warning disable CA1062
         if (DrawTargetLine && targetData!.Length != data.Length)
         {
-            throw new GraphException($"{nameof(data)}'s length must match {nameof(targetData)}'s length");
+            throw new GraphException(
+                $"{nameof(data)}'s length must match {nameof(targetData)}'s length"
+            );
         }
-#pragma warning restore CA1062 
+#pragma warning restore CA1062
 
-        var visibleSeries = Series.Where(s => !s.Hidden).Select((series, index) => (index, series, shown: ShownSeries[index])).ToArray();
+        var visibleSeries = Series
+            .Where(s => !s.Hidden)
+            .Select((series, index) => (index, series, shown: ShownSeries[index]))
+            .ToArray();
         var visibleIndexes = visibleSeries.Select(s => s.index).ToArray();
 
         if (visibleSeries.Length != data.Length)
         {
-            throw new GraphException($"{nameof(data)}'s length must match the number of non-hidden {nameof(Series)}");
+            throw new GraphException(
+                $"{nameof(data)}'s length must match the number of non-hidden {nameof(Series)}"
+            );
         }
 
         if (MaxEntries.HasValue)
@@ -122,7 +130,8 @@ public class GraphRenderer(GraphSeries[] series)
                     Widgets.DrawLineHorizontal(
                         legendRect.x,
                         legendRect.y + rowHeight / 2f,
-                        LegendLineLength);
+                        LegendLineLength
+                    );
 
                     legendRect.xMin += LegendLineLength + Spacing;
                     legendRect.y += 1f;
@@ -137,11 +146,12 @@ public class GraphRenderer(GraphSeries[] series)
 
                 if (Interactive)
                 {
-                    var tooltip = "ilyvion.Laboratory.Graph.ClickToEnable"
-                        .Translate(isShown
+                    var tooltip = "ilyvion.Laboratory.Graph.ClickToEnable".Translate(
+                        isShown
                             ? "ilyvion.Laboratory.Graph.Hide".Translate()
                             : "ilyvion.Laboratory.Graph.Show".Translate(),
-                            series.Label.UncapitalizeFirst());
+                        series.Label.UncapitalizeFirst()
+                    );
                     TooltipHandler.TipRegion(legendRect, tooltip);
                     Widgets.DrawHighlightIfMouseover(legendRect);
                     if (Widgets.ButtonInvisible(legendRect))
@@ -169,7 +179,10 @@ public class GraphRenderer(GraphSeries[] series)
         using var plotGroup = GUIScope.WidgetGroup(plotRect);
         plotRect = plotRect.AtZero();
 
-        var shownSeries = visibleSeries.Where((_, i) => visibleSeries[i].shown).Select(s => s.series).ToArray();
+        var shownSeries = visibleSeries
+            .Where((_, i) => visibleSeries[i].shown)
+            .Select(s => s.series)
+            .ToArray();
         var shownData = data.Where((_, i) => visibleSeries[i].shown).ToArray();
         var shownTargetData = targetData.Where((_, i) => visibleSeries[i].shown).ToArray();
 
@@ -181,7 +194,9 @@ public class GraphRenderer(GraphSeries[] series)
         int max;
         if (DrawTargetLine)
         {
-            max = Utils.CeilToPrecision(shownData.Concat(shownTargetData.Where(t => t != null)).Max(s => s.Max()));
+            max = Utils.CeilToPrecision(
+                shownData.Concat(shownTargetData.Where(t => t != null)).Max(s => s.Max())
+            );
         }
         else
         {
@@ -227,20 +242,38 @@ public class GraphRenderer(GraphSeries[] series)
                 labelMaxWidth = Math.Max(labelMaxWidth, Text.CalcSize(label).x);
                 if (i != 0)
                 {
-                    Widgets.DrawLineHorizontal(yAxisLabelsMaxWidth + Spacing, plotRect.height - i * breakUnit + legendRect.yMax + Spacing, Spacing);
+                    Widgets.DrawLineHorizontal(
+                        yAxisLabelsMaxWidth + Spacing,
+                        plotRect.height - i * breakUnit + legendRect.yMax + Spacing,
+                        Spacing
+                    );
                 }
                 else
                 {
-                    Widgets.DrawLineHorizontal(yAxisLabelsMaxWidth + Spacing, plotRect.height - i * breakUnit + legendRect.yMax + Spacing - 1f, Spacing);
+                    Widgets.DrawLineHorizontal(
+                        yAxisLabelsMaxWidth + Spacing,
+                        plotRect.height - i * breakUnit + legendRect.yMax + Spacing - 1f,
+                        Spacing
+                    );
                 }
                 Rect labRect;
                 if (i != 0)
                 {
-                    labRect = new Rect(0f, plotRect.height - i * breakUnit - 4f + legendRect.yMax + Spacing, yAxisLabelsMaxWidth, 20f);
+                    labRect = new Rect(
+                        0f,
+                        plotRect.height - i * breakUnit - 4f + legendRect.yMax + Spacing,
+                        yAxisLabelsMaxWidth,
+                        20f
+                    );
                 }
                 else
                 {
-                    labRect = new Rect(0f, plotRect.height - i * breakUnit - 6f + legendRect.yMax, yAxisLabelsMaxWidth, 20f);
+                    labRect = new Rect(
+                        0f,
+                        plotRect.height - i * breakUnit - 6f + legendRect.yMax,
+                        yAxisLabelsMaxWidth,
+                        20f
+                    );
                 }
 
                 Widgets.Label(labRect, label);
@@ -254,15 +287,20 @@ public class GraphRenderer(GraphSeries[] series)
         int[] data,
         Rect canvas,
         float widthUnit,
-        float heightUnit)
+        float heightUnit
+    )
     {
         if (data.Length > 1)
         {
             Vector2? lastEnd = null;
             for (var i = 0; i < data.Length - 1; i++) // line segments, so up till n-1
             {
-                var start = lastEnd ?? new Vector2(widthUnit * i, canvas.height - heightUnit * data[i]);
-                var end = new Vector2(Mathf.Round(widthUnit * (i + 1)), Mathf.Round(canvas.height - heightUnit * data[i + 1]));
+                var start =
+                    lastEnd ?? new Vector2(widthUnit * i, canvas.height - heightUnit * data[i]);
+                var end = new Vector2(
+                    Mathf.Round(widthUnit * (i + 1)),
+                    Mathf.Round(canvas.height - heightUnit * data[i + 1])
+                );
                 Widgets.DrawLine(start, end, series.Color, 1f);
 
                 lastEnd = end;
@@ -275,7 +313,8 @@ public class GraphRenderer(GraphSeries[] series)
         int[] targetData,
         Rect canvas,
         float widthUnit,
-        float heightUnit)
+        float heightUnit
+    )
     {
         int? currentValue = null;
         int? currentValueStartIndex = null;
@@ -293,10 +332,12 @@ public class GraphRenderer(GraphSeries[] series)
                 {
                     var start = new Vector2(
                         widthUnit * currentValueStartIndex!.Value,
-                        canvas.height - heightUnit * currentValue!.Value);
+                        canvas.height - heightUnit * currentValue!.Value
+                    );
                     var end = new Vector2(
                         widthUnit * (i) - 1,
-                        canvas.height - heightUnit * currentValue!.Value);
+                        canvas.height - heightUnit * currentValue!.Value
+                    );
 
                     IlyvionWidgets.DrawDashedLine(start, end, 10f, series.MutedColor, 1.5f);
 
@@ -313,21 +354,34 @@ public class GraphRenderer(GraphSeries[] series)
         int[][] shownData,
         int[]?[] shownTargetData,
         float widthUnit,
-        float heightUnit)
+        float heightUnit
+    )
     {
         var mousePosition = Event.current.mousePosition;
-        var unitPosition = new Vector2(mousePosition.x / widthUnit, (plot.height - mousePosition.y) / heightUnit);
+        var unitPosition = new Vector2(
+            mousePosition.x / widthUnit,
+            (plot.height - mousePosition.y) / heightUnit
+        );
 
         int unitXPosition = (int)Mathf.Round(unitPosition.x);
 
         var distances = shownData
             .Where(data => unitXPosition < data.Length)
             .Select(data => Math.Abs(data[unitXPosition] - unitPosition.y))
-            .Concat(DrawTargetLine
-                ? shownTargetData
-                    .Where(target => unitXPosition < (target?.Length ?? shownData.Max(d => d.Length)))
-                    .Select(target => Math.Abs((target != null ? target[unitXPosition] : short.MaxValue) - unitPosition.y))
-                : [])
+            .Concat(
+                DrawTargetLine
+                    ? shownTargetData
+                        .Where(target =>
+                            unitXPosition < (target?.Length ?? shownData.Max(d => d.Length))
+                        )
+                        .Select(target =>
+                            Math.Abs(
+                                (target != null ? target[unitXPosition] : short.MaxValue)
+                                    - unitPosition.y
+                            )
+                        )
+                    : []
+            )
             .ToArray();
 
         // get the minimum index
@@ -335,7 +389,10 @@ public class GraphRenderer(GraphSeries[] series)
         var minIndex = 0;
         for (var i = distances.Length - 1; i >= 0; i--)
         {
-            if (distances[i] < min && (i < shownData.Length || shownTargetData[i % shownData.Length] != null))
+            if (
+                distances[i] < min
+                && (i < shownData.Length || shownTargetData[i % shownData.Length] != null)
+            )
             {
                 minIndex = i;
                 min = distances[i];
@@ -350,19 +407,19 @@ public class GraphRenderer(GraphSeries[] series)
 
         if (unitXPosition < closestData.Length)
         {
-            var valueAt = useValue
-                ? closestData[unitXPosition]
-                : closestTargetData![unitXPosition];
+            var valueAt = useValue ? closestData[unitXPosition] : closestTargetData![unitXPosition];
             var realpos = new Vector2(
                 unitXPosition * widthUnit,
-                plot.height - Math.Max(0, valueAt) * heightUnit);
+                plot.height - Math.Max(0, valueAt) * heightUnit
+            );
             var mouseOverIndicatorWidth = MouseOverIndicatorTexture.width;
             var mouseOverIndicatorHeight = MouseOverIndicatorTexture.height;
             var mouseOverIndicatorRect = new Rect(
                 realpos.x - mouseOverIndicatorWidth / 2f,
                 realpos.y - mouseOverIndicatorHeight / 2f,
                 mouseOverIndicatorWidth,
-                mouseOverIndicatorHeight);
+                mouseOverIndicatorHeight
+            );
 
             var distance = (realpos - mousePosition).magnitude;
 
@@ -372,7 +429,8 @@ public class GraphRenderer(GraphSeries[] series)
                     mousePosition.x - Resources.GraphDot.width / 2f,
                     mousePosition.y - Resources.GraphDot.height / 2f,
                     Resources.GraphDot.width,
-                    Resources.GraphDot.height);
+                    Resources.GraphDot.height
+                );
                 GUI.DrawTexture(mousePosRect, Resources.GraphDot);
 
                 var labelRect = new Rect()
@@ -380,7 +438,7 @@ public class GraphRenderer(GraphSeries[] series)
                     x = mousePosRect.xMax,
                     y = mousePosRect.yMax + 10f,
                     width = plot.width,
-                    height = 2 * Text.LineHeight
+                    height = 2 * Text.LineHeight,
                 };
                 Widgets.Label(labelRect, "" + unitPosition + "\n" + distance);
 
@@ -398,12 +456,21 @@ public class GraphRenderer(GraphSeries[] series)
                 var tip = useValue
                     ? "ilyvion.Laboratory.Graph.ValueTooltip".Translate(
                         closestSeries.Label,
-                        Utils.FormatCount(closestData[unitXPosition], closestSeries.UnitLabel ?? YAxisUnitLabel))
+                        Utils.FormatCount(
+                            closestData[unitXPosition],
+                            closestSeries.UnitLabel ?? YAxisUnitLabel
+                        )
+                    )
                     : "ilyvion.Laboratory.Graph.TargetTooltip".Translate(
                         closestSeries.Label,
-                        Utils.FormatCount(closestTargetData![unitXPosition], closestSeries.UnitLabel ?? YAxisUnitLabel));
+                        Utils.FormatCount(
+                            closestTargetData![unitXPosition],
+                            closestSeries.UnitLabel ?? YAxisUnitLabel
+                        )
+                    );
                 var tipsize = Text.CalcSize(tip);
-                bool up = false, left = false;
+                bool up = false,
+                    left = false;
                 if (tippos.x + tipsize.x > plot.width)
                 {
                     left = true;
@@ -474,11 +541,18 @@ public class GraphSeries
 public class GraphException : Exception
 {
     public GraphException() { }
-    public GraphException(string message) : base(message) { }
-    public GraphException(string message, Exception inner) : base(message, inner) { }
+
+    public GraphException(string message)
+        : base(message) { }
+
+    public GraphException(string message, Exception inner)
+        : base(message, inner) { }
+
     protected GraphException(
         System.Runtime.Serialization.SerializationInfo info,
-        System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+        System.Runtime.Serialization.StreamingContext context
+    )
+        : base(info, context) { }
 }
 
 #if DEBUG
@@ -486,28 +560,11 @@ public class GraphException : Exception
 internal class GraphTest_Dialog : Window
 {
     private readonly GraphRenderer _emptyGraphRenderer = new([]);
-    private readonly GraphRenderer _singleGraphRenderer = new([
-        new()
-        {
-            Label = "Series 1"
-        }
-    ]);
+    private readonly GraphRenderer _singleGraphRenderer = new([new() { Label = "Series 1" }]);
     private readonly GraphRenderer _multipleGraphRenderer = new([
-        new()
-        {
-            Label = "Series 1",
-            Color = ColorLibrary.BrickRed
-        },
-        new()
-        {
-            Label = "Series 2",
-            Color = ColorLibrary.Mustard
-        },
-        new()
-        {
-            Label = "Series 3",
-            Color = ColorLibrary.GrassGreen
-        }
+        new() { Label = "Series 1", Color = ColorLibrary.BrickRed },
+        new() { Label = "Series 2", Color = ColorLibrary.Mustard },
+        new() { Label = "Series 3", Color = ColorLibrary.GrassGreen },
     ])
     {
         DrawTargetLine = true,
@@ -519,16 +576,8 @@ internal class GraphTest_Dialog : Window
             Color = ColorLibrary.BrickRed,
             Hidden = true,
         },
-        new()
-        {
-            Label = "Series 2",
-            Color = ColorLibrary.Mustard
-        },
-        new()
-        {
-            Label = "Series 3",
-            Color = ColorLibrary.GrassGreen
-        }
+        new() { Label = "Series 2", Color = ColorLibrary.Mustard },
+        new() { Label = "Series 3", Color = ColorLibrary.GrassGreen },
     ])
     {
         DrawTargetLine = true,
@@ -537,60 +586,79 @@ internal class GraphTest_Dialog : Window
     public override Vector2 InitialSize => new(1024, 768);
 
     private int _currentTab;
+
     public override void DoWindowContents(Rect inRect)
     {
-        var listing = new Listing_Standard
-        {
-            ColumnWidth = (int)(inRect.width / 3.2)
-        };
+        var listing = new Listing_Standard { ColumnWidth = (int)(inRect.width / 3.2) };
 
         listing.Begin(inRect);
 
         DoSetting(
             g => g.DrawInlineLegend,
             (g, v) => g.DrawInlineLegend = v,
-            (ref bool r) => listing.CheckboxLabeled("Draw inline legend", ref r));
+            (ref bool r) => listing.CheckboxLabeled("Draw inline legend", ref r)
+        );
 
         DoSetting(
             g => g.LegendLineLength,
             (g, v) => g.LegendLineLength = v,
-            (ref float r) => r = listing.SliderLabeled("Legend line length", r, 1, inRect.width / 3));
+            (ref float r) => r = listing.SliderLabeled("Legend line length", r, 1, inRect.width / 3)
+        );
 
         listing.NewColumn();
 
         DoSetting(
             g => g.DrawTargetLine,
             (g, v) => g.DrawTargetLine = v,
-            (ref bool r) => listing.CheckboxLabeled("Draw target line", ref r));
+            (ref bool r) => listing.CheckboxLabeled("Draw target line", ref r)
+        );
 
         listing.NewColumn();
 
         DoSetting(
             g => g.Interactive,
             (g, v) => g.Interactive = v,
-            (ref bool r) => listing.CheckboxLabeled("Interactive", ref r));
+            (ref bool r) => listing.CheckboxLabeled("Interactive", ref r)
+        );
 
         listing.End();
 
         inRect.yMin += 32f + listing.MaxColumnHeightSeen;
 
-        var tabs = new List<Verse.TabRecord>() {
-            new("Empty", () =>
-            {
-                _currentTab = 0;
-            }, _currentTab == 0),
-            new("Single", () =>
-            {
-                _currentTab = 1;
-            }, _currentTab == 1),
-            new("Multiple", () =>
-            {
-                _currentTab = 2;
-            }, _currentTab == 2),
-            new("Multiple (w/Hidden)", () =>
-            {
-                _currentTab = 3;
-            }, _currentTab == 3)
+        var tabs = new List<Verse.TabRecord>()
+        {
+            new(
+                "Empty",
+                () =>
+                {
+                    _currentTab = 0;
+                },
+                _currentTab == 0
+            ),
+            new(
+                "Single",
+                () =>
+                {
+                    _currentTab = 1;
+                },
+                _currentTab == 1
+            ),
+            new(
+                "Multiple",
+                () =>
+                {
+                    _currentTab = 2;
+                },
+                _currentTab == 2
+            ),
+            new(
+                "Multiple (w/Hidden)",
+                () =>
+                {
+                    _currentTab = 3;
+                },
+                _currentTab == 3
+            ),
         };
         Widgets.DrawMenuSection(inRect);
         TabDrawer.DrawTabs(inRect, tabs);
@@ -601,38 +669,53 @@ internal class GraphTest_Dialog : Window
                 break;
 
             case 1:
-                _singleGraphRenderer.DrawGraph(inRect, [[2, 4, 6, 8]], [[5, 5, 5, 5]]);
+                _singleGraphRenderer.DrawGraph(
+                    inRect,
+                    [
+                        [2, 4, 6, 8],
+                    ],
+                    [
+                        [5, 5, 5, 5],
+                    ]
+                );
                 break;
 
             case 2:
-                _multipleGraphRenderer.DrawGraph(inRect, [
-                    [2, 4, 6, 8],
-                    [1, 2, 3, 4],
-                    [5, 15, 2, 7]
-                ], [
-                    [10, 10, 10, 10],
-                    null,
-                    [8, 20, 8, 8]
-                ]);
+                _multipleGraphRenderer.DrawGraph(
+                    inRect,
+                    [
+                        [2, 4, 6, 8],
+                        [1, 2, 3, 4],
+                        [5, 15, 2, 7],
+                    ],
+                    [
+                        [10, 10, 10, 10],
+                        null,
+                        [8, 20, 8, 8],
+                    ]
+                );
                 break;
 
             case 3:
-                _multipleWithHiddenGraphRenderer.DrawGraph(inRect, [
-                    [1, 2, 3, 4],
-                    [5, 15, 2, 7]
-                ], [
-                    null,
-                    [8, 20, 8, 8]
-                ]);
+                _multipleWithHiddenGraphRenderer.DrawGraph(
+                    inRect,
+                    [
+                        [1, 2, 3, 4],
+                        [5, 15, 2, 7],
+                    ],
+                    [null, [8, 20, 8, 8]]
+                );
                 break;
         }
     }
 
     private delegate void ModifyValue<T>(ref T value);
+
     private void DoSetting<T>(
         Func<GraphRenderer, T> getValue,
         Action<GraphRenderer, T> setValue,
-        ModifyValue<T> modifyValue)
+        ModifyValue<T> modifyValue
+    )
     {
         var value = getValue(_emptyGraphRenderer);
         modifyValue(ref value);
@@ -648,11 +731,11 @@ internal static class GraphTestDebugAction
     [IlyvionDebugAction(
         IlyvionDebugActionAttribute.IlyvionLaboratoryCategory,
         "Show graph test dialog",
-        allowedGameStates = AllowedGameStates.Playing)]
+        allowedGameStates = AllowedGameStates.Playing
+    )]
     private static void ShowGraphTestDialog()
     {
         Find.WindowStack.Add(new GraphTest_Dialog());
     }
-
 }
 #endif

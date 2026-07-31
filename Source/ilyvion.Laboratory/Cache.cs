@@ -102,14 +102,17 @@ public class CachedValue<T>
             }
 
             throw new InvalidOperationException(
-                "get_Value() on a CachedValue that is out of date, and has no updater.");
+                "get_Value() on a CachedValue that is out of date, and has no updater."
+            );
         }
     }
 
     public bool TryGetValue([NotNullWhen(true)] out T? value)
     {
-        if (_lastUpdateTick.HasValue &&
-            Find.TickManager.TicksGame - _lastUpdateTick.Value <= _updateInterval)
+        if (
+            _lastUpdateTick.HasValue
+            && Find.TickManager.TicksGame - _lastUpdateTick.Value <= _updateInterval
+        )
         {
             value = _cached ?? throw new InvalidOperationException("_cached was null");
             return true;
@@ -138,7 +141,8 @@ public class CachedValue<T>
         return _updater != null
             ? Update(_updater())
             : throw new InvalidOperationException(
-                $"Calling {nameof(Update)}() on a {nameof(CachedValue<T>)} without an updater");
+                $"Calling {nameof(Update)}() on a {nameof(CachedValue<T>)} without an updater"
+            );
     }
 
     public void Invalidate()
@@ -157,10 +161,11 @@ public class MultiTickCachedValue<T>
     private CoroutineHandle? _updaterCoroutineHandle;
 
     public MultiTickCachedValue(
-        T initial, Func<AnyBoxed<T?>,
-        IEnumerable<IResumeCondition>> updaterCoroutine,
+        T initial,
+        Func<AnyBoxed<T?>, IEnumerable<IResumeCondition>> updaterCoroutine,
         int updateInterval = 250,
-        bool allowNull = false)
+        bool allowNull = false
+    )
     {
         _cached = initial;
         _updaterCoroutine = updaterCoroutine;
@@ -175,15 +180,17 @@ public class MultiTickCachedValue<T>
     {
         if (_updaterCoroutineHandle == null)
         {
-            if (force || _lastUpdateTick == -1
-                || Find.TickManager.TicksGame - _lastUpdateTick > _updateInterval)
+            if (
+                force
+                || _lastUpdateTick == -1
+                || Find.TickManager.TicksGame - _lastUpdateTick > _updateInterval
+            )
             {
-                _updaterCoroutineHandle =
-                    MultiTickCoroutineManager.StartCoroutine(
-                        UpdateValueCoroutine(),
-                        () => _lastUpdateTick = Find.TickManager.TicksGame,
-                        debugHandle:
-                            $"{nameof(MultiTickCachedValue<T>)}.{nameof(UpdateValueCoroutine)}");
+                _updaterCoroutineHandle = MultiTickCoroutineManager.StartCoroutine(
+                    UpdateValueCoroutine(),
+                    () => _lastUpdateTick = Find.TickManager.TicksGame,
+                    debugHandle: $"{nameof(MultiTickCachedValue<T>)}.{nameof(UpdateValueCoroutine)}"
+                );
             }
         }
         return _updaterCoroutineHandle;
@@ -194,13 +201,13 @@ public class MultiTickCachedValue<T>
         using var _ = new DoOnDispose(() => _updaterCoroutineHandle = null);
 
         AnyBoxed<T?> newCount = new(default);
-        yield return _updaterCoroutine(newCount)
-            .ResumeWhenOtherCoroutineIsCompleted();
+        yield return _updaterCoroutine(newCount).ResumeWhenOtherCoroutineIsCompleted();
 
         if (newCount.Value == null && !_allowNull)
         {
-            throw new InvalidOperationException($"{nameof(MultiTickCachedValue<T>)}'s updater" +
-                "must return a non-null value");
+            throw new InvalidOperationException(
+                $"{nameof(MultiTickCachedValue<T>)}'s updater" + "must return a non-null value"
+            );
         }
 
         _cached = newCount.Value!;

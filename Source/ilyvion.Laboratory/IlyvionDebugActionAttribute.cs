@@ -9,16 +9,52 @@ public class IlyvionDebugActionAttribute : DebugActionAttribute
 {
     internal const string IlyvionLaboratoryCategory = "ilyvion's Laboratory";
 
-    public IlyvionDebugActionAttribute(string? category = null, string? name = null, bool requiresRoyalty = false, bool requiresIdeology = false, bool requiresBiotech = false, bool requiresAnomaly = false, bool requiresOdyssey = false, int displayPriority = 0, bool hideInSubMenu = false)
+    public IlyvionDebugActionAttribute(
+        string? category = null,
+        string? name = null,
+        bool requiresRoyalty = false,
+        bool requiresIdeology = false,
+        bool requiresBiotech = false,
+        bool requiresAnomaly = false,
+        bool requiresOdyssey = false,
+        int displayPriority = 0,
+        bool hideInSubMenu = false
+    )
 #if v1_3
-    : base(category, name, requiresRoyalty, requiresIdeology)
+        : base(category, name, requiresRoyalty, requiresIdeology)
 #elif v1_4
-    : base(category, name, requiresRoyalty, requiresIdeology, requiresBiotech, displayPriority, hideInSubMenu)
+        : base(
+            category,
+            name,
+            requiresRoyalty,
+            requiresIdeology,
+            requiresBiotech,
+            displayPriority,
+            hideInSubMenu
+        )
 #elif v1_5
-    : base(category, name, requiresRoyalty, requiresIdeology, requiresBiotech, requiresAnomaly, displayPriority, hideInSubMenu)
+        : base(
+            category,
+            name,
+            requiresRoyalty,
+            requiresIdeology,
+            requiresBiotech,
+            requiresAnomaly,
+            displayPriority,
+            hideInSubMenu
+        )
 #else
-    : base(category, name, requiresRoyalty, requiresIdeology, requiresBiotech, requiresAnomaly, requiresOdyssey, displayPriority, hideInSubMenu)
+        : base(
+            category,
+            name,
+            requiresRoyalty,
+            requiresIdeology,
+            requiresBiotech,
+            requiresAnomaly,
+            requiresOdyssey,
+            displayPriority,
+            hideInSubMenu
+        )
 #endif
-    {
-    }
+    { }
 }

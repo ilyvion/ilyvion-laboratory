@@ -17,7 +17,8 @@ internal static class Logger
         }
     }
 
-    static readonly string[] enabledDebugLogCategories = [
+    static readonly string[] enabledDebugLogCategories =
+    [
         //"Coroutines"
     ];
 

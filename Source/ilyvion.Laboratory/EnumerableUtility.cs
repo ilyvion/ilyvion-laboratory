@@ -61,7 +61,10 @@ public static class EnumerableUtility
     /// <returns>An <see cref="IEnumerable{TSource}"/> whose elements are sorted according to a key.</returns>
     /// <remarks>This method only sorts as much of <paramref name="source"/> as is required to yield the
     /// elements that are requested from the return value.</remarks>
-    public static IOrderedEnumerable<TSource> LazyOrderBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+    public static IOrderedEnumerable<TSource> LazyOrderBy<TSource, TKey>(
+        this IEnumerable<TSource> source,
+        Func<TSource, TKey> keySelector
+    )
     {
         return LazyOrderBy(source, keySelector, null, false);
     }
@@ -75,7 +78,11 @@ public static class EnumerableUtility
     /// <returns>An <see cref="IEnumerable{TSource}"/> whose elements are sorted according to a key.</returns>
     /// <remarks>This method only sorts as much of <paramref name="source"/> as is required to yield the
     /// elements that are requested from the return value.</remarks>
-    public static IOrderedEnumerable<TSource> LazyOrderBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector, IComparer<TKey> comparer)
+    public static IOrderedEnumerable<TSource> LazyOrderBy<TSource, TKey>(
+        this IEnumerable<TSource> source,
+        Func<TSource, TKey> keySelector,
+        IComparer<TKey> comparer
+    )
     {
         return LazyOrderBy(source, keySelector, comparer, false);
     }
@@ -88,7 +95,10 @@ public static class EnumerableUtility
     /// <returns>An <see cref="IEnumerable{TSource}"/> whose elements are sorted according to a key.</returns>
     /// <remarks>This method only sorts as much of <paramref name="source"/> as is required to yield the
     /// elements that are requested from the return value.</remarks>
-    public static IOrderedEnumerable<TSource> LazyOrderByDescending<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+    public static IOrderedEnumerable<TSource> LazyOrderByDescending<TSource, TKey>(
+        this IEnumerable<TSource> source,
+        Func<TSource, TKey> keySelector
+    )
     {
         return LazyOrderBy(source, keySelector, null, true);
     }
@@ -102,19 +112,36 @@ public static class EnumerableUtility
     /// <returns>An <see cref="IEnumerable{TSource}"/> whose elements are sorted according to a key.</returns>
     /// <remarks>This method only sorts as much of <paramref name="source"/> as is required to yield the
     /// elements that are requested from the return value.</remarks>
-    public static IOrderedEnumerable<TSource> LazyOrderByDescending<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector, IComparer<TKey> comparer)
+    public static IOrderedEnumerable<TSource> LazyOrderByDescending<TSource, TKey>(
+        this IEnumerable<TSource> source,
+        Func<TSource, TKey> keySelector,
+        IComparer<TKey> comparer
+    )
     {
         return LazyOrderBy(source, keySelector, comparer, true);
     }
 
-    private static OrderedEnumerable<TSource> LazyOrderBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector, IComparer<TKey>? comparer, bool descending)
+    private static OrderedEnumerable<TSource> LazyOrderBy<TSource, TKey>(
+        this IEnumerable<TSource> source,
+        Func<TSource, TKey> keySelector,
+        IComparer<TKey>? comparer,
+        bool descending
+    )
     {
         if (source == null)
             throw new ArgumentNullException(nameof(source));
         if (keySelector == null)
             throw new ArgumentNullException(nameof(keySelector));
 
-        return new OrderedEnumerable<TSource>(source, new ElementComparer<TSource, TKey>(keySelector, comparer ?? Comparer<TKey>.Default, descending, null));
+        return new OrderedEnumerable<TSource>(
+            source,
+            new ElementComparer<TSource, TKey>(
+                keySelector,
+                comparer ?? Comparer<TKey>.Default,
+                descending,
+                null
+            )
+        );
     }
 
     /// <summary>
@@ -147,7 +174,13 @@ public static class EnumerableUtility
     /// <remarks>This method returns zero if <paramref name="source"/> contains no elements.</remarks>
     public static int? NullableSum(this IEnumerable<int?> source)
     {
-        return source.Aggregate((int?)0, (sum, value) => { return checked(sum + value); });
+        return source.Aggregate(
+            (int?)0,
+            (sum, value) =>
+            {
+                return checked(sum + value);
+            }
+        );
     }
 
     /// <summary>
@@ -158,7 +191,13 @@ public static class EnumerableUtility
     /// <remarks>This method returns zero if <paramref name="source"/> contains no elements.</remarks>
     public static long? NullableSum(this IEnumerable<long?> source)
     {
-        return source.Aggregate((long?)0, (sum, value) => { return checked(sum + value); });
+        return source.Aggregate(
+            (long?)0,
+            (sum, value) =>
+            {
+                return checked(sum + value);
+            }
+        );
     }
 
     /// <summary>

@@ -15,12 +15,14 @@ public static class DebugActions
     )]
     private static void HotReloadLanguages()
     {
-        LongEventHandler.ExecuteWhenFinished(delegate
-        {
-            LanguageDatabase.Clear();
-            LanguageDatabase.InitAllMetadata();
-            GenLabel.ClearCache();
-        });
+        LongEventHandler.ExecuteWhenFinished(
+            delegate
+            {
+                LanguageDatabase.Clear();
+                LanguageDatabase.InitAllMetadata();
+                GenLabel.ClearCache();
+            }
+        );
     }
 
     [IlyvionDebugAction(

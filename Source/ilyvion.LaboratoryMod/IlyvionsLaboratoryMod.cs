@@ -1,4 +1,3 @@
-
 using System.Reflection;
 using ilyvion.Laboratory;
 
@@ -7,30 +6,32 @@ namespace ilyvion.LaboratoryMod;
 [System.Diagnostics.CodeAnalysis.SuppressMessage(
     "Microsoft.Performance",
     "CA1812:AvoidUninstantiatedInternalClasses",
-    Justification = "Class is instantiated via reflection")]
+    Justification = "Class is instantiated via reflection"
+)]
 internal sealed class IlyvionsLaboratoryMod : IlyvionMod
 {
 #pragma warning disable CS8618 // Set to non-null before it matters.
     internal static IlyvionsLaboratoryMod _mod;
 #pragma warning restore CS8618
 
-    public IlyvionsLaboratoryMod(ModContentPack content) : base(content)
+    public IlyvionsLaboratoryMod(ModContentPack content)
+        : base(content)
     {
         _mod = this;
 
         // Harmony.DEBUG = true;
 #if !v1_3 && !v1_4
-        new Harmony(Content.Name)
-            .PatchAllUncategorized(Assembly.GetExecutingAssembly());
+        new Harmony(Content.Name).PatchAllUncategorized(Assembly.GetExecutingAssembly());
 #else
-        new Harmony(Content.Name)
-            .PatchAll(Assembly.GetExecutingAssembly());
+        new Harmony(Content.Name).PatchAll(Assembly.GetExecutingAssembly());
 #endif
         // Harmony.DEBUG = false;
 
         // Inject reverse patch method pointers where they are needed
-        CustomStreamReaderScribeLoader.initLoadingWithCustomStreamReader = Verse_ScribeLoader_InitLoading_Reverse.InitLoadingWithCustomStreamReader;
-        CustomStreamScribeSaver.initSavingWithCustomStream = Verse_ScribeSaver_InitSaving_Reverse.InitSavingWithCustomStream;
+        CustomStreamReaderScribeLoader.initLoadingWithCustomStreamReader =
+            Verse_ScribeLoader_InitLoading_Reverse.InitLoadingWithCustomStreamReader;
+        CustomStreamScribeSaver.initSavingWithCustomStream =
+            Verse_ScribeSaver_InitSaving_Reverse.InitSavingWithCustomStream;
     }
 }
 
@@ -41,8 +42,10 @@ internal static class LatePatching
     static LatePatching()
     {
         // Harmony.DEBUG = true;
-        new Harmony(IlyvionsLaboratoryMod._mod.Content.Name)
-            .PatchCategory(Assembly.GetExecutingAssembly(), "Late");
+        new Harmony(IlyvionsLaboratoryMod._mod.Content.Name).PatchCategory(
+            Assembly.GetExecutingAssembly(),
+            "Late"
+        );
         // Harmony.DEBUG = false;
     }
 }
@@ -53,7 +56,8 @@ internal static class ResourceLoading
 {
     static ResourceLoading()
     {
-        Laboratory.Resources.GraphDot
-            = ContentFinder<Texture2D>.Get("UI/Icons/ilyvion.Laboratory.GraphDot");
+        Laboratory.Resources.GraphDot = ContentFinder<Texture2D>.Get(
+            "UI/Icons/ilyvion.Laboratory.GraphDot"
+        );
     }
 }

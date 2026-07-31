@@ -19,7 +19,9 @@ internal static class Verse_Text_CurTextAreaReadOnlyStyle
 
     private static bool Prefix(ref GUIStyle __result)
     {
-        GUIStyle? currentTextAreaReadOnlyStyle = CustomFontManager.Instance.CurrentTextAreaReadOnlyStyle;
+        GUIStyle? currentTextAreaReadOnlyStyle = CustomFontManager
+            .Instance
+            .CurrentTextAreaReadOnlyStyle;
         if (currentTextAreaReadOnlyStyle != null)
         {
             __result = currentTextAreaReadOnlyStyle;

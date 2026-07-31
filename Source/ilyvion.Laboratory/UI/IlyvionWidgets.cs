@@ -11,7 +11,8 @@ public static class IlyvionWidgets
         float rawDashLength,
         Color color,
         float width,
-        float dashSpacing = 2f)
+        float dashSpacing = 2f
+    )
     {
         var lineLength = (end - start).magnitude;
         float rawDashCount = lineLength / (rawDashLength + dashSpacing);
@@ -44,7 +45,10 @@ public static class IlyvionWidgets
             var segmentX = start.x + segment * dashSpaceLength * runPerUnit;
             var segmentY = start.y + segment * dashSpaceLength * risePerUnit;
             var segmentStart = new Vector2(segmentX, segmentY);
-            var segmentEnd = new Vector2(segmentX + dashLength * runPerUnit, segmentY + dashLength * risePerUnit);
+            var segmentEnd = new Vector2(
+                segmentX + dashLength * runPerUnit,
+                segmentY + dashLength * risePerUnit
+            );
 
             Widgets.DrawLine(segmentStart, segmentEnd, color, width);
         }
@@ -57,7 +61,8 @@ public static class IlyvionWidgets
         bool doMouseoverSound = true,
         Color? textColor = null,
         bool enabled = true,
-        TextAnchor? overrideTextAnchor = null)
+        TextAnchor? overrideTextAnchor = null
+    )
     {
         Color realizedTextColor = textColor ?? Widgets.NormalOptionColor;
 
@@ -117,7 +122,8 @@ public static class IlyvionWidgets
                 realizedTextColor,
                 enabled
 #if !v1_3
-                , overrideTextAnchor
+                ,
+                overrideTextAnchor
 #endif
             );
         }
@@ -130,7 +136,8 @@ public static class IlyvionWidgets
         GameFont gameFont = GameFont.Small,
         Color? color = null,
         float leftMargin = 0f,
-        bool wordWrap = true)
+        bool wordWrap = true
+    )
     {
         rect.xMin += leftMargin;
         using var _ = GUIScope.Multiple(null, gameFont, color ?? Color.white, wordWrap, textAnchor);
@@ -145,7 +152,8 @@ public static class IlyvionWidgets
         GameFont gameFont = GameFont.Small,
         Color? color = null,
         float leftMargin = 0f,
-        bool wordWrap = true)
+        bool wordWrap = true
+    )
     {
         if (!tooltip.NullOrEmpty())
         {
@@ -164,7 +172,8 @@ public static class IlyvionWidgets
         GameFont gameFont = GameFont.Small,
         Color? color = null,
         float leftMmargin = 0f,
-        bool wrap = true)
+        bool wrap = true
+    )
     {
         var labelRect = new Rect(position.x, position.y, width, height);
         position.y += height;
@@ -175,7 +184,15 @@ public static class IlyvionWidgets
 #if v1_3
 public static class ListingStandardBackwardsCompatible
 {
-    public static float SliderLabeled(this Listing_Standard listing, string label, float val, float min, float max, float labelPct = 0.5f, string? tooltip = null)
+    public static float SliderLabeled(
+        this Listing_Standard listing,
+        string label,
+        float val,
+        float min,
+        float max,
+        float labelPct = 0.5f,
+        string? tooltip = null
+    )
     {
         if (listing == null)
         {
@@ -190,7 +207,13 @@ public static class ListingStandardBackwardsCompatible
             TooltipHandler.TipRegion(rect.LeftPart(labelPct), tooltip);
         }
         Text.Anchor = TextAnchor.UpperLeft;
-        float result = Widgets.HorizontalSlider(rect.RightPart(1f - labelPct), val, min, max, middleAlignment: true);
+        float result = Widgets.HorizontalSlider(
+            rect.RightPart(1f - labelPct),
+            val,
+            min,
+            max,
+            middleAlignment: true
+        );
         listing.Gap(listing.verticalSpacing);
         return result;
     }

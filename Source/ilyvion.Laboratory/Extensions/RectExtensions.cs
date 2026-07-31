@@ -19,7 +19,8 @@ public static class RectExtensions
             Mathf.RoundToInt(rect.xMin),
             Mathf.RoundToInt(rect.yMin),
             Mathf.RoundToInt(rect.width),
-            Mathf.RoundToInt(rect.height));
+            Mathf.RoundToInt(rect.height)
+        );
     }
 
     public static Rect TrimLeft(this Rect rect, float amount)

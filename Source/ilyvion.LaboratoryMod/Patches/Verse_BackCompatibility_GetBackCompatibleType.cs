@@ -13,18 +13,24 @@ internal static class Verse_BackCompatibility_GetBackCompatibleType
         Type baseType,
         string providedClassName,
         XmlNode node,
-        ref Type __result)
+        ref Type __result
+    )
     {
-        if (CustomBackCompatibility.TypeReplacements.Count > 0
-            && CustomBackCompatibility.TypeReplacements.TryGetValue(baseType, out var newType))
+        if (
+            CustomBackCompatibility.TypeReplacements.Count > 0
+            && CustomBackCompatibility.TypeReplacements.TryGetValue(baseType, out var newType)
+        )
         {
             __result = newType;
             return false;
         }
-        if (CustomBackCompatibility.ProvidedClassNameReplacements.Count > 0
+        if (
+            CustomBackCompatibility.ProvidedClassNameReplacements.Count > 0
             && CustomBackCompatibility.ProvidedClassNameReplacements.TryGetValue(
                 providedClassName,
-                out newType))
+                out newType
+            )
+        )
         {
             __result = newType;
             return false;
