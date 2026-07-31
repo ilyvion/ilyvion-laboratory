@@ -20,10 +20,7 @@ public class Boxed<T>(T initialValue = default)
     [SinceVersion(0, 19, 0)]
     public ref T RefValue => ref value;
 
-    public AnyBoxed<T> ToAnyBoxed()
-    {
-        return new(Value);
-    }
+    public AnyBoxed<T> ToAnyBoxed() => new(Value);
 
 #pragma warning disable CA2225, CA1062
     public static implicit operator T(Boxed<T> b) => b.Value;

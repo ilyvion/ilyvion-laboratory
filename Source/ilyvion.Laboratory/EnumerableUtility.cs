@@ -18,9 +18,14 @@ public static class EnumerableUtility
     public static bool CountIsExactly<T>(this IEnumerable<T> source, int count)
     {
         if (source == null)
+        {
             throw new ArgumentNullException(nameof(source));
+        }
+
         if (count < 0)
+        {
             throw new ArgumentOutOfRangeException(nameof(count));
+        }
 
         if (source is ICollection<T> collection)
         {
@@ -30,12 +35,15 @@ public static class EnumerableUtility
         else
         {
             // iterate the sequence
-            using IEnumerator<T> it = source.GetEnumerator();
+            using var it = source.GetEnumerator();
 
             while (it.MoveNext())
             {
                 if (count == 0)
+                {
                     return false;
+                }
+
                 count--;
             }
             return count == 0;
@@ -48,10 +56,7 @@ public static class EnumerableUtility
     /// <param name="source">The source sequence.</param>
     /// <returns>The source sequence, or an empty sequence if <paramref name="source"/> is <c>null</c>.</returns>
     /// <remarks>See <a href="http://code.logos.com/blog/2008/03/emptyifnull.html">EmptyIfNull</a>.</remarks>
-    public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T> source)
-    {
-        return source ?? [];
-    }
+    public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T> source) => source ?? [];
 
     /// <summary>
     /// Sorts the elements of a sequence in ascending order according to a key.
@@ -64,10 +69,7 @@ public static class EnumerableUtility
     public static IOrderedEnumerable<TSource> LazyOrderBy<TSource, TKey>(
         this IEnumerable<TSource> source,
         Func<TSource, TKey> keySelector
-    )
-    {
-        return LazyOrderBy(source, keySelector, null, false);
-    }
+    ) => LazyOrderBy(source, keySelector, null, false);
 
     /// <summary>
     /// Sorts the elements of a sequence in ascending order according to a key.
@@ -82,10 +84,7 @@ public static class EnumerableUtility
         this IEnumerable<TSource> source,
         Func<TSource, TKey> keySelector,
         IComparer<TKey> comparer
-    )
-    {
-        return LazyOrderBy(source, keySelector, comparer, false);
-    }
+    ) => LazyOrderBy(source, keySelector, comparer, false);
 
     /// <summary>
     /// Sorts the elements of a sequence in descending order according to a key.
@@ -98,10 +97,7 @@ public static class EnumerableUtility
     public static IOrderedEnumerable<TSource> LazyOrderByDescending<TSource, TKey>(
         this IEnumerable<TSource> source,
         Func<TSource, TKey> keySelector
-    )
-    {
-        return LazyOrderBy(source, keySelector, null, true);
-    }
+    ) => LazyOrderBy(source, keySelector, null, true);
 
     /// <summary>
     /// Sorts the elements of a sequence in descending order according to a key.
@@ -116,24 +112,17 @@ public static class EnumerableUtility
         this IEnumerable<TSource> source,
         Func<TSource, TKey> keySelector,
         IComparer<TKey> comparer
-    )
-    {
-        return LazyOrderBy(source, keySelector, comparer, true);
-    }
+    ) => LazyOrderBy(source, keySelector, comparer, true);
 
     private static OrderedEnumerable<TSource> LazyOrderBy<TSource, TKey>(
         this IEnumerable<TSource> source,
         Func<TSource, TKey> keySelector,
         IComparer<TKey>? comparer,
         bool descending
-    )
-    {
-        if (source == null)
-            throw new ArgumentNullException(nameof(source));
-        if (keySelector == null)
-            throw new ArgumentNullException(nameof(keySelector));
-
-        return new OrderedEnumerable<TSource>(
+    ) =>
+        source == null ? throw new ArgumentNullException(nameof(source))
+        : keySelector == null ? throw new ArgumentNullException(nameof(keySelector))
+        : new OrderedEnumerable<TSource>(
             source,
             new ElementComparer<TSource, TKey>(
                 keySelector,
@@ -142,7 +131,6 @@ public static class EnumerableUtility
                 null
             )
         );
-    }
 
     /// <summary>
     /// Computes the sum of a sequence of <see cref="Nullable{Decimal}"/> values.
@@ -150,10 +138,8 @@ public static class EnumerableUtility
     /// <param name="source">A sequence of <see cref="Nullable{Decimal}"/> values to calculate the sum of.</param>
     /// <returns>The sum of the values in the sequence.</returns>
     /// <remarks>This method returns zero if <paramref name="source"/> contains no elements.</remarks>
-    public static decimal? NullableSum(this IEnumerable<decimal?> source)
-    {
-        return source.Aggregate((decimal?)0, (sum, value) => sum + value);
-    }
+    public static decimal? NullableSum(this IEnumerable<decimal?> source) =>
+        source.Aggregate((decimal?)0, (sum, value) => sum + value);
 
     /// <summary>
     /// Computes the sum of a sequence of <see cref="Nullable{Double}"/> values.
@@ -161,10 +147,8 @@ public static class EnumerableUtility
     /// <param name="source">A sequence of <see cref="Nullable{Double}"/> values to calculate the sum of.</param>
     /// <returns>The sum of the values in the sequence.</returns>
     /// <remarks>This method returns zero if <paramref name="source"/> contains no elements.</remarks>
-    public static double? NullableSum(this IEnumerable<double?> source)
-    {
-        return source.Aggregate((double?)0, (sum, value) => sum + value);
-    }
+    public static double? NullableSum(this IEnumerable<double?> source) =>
+        source.Aggregate((double?)0, (sum, value) => sum + value);
 
     /// <summary>
     /// Computes the sum of a sequence of <see cref="Nullable{Int32}"/> values.
@@ -172,16 +156,14 @@ public static class EnumerableUtility
     /// <param name="source">A sequence of <see cref="Nullable{Int32}"/> values to calculate the sum of.</param>
     /// <returns>The sum of the values in the sequence.</returns>
     /// <remarks>This method returns zero if <paramref name="source"/> contains no elements.</remarks>
-    public static int? NullableSum(this IEnumerable<int?> source)
-    {
-        return source.Aggregate(
+    public static int? NullableSum(this IEnumerable<int?> source) =>
+        source.Aggregate(
             (int?)0,
             (sum, value) =>
             {
                 return checked(sum + value);
             }
         );
-    }
 
     /// <summary>
     /// Computes the sum of a sequence of <see cref="Nullable{Int64}"/> values.
@@ -189,16 +171,14 @@ public static class EnumerableUtility
     /// <param name="source">A sequence of <see cref="Nullable{Int64}"/> values to calculate the sum of.</param>
     /// <returns>The sum of the values in the sequence.</returns>
     /// <remarks>This method returns zero if <paramref name="source"/> contains no elements.</remarks>
-    public static long? NullableSum(this IEnumerable<long?> source)
-    {
-        return source.Aggregate(
+    public static long? NullableSum(this IEnumerable<long?> source) =>
+        source.Aggregate(
             (long?)0,
             (sum, value) =>
             {
                 return checked(sum + value);
             }
         );
-    }
 
     /// <summary>
     /// Computes the sum of a sequence of <see cref="Nullable{Single}"/> values.
@@ -206,10 +186,8 @@ public static class EnumerableUtility
     /// <param name="source">A sequence of <see cref="Nullable{Single}"/> values to calculate the sum of.</param>
     /// <returns>The sum of the values in the sequence.</returns>
     /// <remarks>This method returns zero if <paramref name="source"/> contains no elements.</remarks>
-    public static float? NullableSum(this IEnumerable<float?> source)
-    {
-        return source.Aggregate((float?)0, (sum, value) => sum + value);
-    }
+    public static float? NullableSum(this IEnumerable<float?> source) =>
+        source.Aggregate((float?)0, (sum, value) => sum + value);
 
     /// <summary>
     /// Returns all the elements in the specified collection that are not null.
@@ -218,10 +196,7 @@ public static class EnumerableUtility
     /// <returns>An <see cref="IEnumerable{T}"/> that contains elements from the input sequence that are not null.</returns>
     /// <remarks>See <a href="http://code.logos.com/blog/2010/04/wherenotnull_extension_method.html">WhereNotNull Extension Method</a>.</remarks>
     public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T> source)
-        where T : class
-    {
-        return source.Where(x => x != null);
-    }
+        where T : class => source.Where(x => x != null);
 
     /// <summary>
     /// Returns all the elements in the specified collection that are not null.
@@ -230,20 +205,18 @@ public static class EnumerableUtility
     /// <returns>An <see cref="IEnumerable{T}"/> that contains elements from the input sequence that are not null.</returns>
     /// <remarks>See <a href="http://code.logos.com/blog/2010/04/wherenotnull_extension_method.html">WhereNotNull Extension Method</a>.</remarks>
     public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T?> source)
-        where T : struct
-    {
-        if (source == null)
-            throw new ArgumentNullException(nameof(source));
-        return WhereNotNullImpl(source);
-    }
+        where T : struct =>
+        source == null ? throw new ArgumentNullException(nameof(source)) : WhereNotNullImpl(source);
 
     private static IEnumerable<T> WhereNotNullImpl<T>(this IEnumerable<T?> source)
         where T : struct
     {
-        foreach (T? t in source)
+        foreach (var t in source)
         {
             if (t.HasValue)
+            {
                 yield return t.Value;
+            }
         }
     }
 }

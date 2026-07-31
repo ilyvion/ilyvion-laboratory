@@ -14,8 +14,8 @@ public class PatchOperationFindModById : PatchOperation
 
     protected override bool ApplyWorker(XmlDocument xml)
     {
-        bool matched = false;
-        foreach (string mod in mods)
+        var matched = false;
+        foreach (var mod in mods)
         {
             if (ModsConfig.IsActive(mod))
             {
@@ -37,8 +37,5 @@ public class PatchOperationFindModById : PatchOperation
         return true;
     }
 
-    public override string ToString()
-    {
-        return $"{base.ToString()}({mods.ToCommaList()})";
-    }
+    public override string ToString() => $"{base.ToString()}({mods.ToCommaList()})";
 }

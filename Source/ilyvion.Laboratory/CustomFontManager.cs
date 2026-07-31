@@ -4,22 +4,18 @@ public class CustomFontManager
 {
     internal static bool featureEnabled;
 
-    public static void EnableFeature()
-    {
-        featureEnabled = true;
-    }
+    public static void EnableFeature() => featureEnabled = true;
 
-    private static CustomFontManager? _instance;
     public static CustomFontManager Instance
     {
         get
         {
-            if (_instance != null)
+            if (field != null)
             {
-                return _instance;
+                return field;
             }
-            _instance = new CustomFontManager();
-            return _instance;
+            field = new CustomFontManager();
+            return field;
         }
     }
 
@@ -32,256 +28,242 @@ public class CustomFontManager
     private readonly Dictionary<string, GUIStyle> customTextAreaStyles = [];
     private readonly Dictionary<string, GUIStyle> customTextAreaReadOnlyStyles = [];
 
-    private string? currentFontKey;
-    public string? CurrentFontKey => currentFontKey;
+    public string? CurrentFontKey { get; private set; }
 
-    private Font? currentFontCached;
     internal Font? CurrentFont
     {
         get
         {
-            if (currentFontCached != null)
+            if (field != null)
             {
-                return currentFontCached;
+                return field;
             }
 
-            if (currentFontKey == null)
+            if (CurrentFontKey == null)
             {
                 return null;
             }
 
-            if (!customFonts.TryGetValue(currentFontKey, out currentFontCached))
+            if (!customFonts.TryGetValue(CurrentFontKey, out field))
             {
-                if (customFontParams.TryGetValue(currentFontKey, out var fontParams))
+                if (customFontParams.TryGetValue(CurrentFontKey, out var fontParams))
                 {
-                    currentFontCached = Font.CreateDynamicFontFromOSFont(
-                        fontParams.fonts,
-                        fontParams.size
-                    );
-                    customFonts.Add(currentFontKey, currentFontCached);
+                    field = Font.CreateDynamicFontFromOSFont(fontParams.fonts, fontParams.size);
+                    customFonts.Add(CurrentFontKey, field);
                 }
             }
 
-            return currentFontCached;
+            return field;
         }
+        private set;
     }
 
-    private float? currentLineHeightCached;
     internal float? CurrentLineHeight
     {
         get
         {
-            if (currentLineHeightCached.HasValue)
+            if (field.HasValue)
             {
-                return currentLineHeightCached;
+                return field;
             }
 
-            if (currentFontKey == null)
+            if (CurrentFontKey == null)
             {
                 return null;
             }
 
-            if (customFontLineHeights.TryGetValue(currentFontKey, out var currentLineHeight))
+            if (customFontLineHeights.TryGetValue(CurrentFontKey, out var currentLineHeight))
             {
-                currentLineHeightCached = currentLineHeight;
+                field = currentLineHeight;
             }
             else
             {
                 currentLineHeight = Text.CalcHeight("W", 999f);
-                currentLineHeightCached = currentLineHeight;
-                customFontLineHeights.Add(currentFontKey, currentLineHeight);
+                field = currentLineHeight;
+                customFontLineHeights.Add(CurrentFontKey, currentLineHeight);
             }
 
-            return currentLineHeightCached;
+            return field;
         }
+        private set;
     }
 
-    private float? currentSpaceBetweenLinesCached;
     internal float? CurrentSpaceBetweenLines
     {
         get
         {
-            if (currentSpaceBetweenLinesCached.HasValue)
+            if (field.HasValue)
             {
-                return currentSpaceBetweenLinesCached;
+                return field;
             }
 
-            if (currentFontKey == null)
+            if (CurrentFontKey == null)
             {
                 return null;
             }
 
             if (
                 customFontSpaceBetweenLines.TryGetValue(
-                    currentFontKey,
+                    CurrentFontKey,
                     out var currentSpaceBetweenLines
                 )
             )
             {
-                currentSpaceBetweenLinesCached = currentSpaceBetweenLines;
+                field = currentSpaceBetweenLines;
             }
             else
             {
                 currentSpaceBetweenLines =
-                    Text.CalcHeight("W\nW", 999f) - Text.CalcHeight("W", 999f) * 2f;
-                currentSpaceBetweenLinesCached = currentSpaceBetweenLines;
-                customFontSpaceBetweenLines.Add(currentFontKey, currentSpaceBetweenLines);
+                    Text.CalcHeight("W\nW", 999f) - (Text.CalcHeight("W", 999f) * 2f);
+                field = currentSpaceBetweenLines;
+                customFontSpaceBetweenLines.Add(CurrentFontKey, currentSpaceBetweenLines);
             }
 
-            return currentSpaceBetweenLinesCached;
+            return field;
         }
+        private set;
     }
 
-    private GUIStyle? currentFontStyleCached;
     internal GUIStyle? CurrentFontStyle
     {
         get
         {
-            if (currentFontStyleCached != null)
+            if (field != null)
             {
-                return currentFontStyleCached;
+                return field;
             }
 
-            if (currentFontKey == null)
+            if (CurrentFontKey == null)
             {
                 return null;
             }
 
-            if (!customFontStyles.TryGetValue(currentFontKey, out currentFontStyleCached))
+            if (!customFontStyles.TryGetValue(CurrentFontKey, out field))
             {
                 var currentFont = CurrentFont;
                 if (currentFont != null)
                 {
-                    currentFontStyleCached = new(GUI.skin.label) { font = currentFont };
-                    customFontStyles.Add(currentFontKey, currentFontStyleCached);
+                    field = new(GUI.skin.label) { font = currentFont };
+                    customFontStyles.Add(CurrentFontKey, field);
                 }
             }
 
-            return currentFontStyleCached;
+            return field;
         }
+        private set;
     }
 
-    private GUIStyle? currentTextFieldStyleCached;
     internal GUIStyle? CurrentTextFieldStyle
     {
         get
         {
-            if (currentTextFieldStyleCached != null)
+            if (field != null)
             {
-                return currentTextFieldStyleCached;
+                return field;
             }
 
-            if (currentFontKey == null)
+            if (CurrentFontKey == null)
             {
                 return null;
             }
 
-            if (!customTextFieldStyles.TryGetValue(currentFontKey, out currentTextFieldStyleCached))
+            if (!customTextFieldStyles.TryGetValue(CurrentFontKey, out field))
             {
                 var currentFont = CurrentFont;
                 if (currentFont != null)
                 {
-                    currentTextFieldStyleCached = new(GUI.skin.textField)
+                    field = new(GUI.skin.textField)
                     {
                         font = currentFont,
                         alignment = TextAnchor.MiddleLeft,
                     };
-                    customTextFieldStyles.Add(currentFontKey, currentTextFieldStyleCached);
+                    customTextFieldStyles.Add(CurrentFontKey, field);
                 }
             }
 
-            return currentTextFieldStyleCached;
+            return field;
         }
+        private set;
     }
 
-    private GUIStyle? currentTextAreaStyleCached;
     internal GUIStyle? CurrentTextAreaStyle
     {
         get
         {
-            if (currentTextAreaStyleCached != null)
+            if (field != null)
             {
-                return currentTextAreaStyleCached;
+                return field;
             }
 
-            if (currentFontKey == null)
+            if (CurrentFontKey == null)
             {
                 return null;
             }
 
-            if (!customTextAreaStyles.TryGetValue(currentFontKey, out currentTextAreaStyleCached))
+            if (!customTextAreaStyles.TryGetValue(CurrentFontKey, out field))
             {
                 var currentFont = CurrentFont;
                 if (currentFont != null)
                 {
-                    currentTextAreaStyleCached = new(GUI.skin.textField)
+                    field = new(GUI.skin.textField)
                     {
                         font = currentFont,
                         alignment = TextAnchor.UpperLeft,
                         wordWrap = true,
                     };
-                    customTextAreaStyles.Add(currentFontKey, currentTextAreaStyleCached);
+                    customTextAreaStyles.Add(CurrentFontKey, field);
                 }
             }
 
-            return currentTextAreaStyleCached;
+            return field;
         }
+        private set;
     }
 
-    private GUIStyle? currentTextAreaReadOnlyStyleCached;
     internal GUIStyle? CurrentTextAreaReadOnlyStyle
     {
         get
         {
-            if (currentTextAreaReadOnlyStyleCached != null)
+            if (field != null)
             {
-                return currentTextAreaReadOnlyStyleCached;
+                return field;
             }
 
-            if (currentFontKey == null)
+            if (CurrentFontKey == null)
             {
                 return null;
             }
 
-            if (
-                !customTextAreaReadOnlyStyles.TryGetValue(
-                    currentFontKey,
-                    out currentTextAreaReadOnlyStyleCached
-                )
-            )
+            if (!customTextAreaReadOnlyStyles.TryGetValue(CurrentFontKey, out field))
             {
                 var currentFont = CurrentFont;
                 if (currentFont != null)
                 {
-                    currentTextAreaReadOnlyStyleCached = new(GUI.skin.textField)
+                    field = new(GUI.skin.textField)
                     {
                         font = currentFont,
                         alignment = TextAnchor.UpperLeft,
                         wordWrap = true,
                     };
-                    currentTextAreaReadOnlyStyleCached.normal.background = null;
-                    currentTextAreaReadOnlyStyleCached.active.background = null;
-                    currentTextAreaReadOnlyStyleCached.onHover.background = null;
-                    currentTextAreaReadOnlyStyleCached.hover.background = null;
-                    currentTextAreaReadOnlyStyleCached.onFocused.background = null;
-                    currentTextAreaReadOnlyStyleCached.focused.background = null;
-                    customTextAreaReadOnlyStyles.Add(
-                        currentFontKey,
-                        currentTextAreaReadOnlyStyleCached
-                    );
+                    field.normal.background = null;
+                    field.active.background = null;
+                    field.onHover.background = null;
+                    field.hover.background = null;
+                    field.onFocused.background = null;
+                    field.focused.background = null;
+                    customTextAreaReadOnlyStyles.Add(CurrentFontKey, field);
                 }
             }
 
-            return currentTextAreaReadOnlyStyleCached;
+            return field;
         }
+        private set;
     }
 
-    private static void LogFeatureNotEnabled()
-    {
+    private static void LogFeatureNotEnabled() =>
         Logger.LogError(
             "CustomFontManager is not active. Make sure you call CustomFontManager.EnableFeature() in your mod's constructor to enable it."
         );
-    }
 
     public void AddFont(string key, int size, params string[] fonts)
     {
@@ -302,7 +284,7 @@ public class CustomFontManager
         }
 
         ClearFont();
-        currentFontKey = key;
+        CurrentFontKey = key;
     }
 
     public void ClearFont()
@@ -313,13 +295,13 @@ public class CustomFontManager
             return;
         }
 
-        currentFontKey = null;
-        currentFontCached = null;
-        currentFontStyleCached = null;
-        currentTextFieldStyleCached = null;
-        currentTextAreaStyleCached = null;
-        currentTextAreaReadOnlyStyleCached = null;
-        currentLineHeightCached = null;
-        currentSpaceBetweenLinesCached = null;
+        CurrentFontKey = null;
+        CurrentFont = null;
+        CurrentFontStyle = null;
+        CurrentTextFieldStyle = null;
+        CurrentTextAreaStyle = null;
+        CurrentTextAreaReadOnlyStyle = null;
+        CurrentLineHeight = null;
+        CurrentSpaceBetweenLines = null;
     }
 }

@@ -92,8 +92,5 @@ internal static class XmlInheritance_TryRegister_Patches
 {
     internal static List<XmlNode> allRegisteredNodes = [];
 
-    private static void Prefix(XmlNode node)
-    {
-        allRegisteredNodes.Add(node);
-    }
+    private static void Prefix(XmlNode node) => allRegisteredNodes.Add(node);
 }

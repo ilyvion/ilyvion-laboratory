@@ -66,10 +66,8 @@ internal sealed class ConditionalWeakTable<TKey, TValue> : IEnumerable<KeyValueP
         return innerConditionalWeakTable.Remove(key);
     }
 
-    public bool TryGetValue(TKey key, out TValue value)
-    {
-        return innerConditionalWeakTable.TryGetValue(key, out value);
-    }
+    public bool TryGetValue(TKey key, out TValue value) =>
+        innerConditionalWeakTable.TryGetValue(key, out value);
 
     public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
     {
@@ -85,9 +83,7 @@ internal sealed class ConditionalWeakTable<TKey, TValue> : IEnumerable<KeyValueP
         }
     }
 
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() =>
+        GetEnumerator();
 }
 #endif

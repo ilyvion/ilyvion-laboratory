@@ -1,6 +1,3 @@
-using System.Xml;
-using RimWorld.Planet;
-
 namespace ilyvion.Laboratory.Collections;
 
 #pragma warning disable CA1707
@@ -23,10 +20,7 @@ public static class Scribe_CircularBuffer
         ref CircularBuffer<T>? circularBuffer,
         string label,
         LookMode lookMode = LookMode.Undefined
-    )
-    {
-        Look(ref circularBuffer, saveDestroyedThings: false, label, lookMode);
-    }
+    ) => Look(ref circularBuffer, saveDestroyedThings: false, label, lookMode);
 
     public static void Look<T>(
         ref CircularBuffer<T>? circularBuffer,
@@ -58,7 +52,7 @@ public static class Scribe_CircularBuffer
             return;
         }
         circularBuffer = new CircularBuffer<T>(serialized.capacity);
-        for (int i = 0; i < serialized.values.Count; i++)
+        for (var i = 0; i < serialized.values.Count; i++)
         {
             circularBuffer.PushBack(serialized.values[i]);
         }

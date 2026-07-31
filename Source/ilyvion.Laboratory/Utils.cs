@@ -1,14 +1,14 @@
 namespace ilyvion.Laboratory;
 
+#pragma warning disable CA1724
+
 public static class Utils
 {
-    internal static void LogMissingInitialization(string problematicType)
-    {
+    internal static void LogMissingInitialization(string problematicType) =>
         Logger.LogError(
             $"{problematicType} is not properly initialized. "
                 + $"Is the {Constants.AssemblyName} library in use without the companion mod being active?"
         );
-    }
 
     /// <summary>
     /// Round up to given precision

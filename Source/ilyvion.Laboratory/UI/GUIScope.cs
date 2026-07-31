@@ -10,7 +10,10 @@ public static class GUIScope
 {
     private record struct WidgetGroupScope : IDisposable
     {
-        public WidgetGroupScope(in Rect rect) => Widgets.BeginGroup(rect);
+        public WidgetGroupScope(in Rect rect)
+        {
+            Widgets.BeginGroup(rect);
+        }
 
         private bool _disposed;
 
@@ -254,7 +257,9 @@ public readonly record struct ScrollViewScope : IDisposable
 
     private readonly float _outRectHeight;
 
+#pragma warning disable IDE0032 // Use auto property
     private readonly Rect _viewRect;
+#pragma warning restore IDE0032 // Use auto property
     public Rect ViewRect => _viewRect;
 
     public ref float Height => ref _scrollViewStatus.Height;
@@ -266,7 +271,9 @@ public readonly record struct ScrollViewScope : IDisposable
         _outRectHeight = outRect.height;
         _viewRect = new(0f, 0f, outRect.width, Math.Max(Height, _outRectHeight));
         if (Height - 0.1f >= outRect.height)
+        {
             _viewRect.width -= 16f;
+        }
 
         Height = 0f;
         Widgets.BeginScrollView(outRect, ref _scrollViewStatus.Position, _viewRect, showScrollbars);

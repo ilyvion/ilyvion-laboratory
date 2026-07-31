@@ -12,14 +12,11 @@ namespace ilyvion.LaboratoryMod;
 #endif
 internal static class Verse_Text_CurTextFieldStyle
 {
-    private static bool Prepare()
-    {
-        return CustomFontManager.featureEnabled;
-    }
+    private static bool Prepare() => CustomFontManager.featureEnabled;
 
     private static bool Prefix(ref GUIStyle __result)
     {
-        GUIStyle? currentTextFieldStyle = CustomFontManager.Instance.CurrentTextFieldStyle;
+        var currentTextFieldStyle = CustomFontManager.Instance.CurrentTextFieldStyle;
         if (currentTextFieldStyle != null)
         {
             __result = currentTextFieldStyle;

@@ -8,7 +8,7 @@ public class VersionCheckDef : Def
 
     public override IEnumerable<string> ConfigErrors()
     {
-        foreach (string item in base.ConfigErrors())
+        foreach (var item in base.ConfigErrors())
         {
             yield return item;
         }

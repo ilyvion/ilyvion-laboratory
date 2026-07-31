@@ -7,10 +7,7 @@ public static class ArrayPoolExtensions
     public static SelfReturningRent<T> RentWithSelfReturn<T>(
         this ArrayPool<T> arrayPool,
         int minimumLength
-    )
-    {
-        return new SelfReturningRent<T>(arrayPool, minimumLength);
-    }
+    ) => new(arrayPool, minimumLength);
 }
 
 public struct SelfReturningRent<T>(ArrayPool<T> arrayPool, int minimumLength)
@@ -25,8 +22,8 @@ public struct SelfReturningRent<T>(ArrayPool<T> arrayPool, int minimumLength)
 
     public readonly T this[int index]
     {
-        get { return arr![index]; }
-        set { arr![index] = value; }
+        get => arr![index];
+        set => arr![index] = value;
     }
 
     public void Dispose()
@@ -39,19 +36,10 @@ public struct SelfReturningRent<T>(ArrayPool<T> arrayPool, int minimumLength)
         arr = null;
     }
 
-    public override readonly bool Equals(object obj)
-    {
-        if (obj is not SelfReturningRent<T> safeRent)
-        {
-            return false;
-        }
-        return Equals(safeRent);
-    }
+    public override readonly bool Equals(object obj) =>
+        obj is SelfReturningRent<T> safeRent && Equals(safeRent);
 
-    public override readonly int GetHashCode()
-    {
-        return arr?.GetHashCode() ?? 0;
-    }
+    public override readonly int GetHashCode() => arr?.GetHashCode() ?? 0;
 
     public static bool operator ==(SelfReturningRent<T> left, SelfReturningRent<T> right)
     {
@@ -63,8 +51,5 @@ public struct SelfReturningRent<T>(ArrayPool<T> arrayPool, int minimumLength)
         return !(left == right);
     }
 
-    public readonly bool Equals(SelfReturningRent<T> other)
-    {
-        return arr?.Equals(other.arr) ?? false;
-    }
+    public readonly bool Equals(SelfReturningRent<T> other) => arr?.Equals(other.arr) ?? false;
 }

@@ -12,14 +12,11 @@ namespace ilyvion.LaboratoryMod;
 #endif
 internal static class Verse_Text_CurFontStyle
 {
-    private static bool Prepare()
-    {
-        return CustomFontManager.featureEnabled;
-    }
+    private static bool Prepare() => CustomFontManager.featureEnabled;
 
     private static bool Prefix(ref GUIStyle __result)
     {
-        GUIStyle? currentFontStyle = CustomFontManager.Instance.CurrentFontStyle;
+        var currentFontStyle = CustomFontManager.Instance.CurrentFontStyle;
         if (currentFontStyle != null)
         {
             currentFontStyle.alignment = Text.Anchor;

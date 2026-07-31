@@ -2,6 +2,7 @@
     <PropertyGroup>
         <RootNamespace>ilyvion.LaboratoryMod</RootNamespace>
         <AssemblyName>ilyvion.LaboratoryMod</AssemblyName>
+        <NoWarn>CA1310;CA1307</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>

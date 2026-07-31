@@ -13,15 +13,9 @@ public static class StringExtensions
         (bool fits, Vector2 textSize)
     > _fitsCache = [];
 
-    public static string Bold(this TaggedString text)
-    {
-        return text.Resolve().Bold();
-    }
+    public static string Bold(this TaggedString text) => text.Resolve().Bold();
 
-    public static string Bold(this string text)
-    {
-        return $"<b>{text}</b>";
-    }
+    public static string Bold(this string text) => $"<b>{text}</b>";
 
     public static bool Fits(this string text, float width, out Vector2 textSize)
     {
@@ -47,18 +41,9 @@ public static class StringExtensions
         return value.fits;
     }
 
-    public static string Italic(this TaggedString text)
-    {
-        return text.Resolve().Italic();
-    }
+    public static string Italic(this TaggedString text) => text.Resolve().Italic();
 
-    public static string Italic(this string text)
-    {
-        return $"<i>{text}</i>";
-    }
+    public static string Italic(this string text) => $"<i>{text}</i>";
 
-    public static bool CanParseAsInt(this string text)
-    {
-        return int.TryParse(text, out var _);
-    }
+    public static bool CanParseAsInt(this string text) => int.TryParse(text, out var _);
 }

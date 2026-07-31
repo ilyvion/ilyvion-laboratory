@@ -1,5 +1,3 @@
-using HarmonyLib;
-
 namespace ilyvion.Laboratory.Extensions;
 
 public static class CameraDriverExtensions
@@ -10,9 +8,7 @@ public static class CameraDriverExtensions
         CameraPanner
     > CameraDriver_panner_ref = AccessTools.FieldRefAccess<CameraDriver, CameraPanner>("panner");
 
-    public static bool IsPanning(this CameraDriver cameraDriver)
-    {
-        return CameraDriver_panner_ref(cameraDriver).Moving;
-    }
+    public static bool IsPanning(this CameraDriver cameraDriver) =>
+        CameraDriver_panner_ref(cameraDriver).Moving;
 #endif
 }

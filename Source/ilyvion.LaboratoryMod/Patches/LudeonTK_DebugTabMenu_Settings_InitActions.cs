@@ -1,5 +1,4 @@
 #if !v1_3
-using System.Reflection;
 #if !v1_4
 using LudeonTK;
 #endif
@@ -12,12 +11,12 @@ internal static class LudeonTK_DebugTabMenu_Settings_InitActions
 {
     private static void Postfix(DebugTabMenu_Settings __instance)
     {
-        FieldInfo[] fields = typeof(IlyvionDebugViewSettings).GetFields(AccessTools.all);
+        var fields = typeof(IlyvionDebugViewSettings).GetFields(AccessTools.all);
 
         var addNodeMethod = Traverse
             .Create(__instance)
             .Method("AddNode", paramTypes: [typeof(FieldInfo), typeof(string)]);
-        foreach (FieldInfo fi in fields)
+        foreach (var fi in fields)
         {
             _ = addNodeMethod.GetValue(fi, IlyvionDebugActionAttribute.IlyvionLaboratoryCategory);
         }

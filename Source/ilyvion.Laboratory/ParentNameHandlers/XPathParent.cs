@@ -4,9 +4,18 @@ namespace ilyvion.Laboratory.ParentNameHandlers;
 
 public class XPathParent : ICustomParentNameHandler
 {
-    public XmlNode? GetBestParentFor(XmlNode node, string xpath, List<XmlNode> allRegisteredNodes)
+    public XmlNode? GetBestParentFor(
+        XmlNode node,
+        string parentNameData,
+        List<XmlNode> allRegisteredNodes
+    )
     {
-        var resolvedXPath = $"/Defs/{node.Name}{xpath}";
+        if (node == null)
+        {
+            throw new ArgumentNullException(nameof(node));
+        }
+
+        var resolvedXPath = $"/Defs/{node.Name}{parentNameData}";
         XmlNodeList matches;
         try
         {
@@ -24,7 +33,7 @@ public class XPathParent : ICustomParentNameHandler
         {
             Logger.LogError(
                 $"No matches found for ilyvion.XPathParent using provided XPath fragment "
-                    + $"'{xpath}' for node: \"{node.Name}\". "
+                    + $"'{parentNameData}' for node: \"{node.Name}\". "
                     + $"Resolved XPath: '{resolvedXPath}' "
                     + $"Full node: \"{node.OuterXml}\""
             );
@@ -34,7 +43,7 @@ public class XPathParent : ICustomParentNameHandler
         {
             Logger.LogError(
                 $"Multiple matches found for ilyvion.XPathParent using provided XPath fragment "
-                    + $"'{xpath}' for node: \"{node.Name}\". "
+                    + $"'{parentNameData}' for node: \"{node.Name}\". "
                     + $"Resolved XPath: '{resolvedXPath}' "
                     + $"Full node: \"{node.OuterXml}\"; list of matches:\n- {string.Join("\n- ", matches.Cast<XmlNode>().Select(n => n.OuterXml))}"
             );

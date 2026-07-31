@@ -12,14 +12,11 @@ namespace ilyvion.LaboratoryMod;
 #endif
 internal static class Verse_Text_LineHeight
 {
-    private static bool Prepare()
-    {
-        return CustomFontManager.featureEnabled;
-    }
+    private static bool Prepare() => CustomFontManager.featureEnabled;
 
     private static bool Prefix(ref float __result)
     {
-        float? currentLineHeight = CustomFontManager.Instance.CurrentLineHeight;
+        var currentLineHeight = CustomFontManager.Instance.CurrentLineHeight;
         if (currentLineHeight.HasValue)
         {
             __result = currentLineHeight.Value;

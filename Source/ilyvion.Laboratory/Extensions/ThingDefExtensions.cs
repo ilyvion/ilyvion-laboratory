@@ -17,7 +17,7 @@ public static class ThingDefExtensions
             throw new ArgumentNullException(nameof(compType));
         }
 
-        foreach (CompProperties compProperties in def.comps)
+        foreach (var compProperties in def.comps)
         {
             if (compType.IsAssignableFrom(compProperties.compClass))
             {

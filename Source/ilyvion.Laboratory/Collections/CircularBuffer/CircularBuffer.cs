@@ -1,7 +1,5 @@
 // Sourced from <https://github.com/joaoportela/CircularBuffer-CSharp>
 
-using System.Collections;
-
 namespace ilyvion.Laboratory.Collections;
 
 /// <inheritdoc/>
@@ -29,11 +27,6 @@ public sealed class CircularBuffer<T> : IEnumerable<T>
     /// The _end. Index after the last element in the buffer.
     /// </summary>
     private int _end;
-
-    /// <summary>
-    /// The _size. Buffer size.
-    /// </summary>
-    private int _size;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CircularBuffer{T}"/> class.
@@ -78,20 +71,17 @@ public sealed class CircularBuffer<T> : IEnumerable<T>
         _buffer = new T[capacity];
 
         Array.Copy(items, _buffer, items.Length);
-        _size = items.Length;
+        Size = items.Length;
 
         _start = 0;
-        _end = _size == capacity ? 0 : _size;
+        _end = Size == capacity ? 0 : Size;
     }
 
     /// <summary>
     /// Maximum capacity of the buffer. Elements pushed into the buffer after
     /// maximum capacity is reached (IsFull = true), will remove an element.
     /// </summary>
-    public int Capacity
-    {
-        get { return _buffer.Length; }
-    }
+    public int Capacity => _buffer.Length;
 
     /// <summary>
     /// Boolean indicating if Circular is at full capacity.
@@ -99,26 +89,17 @@ public sealed class CircularBuffer<T> : IEnumerable<T>
     /// cause elements to be removed from the other end
     /// of the buffer.
     /// </summary>
-    public bool IsFull
-    {
-        get { return Size == Capacity; }
-    }
+    public bool IsFull => Size == Capacity;
 
     /// <summary>
     /// True if has no elements.
     /// </summary>
-    public bool IsEmpty
-    {
-        get { return Size == 0; }
-    }
+    public bool IsEmpty => Size == 0;
 
     /// <summary>
     /// Current buffer size (the number of elements that the buffer has).
     /// </summary>
-    public int Size
-    {
-        get { return _size; }
-    }
+    public int Size { get; private set; }
 
     /// <summary>
     /// Element at the front of the buffer - this[0].
@@ -157,13 +138,13 @@ public sealed class CircularBuffer<T> : IEnumerable<T>
                     string.Format("Cannot access index {0}. Buffer is empty", index)
                 );
             }
-            if (index >= _size)
+            if (index >= Size)
             {
                 throw new ArgumentException(
-                    string.Format("Cannot access index {0}. Buffer size is {1}", index, _size)
+                    string.Format("Cannot access index {0}. Buffer size is {1}", index, Size)
                 );
             }
-            int actualIndex = InternalIndex(index);
+            var actualIndex = InternalIndex(index);
             return _buffer[actualIndex]!;
         }
         set
@@ -174,13 +155,13 @@ public sealed class CircularBuffer<T> : IEnumerable<T>
                     string.Format("Cannot access index {0}. Buffer is empty", index)
                 );
             }
-            if (index >= _size)
+            if (index >= Size)
             {
                 throw new ArgumentException(
-                    string.Format("Cannot access index {0}. Buffer size is {1}", index, _size)
+                    string.Format("Cannot access index {0}. Buffer size is {1}", index, Size)
                 );
             }
-            int actualIndex = InternalIndex(index);
+            var actualIndex = InternalIndex(index);
             _buffer[actualIndex] = value;
         }
     }
@@ -205,7 +186,7 @@ public sealed class CircularBuffer<T> : IEnumerable<T>
         {
             _buffer[_end] = item;
             Increment(ref _end);
-            ++_size;
+            ++Size;
         }
     }
 
@@ -229,7 +210,7 @@ public sealed class CircularBuffer<T> : IEnumerable<T>
         {
             Decrement(ref _start);
             _buffer[_start] = item;
-            ++_size;
+            ++Size;
         }
     }
 
@@ -242,7 +223,7 @@ public sealed class CircularBuffer<T> : IEnumerable<T>
         ThrowIfEmpty("Cannot take elements from an empty buffer.");
         Decrement(ref _end);
         _buffer[_end] = default;
-        --_size;
+        --Size;
     }
 
     /// <summary>
@@ -254,7 +235,7 @@ public sealed class CircularBuffer<T> : IEnumerable<T>
         ThrowIfEmpty("Cannot take elements from an empty buffer.");
         _buffer[_start] = default;
         Increment(ref _start);
-        --_size;
+        --Size;
     }
 
     /// <summary>
@@ -266,7 +247,7 @@ public sealed class CircularBuffer<T> : IEnumerable<T>
         // to clear we just reset everything.
         _start = 0;
         _end = 0;
-        _size = 0;
+        Size = 0;
         Array.Clear(_buffer, 0, _buffer.Length);
     }
 
@@ -278,10 +259,10 @@ public sealed class CircularBuffer<T> : IEnumerable<T>
     /// <returns>A new array with a copy of the buffer contents.</returns>
     public T[] ToArray()
     {
-        T[] newArray = new T[Size];
-        int newArrayOffset = 0;
+        var newArray = new T[Size];
+        var newArrayOffset = 0;
         var segments = ToArraySegments();
-        foreach (ArraySegment<T> segment in segments)
+        foreach (var segment in segments)
         {
             Array.Copy(segment.Array, segment.Offset, newArray, newArrayOffset, segment.Count);
             newArrayOffset += segment.Count;
@@ -301,10 +282,7 @@ public sealed class CircularBuffer<T> : IEnumerable<T>
     /// <remarks>Segments may be empty.</remarks>
     /// </summary>
     /// <returns>An IList with 2 segments corresponding to the buffer content.</returns>
-    public IList<ArraySegment<T>> ToArraySegments()
-    {
-        return [ArrayOne(), ArrayTwo()];
-    }
+    public IList<ArraySegment<T>> ToArraySegments() => [ArrayOne(), ArrayTwo()];
 
     #region IEnumerable<T> implementation
     /// <summary>
@@ -314,9 +292,9 @@ public sealed class CircularBuffer<T> : IEnumerable<T>
     public IEnumerator<T> GetEnumerator()
     {
         var segments = ToArraySegments();
-        foreach (ArraySegment<T> segment in segments)
+        foreach (var segment in segments)
         {
-            for (int i = 0; i < segment.Count; i++)
+            for (var i = 0; i < segment.Count; i++)
             {
                 yield return segment.Array[segment.Offset + i];
             }
@@ -324,10 +302,7 @@ public sealed class CircularBuffer<T> : IEnumerable<T>
     }
     #endregion
     #region IEnumerable implementation
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     #endregion
 
     private void ThrowIfEmpty(string message = "Cannot access an empty buffer.")
@@ -374,10 +349,8 @@ public sealed class CircularBuffer<T> : IEnumerable<T>
     /// <param name='index'>
     /// External index.
     /// </param>
-    private int InternalIndex(int index)
-    {
-        return _start + (index < (Capacity - _start) ? index : index - Capacity);
-    }
+    private int InternalIndex(int index) =>
+        _start + (index < (Capacity - _start) ? index : index - Capacity);
 
     // doing ArrayOne and ArrayTwo methods returning ArraySegment<T> as seen here:
     // http://www.boost.org/doc/libs/1_37_0/libs/circular_buffer/doc/circular_buffer.html#classboost_1_1circular__buffer_1957cccdcb0c4ef7d80a34a990065818d
@@ -389,37 +362,15 @@ public sealed class CircularBuffer<T> : IEnumerable<T>
     // the next two methods allow easy access to those.
 
 #pragma warning disable CS8620 // Nullability validity ensured by keeping values in _start/_end non-null
-    private ArraySegment<T> ArrayOne()
-    {
-        if (IsEmpty)
-        {
-            return new ArraySegment<T>([]);
-        }
-        else if (_start < _end)
-        {
-            return new ArraySegment<T>(_buffer, _start, _end - _start);
-        }
-        else
-        {
-            return new ArraySegment<T>(_buffer, _start, _buffer.Length - _start);
-        }
-    }
+    private ArraySegment<T> ArrayOne() =>
+        IsEmpty ? new ArraySegment<T>([])
+        : _start < _end ? new ArraySegment<T>(_buffer, _start, _end - _start)
+        : new ArraySegment<T>(_buffer, _start, _buffer.Length - _start);
 
-    private ArraySegment<T> ArrayTwo()
-    {
-        if (IsEmpty)
-        {
-            return new ArraySegment<T>([]);
-        }
-        else if (_start < _end)
-        {
-            return new ArraySegment<T>(_buffer, _end, 0);
-        }
-        else
-        {
-            return new ArraySegment<T>(_buffer, 0, _end);
-        }
-    }
+    private ArraySegment<T> ArrayTwo() =>
+        IsEmpty ? new ArraySegment<T>([])
+        : _start < _end ? new ArraySegment<T>(_buffer, _end, 0)
+        : new ArraySegment<T>(_buffer, 0, _end);
 #pragma warning restore CS8620
     #endregion
 }

@@ -4,8 +4,6 @@
 // <https://github.com/bbradson/Xenotype-Spawn-Control/blob/main/Source/ModSettingsWindow.cs>
 // and adapted to my needs
 
-using HarmonyLib;
-
 namespace ilyvion.Laboratory.UI;
 
 public abstract class Tab
@@ -29,12 +27,6 @@ public class TabRecord : Verse.TabRecord
         selectedGetter = () => CurrentTab() == Tab;
     }
 
-    private static string ValidateTabTitle(Tab tab)
-    {
-        if (tab == null)
-        {
-            throw new ArgumentNullException(nameof(tab));
-        }
-        return tab.Title;
-    }
+    private static string ValidateTabTitle(Tab tab) =>
+        tab == null ? throw new ArgumentNullException(nameof(tab)) : tab.Title;
 }

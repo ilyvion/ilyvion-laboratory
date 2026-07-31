@@ -4,6 +4,8 @@ using LudeonTK;
 
 namespace ilyvion.Laboratory;
 
+#pragma warning disable CA1019,CA1813
+
 [AttributeUsage(AttributeTargets.Method)]
 public class IlyvionDebugActionAttribute : DebugActionAttribute
 {

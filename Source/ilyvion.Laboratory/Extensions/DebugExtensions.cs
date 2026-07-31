@@ -4,7 +4,7 @@ public static class DebugExtensions
 {
     public static T Dump<T>(this T dump)
     {
-        Logger.LogDevMessage("DUMP: " + dump?.ToString() ?? "<null>");
+        Logger.LogDevMessage(("DUMP: " + dump?.ToString()) ?? "<null>");
         return dump;
     }
 
@@ -14,7 +14,7 @@ public static class DebugExtensions
         {
             throw new ArgumentNullException(nameof(dumper));
         }
-        Logger.LogDevMessage("DUMP: " + dumper(dump)?.ToString() ?? "<null>");
+        Logger.LogDevMessage(("DUMP: " + dumper(dump)?.ToString()) ?? "<null>");
         return dump;
     }
 }

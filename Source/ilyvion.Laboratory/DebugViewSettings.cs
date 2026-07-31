@@ -4,12 +4,12 @@ namespace ilyvion.Laboratory;
 
 public static class IlyvionDebugViewSettings
 {
-    internal static bool shouldDrawUIHelpers;
+    internal static bool _shouldDrawUIHelpers;
 
     [Obsolete("Switch to ShouldDrawUIHelpers")]
-    public static bool DrawUIHelpers => shouldDrawUIHelpers;
+    public static bool DrawUIHelpers => _shouldDrawUIHelpers;
 
-    public static bool ShouldDrawUIHelpers => shouldDrawUIHelpers;
+    public static bool ShouldDrawUIHelpers => _shouldDrawUIHelpers;
 
     [Conditional("DEBUG")]
     public static void DrawIfUIHelpers(Action drawAction)
@@ -19,7 +19,7 @@ public static class IlyvionDebugViewSettings
             return;
         }
 
-        if (shouldDrawUIHelpers)
+        if (_shouldDrawUIHelpers)
         {
             drawAction();
         }

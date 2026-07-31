@@ -13,15 +13,13 @@ public static class RectExtensions
         return inner;
     }
 
-    public static Rect RoundToInt(this Rect rect)
-    {
-        return new Rect(
+    public static Rect RoundToInt(this Rect rect) =>
+        new(
             Mathf.RoundToInt(rect.xMin),
             Mathf.RoundToInt(rect.yMin),
             Mathf.RoundToInt(rect.width),
             Mathf.RoundToInt(rect.height)
         );
-    }
 
     public static Rect TrimLeft(this Rect rect, float amount)
     {

@@ -21,7 +21,7 @@ public class GraphRenderer(GraphSeries[] series)
 
 #pragma warning disable CA1819
     public GraphSeries[] Series { get; set; } = series;
-    public bool[] ShownSeries { get; set; } = series.Select(_ => true).ToArray();
+    public bool[] ShownSeries { get; set; } = [.. series.Select(_ => true)];
 #pragma warning restore CA1819
 
     /// <summary>
@@ -43,7 +43,9 @@ public class GraphRenderer(GraphSeries[] series)
 
     private float yAxisLabelsMaxWidth;
 
+#pragma warning disable CA1502
     public void DrawGraph(in Rect rect, in int[][] data, in int[]?[]? targetData)
+#pragma warning restore CA1502
     {
         if (data == null)
         {
@@ -119,17 +121,17 @@ public class GraphRenderer(GraphSeries[] series)
             Widgets.Label(legendRect, LegendLabel + ":");
             legendRect.y += rowHeight;
 
-            for (int i = 0; i < visibleSeries.Length; i++)
+            for (var i = 0; i < visibleSeries.Length; i++)
             {
-                GraphSeries series = visibleSeries[i].series;
-                bool isShown = visibleSeries[i].shown;
-                int index = visibleSeries[i].index;
+                var series = visibleSeries[i].series;
+                var isShown = visibleSeries[i].shown;
+                var index = visibleSeries[i].index;
 
                 using (GUIScope.Color(isShown ? series.Color : series.MutedColor))
                 {
                     Widgets.DrawLineHorizontal(
                         legendRect.x,
-                        legendRect.y + rowHeight / 2f,
+                        legendRect.y + (rowHeight / 2f),
                         LegendLineLength
                     );
 
@@ -162,7 +164,7 @@ public class GraphRenderer(GraphSeries[] series)
                         }
                         else if (Event.current.button == 1)
                         {
-                            for (int j = 0; j < ShownSeries.Length; j++)
+                            for (var j = 0; j < ShownSeries.Length; j++)
                             {
                                 ShownSeries[j] = false;
                             }
@@ -191,17 +193,11 @@ public class GraphRenderer(GraphSeries[] series)
             return;
         }
 
-        int max;
-        if (DrawTargetLine)
-        {
-            max = Utils.CeilToPrecision(
+        var max = DrawTargetLine
+            ? Utils.CeilToPrecision(
                 shownData.Concat(shownTargetData.Where(t => t != null)).Max(s => s.Max())
-            );
-        }
-        else
-        {
-            max = Utils.CeilToPrecision(shownData.Max(s => s.Max()));
-        }
+            )
+            : Utils.CeilToPrecision(shownData.Max(s => s.Max()));
 
         var plotWidth = plotRect.width;
         var plotHeight = plotRect.height;
@@ -210,11 +206,11 @@ public class GraphRenderer(GraphSeries[] series)
         var breakInterval = (float)Math.Max(max, 2) / (Breaks + 1);
         var breakUnit = heightUnit * breakInterval;
 
-        for (int i = 0; i < shownData.Length; i++)
+        for (var i = 0; i < shownData.Length; i++)
         {
-            GraphSeries series = shownSeries[i];
-            int[] seriesData = shownData[i];
-            int[]? seriesTargetData = shownTargetData[i];
+            var series = shownSeries[i];
+            var seriesData = shownData[i];
+            var seriesTargetData = shownTargetData[i];
             PlotData(series, seriesData, plotRect, widthUnit, heightUnit);
             if (DrawTargetLine && seriesTargetData != null)
             {
@@ -238,13 +234,13 @@ public class GraphRenderer(GraphSeries[] series)
             var labelMaxWidth = 0f;
             for (var i = 0; i <= Breaks + 1; i++)
             {
-                string label = Utils.FormatCount(i * breakInterval, YAxisUnitLabel);
+                var label = Utils.FormatCount(i * breakInterval, YAxisUnitLabel);
                 labelMaxWidth = Math.Max(labelMaxWidth, Text.CalcSize(label).x);
                 if (i != 0)
                 {
                     Widgets.DrawLineHorizontal(
                         yAxisLabelsMaxWidth + Spacing,
-                        plotRect.height - i * breakUnit + legendRect.yMax + Spacing,
+                        plotRect.height - (i * breakUnit) + legendRect.yMax + Spacing,
                         Spacing
                     );
                 }
@@ -252,29 +248,24 @@ public class GraphRenderer(GraphSeries[] series)
                 {
                     Widgets.DrawLineHorizontal(
                         yAxisLabelsMaxWidth + Spacing,
-                        plotRect.height - i * breakUnit + legendRect.yMax + Spacing - 1f,
+                        plotRect.height - (i * breakUnit) + legendRect.yMax + Spacing - 1f,
                         Spacing
                     );
                 }
-                Rect labRect;
-                if (i != 0)
-                {
-                    labRect = new Rect(
-                        0f,
-                        plotRect.height - i * breakUnit - 4f + legendRect.yMax + Spacing,
-                        yAxisLabelsMaxWidth,
-                        20f
-                    );
-                }
-                else
-                {
-                    labRect = new Rect(
-                        0f,
-                        plotRect.height - i * breakUnit - 6f + legendRect.yMax,
-                        yAxisLabelsMaxWidth,
-                        20f
-                    );
-                }
+                var labRect =
+                    i != 0
+                        ? new Rect(
+                            0f,
+                            plotRect.height - (i * breakUnit) - 4f + legendRect.yMax + Spacing,
+                            yAxisLabelsMaxWidth,
+                            20f
+                        )
+                        : new Rect(
+                            0f,
+                            plotRect.height - (i * breakUnit) - 6f + legendRect.yMax,
+                            yAxisLabelsMaxWidth,
+                            20f
+                        );
 
                 Widgets.Label(labRect, label);
             }
@@ -296,10 +287,10 @@ public class GraphRenderer(GraphSeries[] series)
             for (var i = 0; i < data.Length - 1; i++) // line segments, so up till n-1
             {
                 var start =
-                    lastEnd ?? new Vector2(widthUnit * i, canvas.height - heightUnit * data[i]);
+                    lastEnd ?? new Vector2(widthUnit * i, canvas.height - (heightUnit * data[i]));
                 var end = new Vector2(
                     Mathf.Round(widthUnit * (i + 1)),
-                    Mathf.Round(canvas.height - heightUnit * data[i + 1])
+                    Mathf.Round(canvas.height - (heightUnit * data[i + 1]))
                 );
                 Widgets.DrawLine(start, end, series.Color, 1f);
 
@@ -332,11 +323,11 @@ public class GraphRenderer(GraphSeries[] series)
                 {
                     var start = new Vector2(
                         widthUnit * currentValueStartIndex!.Value,
-                        canvas.height - heightUnit * currentValue!.Value
+                        canvas.height - (heightUnit * currentValue!.Value)
                     );
                     var end = new Vector2(
-                        widthUnit * (i) - 1,
-                        canvas.height - heightUnit * currentValue!.Value
+                        (widthUnit * i) - 1,
+                        canvas.height - (heightUnit * currentValue!.Value)
                     );
 
                     IlyvionWidgets.DrawDashedLine(start, end, 10f, series.MutedColor, 1.5f);
@@ -363,7 +354,7 @@ public class GraphRenderer(GraphSeries[] series)
             (plot.height - mousePosition.y) / heightUnit
         );
 
-        int unitXPosition = (int)Mathf.Round(unitPosition.x);
+        var unitXPosition = (int)Mathf.Round(unitPosition.x);
 
         var distances = shownData
             .Where(data => unitXPosition < data.Length)
@@ -410,13 +401,13 @@ public class GraphRenderer(GraphSeries[] series)
             var valueAt = useValue ? closestData[unitXPosition] : closestTargetData![unitXPosition];
             var realpos = new Vector2(
                 unitXPosition * widthUnit,
-                plot.height - Math.Max(0, valueAt) * heightUnit
+                plot.height - (Math.Max(0, valueAt) * heightUnit)
             );
             var mouseOverIndicatorWidth = MouseOverIndicatorTexture.width;
             var mouseOverIndicatorHeight = MouseOverIndicatorTexture.height;
             var mouseOverIndicatorRect = new Rect(
-                realpos.x - mouseOverIndicatorWidth / 2f,
-                realpos.y - mouseOverIndicatorHeight / 2f,
+                realpos.x - (mouseOverIndicatorWidth / 2f),
+                realpos.y - (mouseOverIndicatorHeight / 2f),
                 mouseOverIndicatorWidth,
                 mouseOverIndicatorHeight
             );
@@ -426,8 +417,8 @@ public class GraphRenderer(GraphSeries[] series)
             IlyvionDebugViewSettings.DrawIfUIHelpers(() =>
             {
                 var mousePosRect = new Rect(
-                    mousePosition.x - Resources.GraphDot.width / 2f,
-                    mousePosition.y - Resources.GraphDot.height / 2f,
+                    mousePosition.x - (Resources.GraphDot.width / 2f),
+                    mousePosition.y - (Resources.GraphDot.height / 2f),
                     Resources.GraphDot.width,
                     Resources.GraphDot.height
                 );
@@ -474,13 +465,13 @@ public class GraphRenderer(GraphSeries[] series)
                 if (tippos.x + tipsize.x > plot.width)
                 {
                     left = true;
-                    tippos.x -= tipsize.x + 2 * Spacing;
+                    tippos.x -= tipsize.x + (2 * Spacing);
                 }
 
                 if (tippos.y + tipsize.y > plot.height)
                 {
                     up = true;
-                    tippos.y -= tipsize.y + 2 * Spacing;
+                    tippos.y -= tipsize.y + (2 * Spacing);
                 }
 
                 var anchor = TextAnchor.UpperLeft;
@@ -596,13 +587,13 @@ internal class GraphTest_Dialog : Window
         DoSetting(
             g => g.DrawInlineLegend,
             (g, v) => g.DrawInlineLegend = v,
-            (ref bool r) => listing.CheckboxLabeled("Draw inline legend", ref r)
+            (ref r) => listing.CheckboxLabeled("Draw inline legend", ref r)
         );
 
         DoSetting(
             g => g.LegendLineLength,
             (g, v) => g.LegendLineLength = v,
-            (ref float r) => r = listing.SliderLabeled("Legend line length", r, 1, inRect.width / 3)
+            (ref r) => r = listing.SliderLabeled("Legend line length", r, 1, inRect.width / 3)
         );
 
         listing.NewColumn();
@@ -610,7 +601,7 @@ internal class GraphTest_Dialog : Window
         DoSetting(
             g => g.DrawTargetLine,
             (g, v) => g.DrawTargetLine = v,
-            (ref bool r) => listing.CheckboxLabeled("Draw target line", ref r)
+            (ref r) => listing.CheckboxLabeled("Draw target line", ref r)
         );
 
         listing.NewColumn();
@@ -618,7 +609,7 @@ internal class GraphTest_Dialog : Window
         DoSetting(
             g => g.Interactive,
             (g, v) => g.Interactive = v,
-            (ref bool r) => listing.CheckboxLabeled("Interactive", ref r)
+            (ref r) => listing.CheckboxLabeled("Interactive", ref r)
         );
 
         listing.End();
@@ -661,7 +652,7 @@ internal class GraphTest_Dialog : Window
             ),
         };
         Widgets.DrawMenuSection(inRect);
-        TabDrawer.DrawTabs(inRect, tabs);
+        _ = TabDrawer.DrawTabs(inRect, tabs);
         switch (_currentTab)
         {
             case 0:
@@ -706,6 +697,9 @@ internal class GraphTest_Dialog : Window
                     [null, [8, 20, 8, 8]]
                 );
                 break;
+
+            default:
+                break;
         }
     }
 
@@ -733,9 +727,8 @@ internal static class GraphTestDebugAction
         "Show graph test dialog",
         allowedGameStates = AllowedGameStates.Playing
     )]
-    private static void ShowGraphTestDialog()
-    {
-        Find.WindowStack.Add(new GraphTest_Dialog());
-    }
+#pragma warning disable IDE0051 // Used by reflection
+    private static void ShowGraphTestDialog() => Find.WindowStack.Add(new GraphTest_Dialog());
+#pragma warning restore IDE0051
 }
 #endif

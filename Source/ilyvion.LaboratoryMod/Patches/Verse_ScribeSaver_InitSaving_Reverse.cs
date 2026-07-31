@@ -1,4 +1,3 @@
-using System.Reflection;
 using System.Reflection.Emit;
 using System.Xml;
 using Logger = ilyvion.Laboratory.Logger;
@@ -8,10 +7,8 @@ namespace ilyvion.LaboratoryMod;
 [HarmonyPatch]
 internal static class Verse_ScribeSaver_InitSaving_Reverse
 {
-    private static void LogException(Exception ex)
-    {
+    private static void LogException(Exception ex) =>
         Logger.LogError($"Exception while init saving using custom Stream:\n{ex}");
-    }
 
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
     private static readonly MethodInfo _method_LogException = SymbolExtensions.GetMethodInfo(() =>
@@ -46,7 +43,7 @@ internal static class Verse_ScribeSaver_InitSaving_Reverse
             var codeMatcher = new CodeMatcher(instructions, generator);
 
             // Locate where Scribe.mode is assigned.
-            codeMatcher.SearchForward(i =>
+            _ = codeMatcher.SearchForward(i =>
                 i.opcode == OpCodes.Stsfld && i.operand is FieldInfo f && f == _field_Scribe_Mode
             );
             if (!codeMatcher.IsValid)
@@ -56,7 +53,7 @@ internal static class Verse_ScribeSaver_InitSaving_Reverse
                 );
                 return codeMatcher.Instructions();
             }
-            codeMatcher.Advance(1);
+            _ = codeMatcher.Advance(1);
             if (!codeMatcher.IsValid || codeMatcher.Instruction.opcode != OpCodes.Ldarg_1)
             {
                 Log.Error(
@@ -67,7 +64,7 @@ internal static class Verse_ScribeSaver_InitSaving_Reverse
             var fileStreamCreateStartPos = codeMatcher.Pos;
 
             // stfld indicates the end of the FileStream creation
-            codeMatcher.SearchForward(i =>
+            _ = codeMatcher.SearchForward(i =>
                 i.opcode == OpCodes.Stfld
                 && i.operand is FieldInfo f
                 && f == _field_ScribeSaver_SaveStream
@@ -79,17 +76,20 @@ internal static class Verse_ScribeSaver_InitSaving_Reverse
                 );
                 return codeMatcher.Instructions();
             }
-            codeMatcher.Advance(-1);
+            _ = codeMatcher.Advance(-1);
             var fileStreamCreateEndPos = codeMatcher.Pos;
 
             // With the prep-work out of the way, let's go!
             // Remove the creation of the StreamReader using the file path
-            codeMatcher.RemoveInstructionsInRange(fileStreamCreateStartPos, fileStreamCreateEndPos);
+            _ = codeMatcher.RemoveInstructionsInRange(
+                fileStreamCreateStartPos,
+                fileStreamCreateEndPos
+            );
 
             // Store our custom stream reader in the expected field instead.
-            codeMatcher.Start();
-            codeMatcher.Advance(fileStreamCreateStartPos);
-            codeMatcher.Insert([
+            _ = codeMatcher.Start();
+            _ = codeMatcher.Advance(fileStreamCreateStartPos);
+            _ = codeMatcher.Insert([
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Ldarg_1),
                 // We don't need the store instruction because we didn't remove the
@@ -97,7 +97,7 @@ internal static class Verse_ScribeSaver_InitSaving_Reverse
             ]);
 
             // Next, add support for not using indentation in the output
-            codeMatcher.SearchForward(i => i.opcode == OpCodes.Ldloc_1);
+            _ = codeMatcher.SearchForward(i => i.opcode == OpCodes.Ldloc_1);
             if (!codeMatcher.IsValid)
             {
                 Log.Error(
@@ -106,9 +106,9 @@ internal static class Verse_ScribeSaver_InitSaving_Reverse
                 return codeMatcher.Instructions();
             }
             var setXmlWriterSetIndentStartPos = codeMatcher.Pos;
-            codeMatcher.CreateLabel(out var xmlWriterSetIndentLabel);
+            _ = codeMatcher.CreateLabel(out var xmlWriterSetIndentLabel);
 
-            codeMatcher.SearchForward(i =>
+            _ = codeMatcher.SearchForward(i =>
                 i.opcode == OpCodes.Callvirt
                 && i.operand is MethodInfo m
                 && m == _method_XmlwriterSettings_setIndent
@@ -120,12 +120,12 @@ internal static class Verse_ScribeSaver_InitSaving_Reverse
                 );
                 return codeMatcher.Instructions();
             }
-            codeMatcher.Advance(1);
-            codeMatcher.CreateLabel(out var xmlWriterIndentCharsLabel);
+            _ = codeMatcher.Advance(1);
+            _ = codeMatcher.CreateLabel(out var xmlWriterIndentCharsLabel);
 
-            codeMatcher.Start();
-            codeMatcher.Advance(setXmlWriterSetIndentStartPos);
-            codeMatcher.Insert([
+            _ = codeMatcher.Start();
+            _ = codeMatcher.Advance(setXmlWriterSetIndentStartPos);
+            _ = codeMatcher.Insert([
                 // if (useIndentation) {
                 new(OpCodes.Ldarg_3),
                 //     <old code>
@@ -137,7 +137,7 @@ internal static class Verse_ScribeSaver_InitSaving_Reverse
             ]);
 
             // Finally, we need to fix the exception handler
-            codeMatcher.SearchForward(i => i.opcode == OpCodes.Stloc_2);
+            _ = codeMatcher.SearchForward(i => i.opcode == OpCodes.Stloc_2);
             if (!codeMatcher.IsValid)
             {
                 Log.Error(
@@ -146,10 +146,10 @@ internal static class Verse_ScribeSaver_InitSaving_Reverse
                 return codeMatcher.Instructions();
             }
 
-            codeMatcher.Advance(1);
+            _ = codeMatcher.Advance(1);
             var logErrorStartPosition = codeMatcher.Pos;
 
-            codeMatcher.SearchForward(i => i.opcode == OpCodes.Ldarg_0);
+            _ = codeMatcher.SearchForward(i => i.opcode == OpCodes.Ldarg_0);
             if (!codeMatcher.IsValid)
             {
                 Log.Error(
@@ -157,16 +157,16 @@ internal static class Verse_ScribeSaver_InitSaving_Reverse
                 );
                 return codeMatcher.Instructions();
             }
-            codeMatcher.Advance(-1);
+            _ = codeMatcher.Advance(-1);
             var logErrorEndPosition = codeMatcher.Pos;
 
             // Remove original call to Log.Error
-            codeMatcher.RemoveInstructionsInRange(logErrorStartPosition, logErrorEndPosition);
+            _ = codeMatcher.RemoveInstructionsInRange(logErrorStartPosition, logErrorEndPosition);
 
             // Insert our own Log.Error message
-            codeMatcher.Start();
-            codeMatcher.Advance(logErrorStartPosition);
-            codeMatcher.Insert([new(OpCodes.Ldloc_2), new(OpCodes.Call, _method_LogException)]);
+            _ = codeMatcher.Start();
+            _ = codeMatcher.Advance(logErrorStartPosition);
+            _ = codeMatcher.Insert([new(OpCodes.Ldloc_2), new(OpCodes.Call, _method_LogException)]);
 
             return codeMatcher.Instructions();
         }
@@ -176,7 +176,7 @@ internal static class Verse_ScribeSaver_InitSaving_Reverse
         _ = stream;
         _ = documentElementName;
         _ = useIndentation;
-        Transpiler(null!, null!);
+        _ = Transpiler(null!, null!);
     }
 }
 

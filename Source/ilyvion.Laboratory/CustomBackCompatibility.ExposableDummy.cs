@@ -1,5 +1,7 @@
 namespace ilyvion.Laboratory;
 
+#pragma warning disable IDE0060
+
 public static partial class CustomBackCompatibility
 {
     private class ExposableDummy : IExposable

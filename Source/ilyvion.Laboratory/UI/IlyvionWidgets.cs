@@ -15,9 +15,9 @@ public static class IlyvionWidgets
     )
     {
         var lineLength = (end - start).magnitude;
-        float rawDashCount = lineLength / (rawDashLength + dashSpacing);
+        var rawDashCount = lineLength / (rawDashLength + dashSpacing);
 
-        bool okayLength = rawDashCount >= 4 || (rawDashLength / 2) < 1;
+        var okayLength = rawDashCount >= 4 || (rawDashLength / 2) < 1;
         while (!okayLength)
         {
             rawDashCount = lineLength / (rawDashLength + dashSpacing);
@@ -40,14 +40,14 @@ public static class IlyvionWidgets
         var run = end.x - start.x;
         var runPerUnit = run / lineLength;
 
-        for (int segment = 0; segment < dashCount; segment++)
+        for (var segment = 0; segment < dashCount; segment++)
         {
-            var segmentX = start.x + segment * dashSpaceLength * runPerUnit;
-            var segmentY = start.y + segment * dashSpaceLength * risePerUnit;
+            var segmentX = start.x + (segment * dashSpaceLength * runPerUnit);
+            var segmentY = start.y + (segment * dashSpaceLength * risePerUnit);
             var segmentStart = new Vector2(segmentX, segmentY);
             var segmentEnd = new Vector2(
-                segmentX + dashLength * runPerUnit,
-                segmentY + dashLength * risePerUnit
+                segmentX + (dashLength * runPerUnit),
+                segmentY + (dashLength * risePerUnit)
             );
 
             Widgets.DrawLine(segmentStart, segmentEnd, color, width);
@@ -64,7 +64,7 @@ public static class IlyvionWidgets
         TextAnchor? overrideTextAnchor = null
     )
     {
-        Color realizedTextColor = textColor ?? Widgets.NormalOptionColor;
+        var realizedTextColor = textColor ?? Widgets.NormalOptionColor;
 
         var color = GUI.color;
         if (!enabled)
@@ -72,7 +72,7 @@ public static class IlyvionWidgets
             if (drawBackground)
             {
                 GUI.color = Color.gray;
-                Texture2D atlas = Widgets.ButtonBGAtlas;
+                var atlas = Widgets.ButtonBGAtlas;
                 Widgets.DrawAtlas(rect, atlas);
                 GUI.color = color;
             }
@@ -85,20 +85,11 @@ public static class IlyvionWidgets
                 }
             }
 
-            TextAnchor anchor = Text.Anchor;
-            if (overrideTextAnchor.HasValue)
-            {
-                Text.Anchor = overrideTextAnchor.Value;
-            }
-            else if (drawBackground)
-            {
-                Text.Anchor = TextAnchor.MiddleCenter;
-            }
-            else
-            {
-                Text.Anchor = TextAnchor.MiddleLeft;
-            }
-            bool wordWrap = Text.WordWrap;
+            var anchor = Text.Anchor;
+            Text.Anchor =
+                overrideTextAnchor
+                ?? (drawBackground ? TextAnchor.MiddleCenter : TextAnchor.MiddleLeft);
+            var wordWrap = Text.WordWrap;
             if (rect.height < Text.LineHeight * 2f)
             {
                 Text.WordWrap = false;
@@ -199,7 +190,7 @@ public static class ListingStandardBackwardsCompatible
             throw new ArgumentNullException(nameof(listing));
         }
 
-        Rect rect = listing.GetRect(30f);
+        var rect = listing.GetRect(30f);
         Text.Anchor = TextAnchor.MiddleLeft;
         Widgets.Label(rect.LeftPart(labelPct), label);
         if (tooltip != null)
@@ -207,7 +198,7 @@ public static class ListingStandardBackwardsCompatible
             TooltipHandler.TipRegion(rect.LeftPart(labelPct), tooltip);
         }
         Text.Anchor = TextAnchor.UpperLeft;
-        float result = Widgets.HorizontalSlider(
+        var result = Widgets.HorizontalSlider(
             rect.RightPart(1f - labelPct),
             val,
             min,

@@ -8,7 +8,7 @@ namespace ilyvion.LaboratoryMod;
 )]
 internal static class RimWorld_VersionUpdateDialogMaker_CreateVersionUpdateDialogIfNecessary
 {
-    static void Postfix()
+    private static void Postfix()
     {
         var requiredVersionRequests = VersionCheck.RequiredVersionRequests;
 

@@ -13,13 +13,13 @@ public static class EnumerableExtensions
 
         while (enumerator.MoveNext())
         {
-            T first = enumerator.Current;
-            bool hasSecond = enumerator.MoveNext();
+            var first = enumerator.Current;
+            var hasSecond = enumerator.MoveNext();
             if (!hasSecond)
             {
                 throw new ArgumentException("Collection must have even number of elements.");
             }
-            T second = enumerator.Current;
+            var second = enumerator.Current;
 
             yield return (first, second);
         }
@@ -32,8 +32,8 @@ public static class EnumerableExtensions
             throw new ArgumentNullException(nameof(source));
         }
 
-        int num1 = 0;
-        int num2 = 0;
+        var num1 = 0;
+        var num2 = 0;
         foreach (var item in source)
         {
             num1 = checked(num1 + item.Item1);

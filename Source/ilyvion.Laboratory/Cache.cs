@@ -15,7 +15,7 @@ public class CachedValues<TKey, TValue>(int updateInterval = 250)
     {
         get
         {
-            TryGetValue(index, out var value);
+            _ = TryGetValue(index, out var value);
             return value;
         }
         set
@@ -54,7 +54,7 @@ public class CachedValues<TKey, TValue>(int updateInterval = 250)
     {
         if (_cacheEntries.TryGetValue(key, out var cachedValue))
         {
-            cachedValue.Update(value);
+            _ = cachedValue.Update(value);
         }
         else
         {
@@ -92,20 +92,12 @@ public class CachedValue<T>
         _lastUpdateTick = null;
     }
 
-    public T Value
-    {
-        get
-        {
-            if (TryGetValue(out var value) && value != null)
-            {
-                return value;
-            }
-
-            throw new InvalidOperationException(
+    public T Value =>
+        TryGetValue(out var value) && value != null
+            ? value
+            : throw new InvalidOperationException(
                 "get_Value() on a CachedValue that is out of date, and has no updater."
             );
-        }
-    }
 
     public bool TryGetValue([NotNullWhen(true)] out T? value)
     {
@@ -136,42 +128,29 @@ public class CachedValue<T>
         return _cached;
     }
 
-    public T Update()
-    {
-        return _updater != null
+    public T Update() =>
+        _updater != null
             ? Update(_updater())
             : throw new InvalidOperationException(
-                $"Calling {nameof(Update)}() on a {nameof(CachedValue<T>)} without an updater"
+                $"Calling {nameof(Update)}() on a {nameof(CachedValue<>)} without an updater"
             );
-    }
 
-    public void Invalidate()
-    {
-        _lastUpdateTick = null;
-    }
+    public void Invalidate() => _lastUpdateTick = null;
 }
 
-public class MultiTickCachedValue<T>
+public class MultiTickCachedValue<T>(
+    T initial,
+    Func<AnyBoxed<T?>, IEnumerable<IResumeCondition>> updaterCoroutine,
+    int updateInterval = 250,
+    bool allowNull = false
+)
 {
-    private T _cached;
-    private readonly Func<AnyBoxed<T?>, IEnumerable<IResumeCondition>> _updaterCoroutine;
-    private readonly int _updateInterval;
-    private readonly bool _allowNull;
+    private readonly Func<AnyBoxed<T?>, IEnumerable<IResumeCondition>> _updaterCoroutine =
+        updaterCoroutine;
+    private readonly int _updateInterval = updateInterval;
+    private readonly bool _allowNull = allowNull;
     private int _lastUpdateTick = -1;
     private CoroutineHandle? _updaterCoroutineHandle;
-
-    public MultiTickCachedValue(
-        T initial,
-        Func<AnyBoxed<T?>, IEnumerable<IResumeCondition>> updaterCoroutine,
-        int updateInterval = 250,
-        bool allowNull = false
-    )
-    {
-        _cached = initial;
-        _updaterCoroutine = updaterCoroutine;
-        _updateInterval = updateInterval;
-        _allowNull = allowNull;
-    }
 
     // NOTE: DoesNotReturnIf is *technically* incorrect here; but there is no DoesNotReturnNullIf,
     // which is what I'd really want, and the behavior of the null analysis for the two would be
@@ -189,7 +168,7 @@ public class MultiTickCachedValue<T>
                 _updaterCoroutineHandle = MultiTickCoroutineManager.StartCoroutine(
                     UpdateValueCoroutine(),
                     () => _lastUpdateTick = Find.TickManager.TicksGame,
-                    debugHandle: $"{nameof(MultiTickCachedValue<T>)}.{nameof(UpdateValueCoroutine)}"
+                    debugHandle: $"{nameof(MultiTickCachedValue<>)}.{nameof(UpdateValueCoroutine)}"
                 );
             }
         }
@@ -206,12 +185,12 @@ public class MultiTickCachedValue<T>
         if (newCount.Value == null && !_allowNull)
         {
             throw new InvalidOperationException(
-                $"{nameof(MultiTickCachedValue<T>)}'s updater" + "must return a non-null value"
+                $"{nameof(MultiTickCachedValue<>)}'s updater" + "must return a non-null value"
             );
         }
 
-        _cached = newCount.Value!;
+        Value = newCount.Value!;
     }
 
-    public T Value => _cached;
+    public T Value { get; private set; } = initial;
 }

@@ -12,7 +12,7 @@ public static class IlyvionArray
 
         if (list.Length > 1)
         {
-            Array.Sort(list, (T a, T b) => selector(a).CompareTo(selector(b)));
+            Array.Sort(list, (a, b) => selector(a).CompareTo(selector(b)));
         }
     }
 
@@ -35,7 +35,7 @@ public static class IlyvionArray
                 list,
                 index,
                 length,
-                Comparer<T>.Create((T a, T b) => selector(a).CompareTo(selector(b)))
+                Comparer<T>.Create((a, b) => selector(a).CompareTo(selector(b)))
             );
         }
     }

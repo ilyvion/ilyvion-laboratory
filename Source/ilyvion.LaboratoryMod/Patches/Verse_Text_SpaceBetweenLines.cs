@@ -12,14 +12,11 @@ namespace ilyvion.LaboratoryMod;
 #endif
 internal static class Verse_Text_SpaceBetweenLines
 {
-    private static bool Prepare()
-    {
-        return CustomFontManager.featureEnabled;
-    }
+    private static bool Prepare() => CustomFontManager.featureEnabled;
 
     private static bool Prefix(ref float __result)
     {
-        float? currentSpaceBetweenLines = CustomFontManager.Instance.CurrentSpaceBetweenLines;
+        var currentSpaceBetweenLines = CustomFontManager.Instance.CurrentSpaceBetweenLines;
         if (currentSpaceBetweenLines.HasValue)
         {
             __result = currentSpaceBetweenLines.Value;
