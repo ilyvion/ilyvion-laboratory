@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Either<TLeft, TRight>, an unbiased sum type for holding one of two possible values, with a full functional API (Map, Bind, Match, Reduce, TryGet, Deconstruct, equality, Scribe support, and more).
+
 ## [0.21.0] - 2026-07-27
 
 ### Added

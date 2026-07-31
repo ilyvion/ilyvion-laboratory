@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
         <OutputType>Library</OutputType>
         <TargetFramework>net481</TargetFramework>
@@ -48,6 +47,7 @@
                     <ExcludeAssets>runtime</ExcludeAssets>
                 </PackageReference>
                 <PackageReference Include="System.Buffers" Version="4.5.1" />
+                <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
             </ItemGroup>
         </When>
         <When Condition="'$(RimWorldVersion)' == '1.4'">
@@ -62,6 +62,7 @@
                     <ExcludeAssets>runtime</ExcludeAssets>
                 </PackageReference>
                 <PackageReference Include="System.Buffers" Version="4.5.1" />
+                <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
             </ItemGroup>
         </When>
         <When Condition="'$(RimWorldVersion)' == '1.5'">
@@ -76,6 +77,7 @@
                     <ExcludeAssets>runtime</ExcludeAssets>
                 </PackageReference>
                 <PackageReference Include="System.Buffers" Version="4.5.1" />
+                <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
             </ItemGroup>
         </When>
         <When Condition="'$(RimWorldVersion)' == '1.6'">
@@ -102,11 +104,9 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <!-- <PackageReference Include="System.Buffers" Version="4.5.1" /> -->
     </ItemGroup>
     <ItemGroup>
         <Publicize Include="mscorlib:System.Collections.Generic.List`1._items" />
         <Publicize Include="Assembly-CSharp:Verse.XmlInheritance+XmlInheritanceNode" />
     </ItemGroup>
-
 </Project>
