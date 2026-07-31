@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <RootNamespace>ilyvion.Laboratory</RootNamespace>
+        <AssemblyName>0ilyvion.Laboratory</AssemblyName>
+
+        <NoWarn>IDE0023</NoWarn>
+    </PropertyGroup>
+
+    <ItemGroup Condition="'$(RimWorldVersion)' != '1.6'">
+        <PackageReference Include="System.Buffers" Version="4.5.1" />
+        <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Publicize Include="mscorlib:System.Collections.Generic.List`1._items" />
+        <Publicize Include="Assembly-CSharp:Verse.XmlInheritance+XmlInheritanceNode" />
+    </ItemGroup>
+</Project>

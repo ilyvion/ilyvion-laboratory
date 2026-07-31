@@ -1,17 +1,1 @@
-# top-most EditorConfig file
-root = true
-
-# 4 space indentation
-[*.{cs,xml}]
-indent_style = space
-indent_size = 4
-
-[*.cs]
-csharp_style_namespace_declarations = file_scoped:warning
-
-# IDE0008: Use explicit type
-dotnet_diagnostic.IDE0008.severity = none
-
-[{*Def}.cs]
-# CA1051: Defs need public fields
-dotnet_diagnostic.CA1051.severity = none
+../rimworld-utils/.editorconfig

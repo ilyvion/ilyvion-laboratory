@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <RootNamespace>ilyvion.LaboratoryMod</RootNamespace>
+        <AssemblyName>ilyvion.LaboratoryMod</AssemblyName>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\ilyvion.Laboratory\ilyvion.Laboratory.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <Publicize Include="Assembly-CSharp:Verse.XmlInheritance.GetBestParentFor" />
+        <Publicize Include="Assembly-CSharp:Verse.XmlInheritance+XmlInheritanceNode" />
+        <Publicize Include="Assembly-CSharp:Verse.XmlInheritance.unresolvedNodes" />
+    </ItemGroup>
+
+</Project>
