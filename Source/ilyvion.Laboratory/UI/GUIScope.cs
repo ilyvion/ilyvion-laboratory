@@ -234,6 +234,7 @@ public static class GUIScope
 
     public static IDisposable FontSize(int fontSize) => new FontSizeScope(fontSize);
 
+    [SinceVersion(0, 21, 0)]
     public static IDisposable FontStyle(FontStyle fontStyle) => new FontStyleScope(fontStyle);
 
     public static IDisposable Multiple(
