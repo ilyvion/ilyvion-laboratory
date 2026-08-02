@@ -189,6 +189,14 @@ public class MultiTickCoroutineManager(Game _) : GameComponent
         // started as a child of one being force-completed via RunCoroutineImmediatelyToCompletion
         // would only ever get ticked on the normal per-game schedule, which never advances while
         // the immediate-completion loop is spinning, hanging it forever.
+        if (currentCoroutineList == null && Current.Game == null)
+        {
+            throw new InvalidOperationException(
+                $"Cannot start coroutine {debugHandle}: there is no active game to attach it to. "
+                    + "Start coroutines only while a game is loaded, or use "
+                    + $"{nameof(RunCoroutineImmediatelyToCompletion)} instead."
+            );
+        }
         var targetList =
             currentCoroutineList
             ?? Current.Game.GetComponent<MultiTickCoroutineManager>()._coroutines;
@@ -392,7 +400,7 @@ public class ResumeAfterTicks(int ticksToWait) : IResumeCondition
 {
     private int _ticksLeft = ticksToWait;
 
-    public bool ShouldResume() => _ticksLeft-- == 0;
+    public bool ShouldResume() => _ticksLeft-- <= 0;
 }
 
 /// <summary>

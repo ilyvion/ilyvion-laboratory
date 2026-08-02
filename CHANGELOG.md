@@ -28,6 +28,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A custom ParentName referencing a type that doesn't exist now logs a clear error instead of crashing with an undiagnostic exception.
 - Text-fits-width measurements are no longer cached across different text sizes (e.g. tiny vs medium font), which could previously show stale results using the wrong font's measurement.
 - CircularBuffer no longer silently returns the wrong element when accessed with a negative index; it now throws, matching how it already behaved for out-of-range positive indexes.
+- A coroutine waiting a negative number of ticks no longer gets stuck forever; it now resumes right away, same as waiting zero ticks.
+- Starting a coroutine while no game is loaded now fails with a clear error instead of an undiagnostic crash.
 
 ### Changed
 
