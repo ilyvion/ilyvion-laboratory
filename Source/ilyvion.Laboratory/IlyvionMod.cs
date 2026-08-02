@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 
 [assembly: InternalsVisibleTo("ilyvion.LaboratoryMod")]
+[assembly: InternalsVisibleTo("ilyvion.Laboratory.Tests")]
 
 namespace ilyvion.Laboratory;
 

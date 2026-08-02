@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Saving/loading an Either using the Reference, LocalTargetInfo, TargetInfo, GlobalTargetInfo, or BodyPart modes no longer silently loses the loaded value.
 - Saving/loading an Either holding a null BodyPart value no longer crashes on load.
+- CachedValues.Update() on a key that hadn't been added yet no longer stores a value that's immediately considered stale.
+
+### Changed
+
+- MultiTickCachedValue.DoUpdateIfNeeded(bool force) is now obsolete and will become private in a future version; use the new parameterless DoUpdateIfNeeded() or ForceUpdate() instead, which no longer break compile-time null-checking for calling code.
 
 ## [0.22.0] - 2026-07-31
 

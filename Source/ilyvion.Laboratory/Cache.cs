@@ -6,6 +6,18 @@ using ilyvion.Laboratory.Coroutines;
 
 namespace ilyvion.Laboratory;
 
+/// <summary>
+/// Indirection point for the current game tick, used by <see cref="CachedValue{T}"/> and
+/// <see cref="MultiTickCachedValue{T}"/> instead of calling <see cref="TickManager.TicksGame"/>
+/// directly so tests can substitute a controllable clock.
+/// </summary>
+internal static class CacheClock
+{
+    internal static Func<int> CurrentTick { get; set; } = () => Find.TickManager.TicksGame;
+
+    internal static void ResetCurrentTick() => CurrentTick = () => Find.TickManager.TicksGame;
+}
+
 public class CachedValues<TKey, TValue>(int updateInterval = 250)
 {
     private readonly Dictionary<TKey, CachedValue<TValue>> _cacheEntries = [];
@@ -58,7 +70,9 @@ public class CachedValues<TKey, TValue>(int updateInterval = 250)
         }
         else
         {
-            _cacheEntries.Add(key, new CachedValue<TValue>(value, updateInterval));
+            var cacheEntry = new CachedValue<TValue>(value, updateInterval);
+            _ = cacheEntry.Update(value);
+            _cacheEntries.Add(key, cacheEntry);
         }
     }
 
@@ -103,7 +117,7 @@ public class CachedValue<T>
     {
         if (
             _lastUpdateTick.HasValue
-            && Find.TickManager.TicksGame - _lastUpdateTick.Value <= _updateInterval
+            && CacheClock.CurrentTick() - _lastUpdateTick.Value <= _updateInterval
         )
         {
             value = _cached ?? throw new InvalidOperationException("_cached was null");
@@ -124,7 +138,7 @@ public class CachedValue<T>
     public T Update(T value)
     {
         _cached = value;
-        _lastUpdateTick = Find.TickManager.TicksGame;
+        _lastUpdateTick = CacheClock.CurrentTick();
         return _cached;
     }
 
@@ -152,28 +166,41 @@ public class MultiTickCachedValue<T>(
     private int _lastUpdateTick = -1;
     private CoroutineHandle? _updaterCoroutineHandle;
 
-    // NOTE: DoesNotReturnIf is *technically* incorrect here; but there is no DoesNotReturnNullIf,
-    // which is what I'd really want, and the behavior of the null analysis for the two would be
-    // identical anyway, which is why I use it.
-    public CoroutineHandle? DoUpdateIfNeeded([DoesNotReturnIf(true)] bool force = false)
+    [Obsolete(
+        "This overload will be made private in a future version. Use the parameterless "
+            + "DoUpdateIfNeeded() or ForceUpdate() instead."
+    )]
+    public CoroutineHandle? DoUpdateIfNeeded(bool force = false)
     {
         if (_updaterCoroutineHandle == null)
         {
             if (
                 force
                 || _lastUpdateTick == -1
-                || Find.TickManager.TicksGame - _lastUpdateTick > _updateInterval
+                || CacheClock.CurrentTick() - _lastUpdateTick > _updateInterval
             )
             {
                 _updaterCoroutineHandle = MultiTickCoroutineManager.StartCoroutine(
                     UpdateValueCoroutine(),
-                    () => _lastUpdateTick = Find.TickManager.TicksGame,
+                    () => _lastUpdateTick = CacheClock.CurrentTick(),
                     debugHandle: $"{nameof(MultiTickCachedValue<>)}.{nameof(UpdateValueCoroutine)}"
                 );
             }
         }
         return _updaterCoroutineHandle;
     }
+
+    [SinceVersion(23, 0, 0)]
+    public CoroutineHandle? DoUpdateIfNeeded() =>
+#pragma warning disable CS0618 // Type or member is obsolete
+        DoUpdateIfNeeded(force: false);
+#pragma warning restore CS0618
+
+    [SinceVersion(23, 0, 0)]
+    public CoroutineHandle ForceUpdate() =>
+#pragma warning disable CS0618 // Type or member is obsolete
+        DoUpdateIfNeeded(force: true)!;
+#pragma warning restore CS0618
 
     private IEnumerable<IResumeCondition> UpdateValueCoroutine()
     {
