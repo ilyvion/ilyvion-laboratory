@@ -14,7 +14,7 @@ internal sealed class ConditionalWeakTable<TKey, TValue> : IEnumerable<KeyValueP
     public void Add(TKey key, TValue value)
     {
         innerConditionalWeakTable.Add(key, value);
-        _ = keyReferences.Add(new System.WeakReference<TKey>(key));
+        TrackKey(key);
     }
 
     public void AddOrUpdate(TKey key, TValue value)
@@ -27,6 +27,19 @@ internal sealed class ConditionalWeakTable<TKey, TValue> : IEnumerable<KeyValueP
         else
         {
             Add(key, value);
+        }
+    }
+
+    /// <summary>
+    /// Prunes dead weak references and records <paramref name="key"/> if it isn't already tracked
+    /// by a live reference.
+    /// </summary>
+    private void TrackKey(TKey key)
+    {
+        _ = keyReferences.RemoveWhere(wr => !wr.TryGetTarget(out _));
+        if (!keyReferences.Any(wr => wr.TryGetTarget(out var existingKey) && existingKey == key))
+        {
+            _ = keyReferences.Add(new System.WeakReference<TKey>(key));
         }
     }
 
@@ -44,7 +57,7 @@ internal sealed class ConditionalWeakTable<TKey, TValue> : IEnumerable<KeyValueP
 
     public TValue GetOrCreateValue(TKey key)
     {
-        _ = keyReferences.Add(new System.WeakReference<TKey>(key));
+        TrackKey(key);
         return innerConditionalWeakTable.GetOrCreateValue(key);
     }
 
@@ -56,7 +69,7 @@ internal sealed class ConditionalWeakTable<TKey, TValue> : IEnumerable<KeyValueP
         >.CreateValueCallback createValueCallback
     )
     {
-        _ = keyReferences.Add(new System.WeakReference<TKey>(key));
+        TrackKey(key);
         return innerConditionalWeakTable.GetValue(key, createValueCallback);
     }
 
