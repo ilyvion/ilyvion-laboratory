@@ -4,7 +4,18 @@ public class CustomFontManager
 {
     internal static bool featureEnabled;
 
-    public static void EnableFeature() => featureEnabled = true;
+    public static void EnableFeature()
+    {
+#if v1_5_OR_GREATER
+#pragma warning disable IDE0022 // Use expression body for method
+        featureEnabled = true;
+#pragma warning restore IDE0022 // Use expression body for method
+#else
+        Logger.LogError(
+            "CustomFontManager requires RimWorld 1.5 or newer, since it relies on Harmony late-patching to let dependent mods call EnableFeature() before its patches apply. It cannot be enabled on this version."
+        );
+#endif
+    }
 
     public static CustomFontManager Instance
     {

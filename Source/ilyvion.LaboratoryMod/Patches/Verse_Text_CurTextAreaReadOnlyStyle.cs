@@ -1,3 +1,7 @@
+// CustomFontManager relies on Prepare() re-evaluating after dependent mods have had a
+// chance to call EnableFeature(); only v1.5+'s "Late" patch category defers patching that
+// long, so the feature is unavailable on 1.3/1.4.
+#if v1_5_OR_GREATER
 using ilyvion.Laboratory;
 
 namespace ilyvion.LaboratoryMod;
@@ -7,9 +11,7 @@ namespace ilyvion.LaboratoryMod;
 /// </summary>
 [HarmonyPatch(typeof(Text))]
 [HarmonyPatch(nameof(Text.CurTextAreaReadOnlyStyle), MethodType.Getter)]
-#if !v1_3 && !v1_4
 [HarmonyPatchCategory("Late")]
-#endif
 internal static class Verse_Text_CurTextAreaReadOnlyStyle
 {
     private static bool Prepare() => CustomFontManager.featureEnabled;
@@ -28,3 +30,4 @@ internal static class Verse_Text_CurTextAreaReadOnlyStyle
         }
     }
 }
+#endif
