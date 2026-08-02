@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- MultiTickCachedValue.DoUpdateIfNeeded(bool force) is now obsolete and will become private in a future version; use the new parameterless DoUpdateIfNeeded() or ForceUpdate() instead, which no longer break compile-time null-checking for calling code.
+
 ### Fixed
 
 - Saving/loading an Either using the Reference, LocalTargetInfo, TargetInfo, GlobalTargetInfo, or BodyPart modes no longer silently loses the loaded value.
@@ -36,10 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - IlyvionMod.LogException() now prefixes logged messages with the mod's name, like the other logging methods, instead of leaving it off.
 - Two loaded mods requiring an update to a newer version of ilyvion's Laboratory no longer crashes the version-check dialog when both mods share the same name; a warning is logged and the higher required version is kept instead.
 - Two mods registering a custom back-compatibility type replacement for the same base type or class name no longer crashes the game with an undiagnostic exception; a warning is logged and the later registration takes precedence instead.
-
-### Changed
-
-- MultiTickCachedValue.DoUpdateIfNeeded(bool force) is now obsolete and will become private in a future version; use the new parameterless DoUpdateIfNeeded() or ForceUpdate() instead, which no longer break compile-time null-checking for calling code.
+- Two mods registering a custom font under the same key no longer crashes the game with an undiagnostic exception; a warning is logged and the later registration takes precedence instead.
 
 ## [0.22.0] - 2026-07-31
 

@@ -283,7 +283,11 @@ public class CustomFontManager
             LogFeatureNotEnabled();
             return;
         }
-        customFontParams.Add(key, (size, fonts));
+        if (customFontParams.ContainsKey(key))
+        {
+            Logger.LogWarning($"A font for key '{key}' is already registered; overwriting it.");
+        }
+        customFontParams[key] = (size, fonts);
     }
 
     public void UseFont(string key)
