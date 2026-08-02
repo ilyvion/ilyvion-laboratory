@@ -32,7 +32,7 @@ public static class VersionCheck
 
     internal static Dictionary<string, Version>? RequiredVersionRequests { get; set; } = [];
 
-    public static bool IsAtLeastVersion(Version requiredVersion) => OurVersion > requiredVersion;
+    public static bool IsAtLeastVersion(Version requiredVersion) => OurVersion >= requiredVersion;
 
     public static Version OurVersion => Assembly.GetExecutingAssembly().GetName().Version;
 
