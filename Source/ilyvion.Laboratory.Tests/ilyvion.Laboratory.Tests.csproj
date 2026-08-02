@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <UseLaboratory>true</UseLaboratory>
+        <RootNamespace>ilyvion.Laboratory.Tests</RootNamespace>
+        <AssemblyName>ilyvion.Laboratory.Tests</AssemblyName>
+    </PropertyGroup>
+    <!--
+        Dev-only test assembly, built and run in-game via RimTest Redux (see
+        https://github.com/ilyvion/rimtest-redux). It's listed in ilyvion.Laboratory.sln so it
+        always builds locally (default Configuration is Debug, see .vscode/build_config.sh),
+        but ilyvion.Laboratory.sln deliberately omits a Release|Any CPU.Build.0 line for this
+        project's GUID, so a Release-configuration build (what CI/release always use, per
+        rimworld-utils' build_mod.yml) skips building it entirely; its output never lands in a
+        shipped release.
+    -->
+    <ItemGroup>
+        <ProjectReference Include="$(ProjectDependenciesBasePath)\RimTest\Source\RimTestRedux\RimTestRedux.csproj">
+            <CopyLocal>False</CopyLocal>
+            <Private>false</Private>
+        </ProjectReference>
+    </ItemGroup>
+</Project>

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Saving/loading an Either using the Reference, LocalTargetInfo, TargetInfo, GlobalTargetInfo, or BodyPart modes no longer silently loses the loaded value.
+- Saving/loading an Either holding a null BodyPart value no longer crashes on load.
+
 ## [0.22.0] - 2026-07-31
 
 ### Added

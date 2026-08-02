@@ -217,22 +217,22 @@ public class Either<TLeft, TRight> : IEquatable<Either<TLeft, TRight>>
             : (IsRight && predicate(_right));
 
     /// <summary>
-    /// Returns <paramref name="other"/> if this instance is <c>Left</c>; otherwise returns the
-    /// original right value.
+    /// Returns this instance's left value, re-wrapped as an <see cref="Either{TLeft, TOtherRight}"/>,
+    /// if this instance is <c>Left</c>; otherwise returns <paramref name="other"/>.
     /// </summary>
     /// <typeparam name="TOtherRight">The right type of <paramref name="other"/>.</typeparam>
-    /// <param name="other">The value to return if this instance is <c>Left</c>.</param>
-    /// <returns><paramref name="other"/> if this instance is <c>Left</c>; otherwise the original right value.</returns>
+    /// <param name="other">The value to return if this instance is <c>Right</c>.</param>
+    /// <returns>The left value re-wrapped, or <paramref name="other"/> if this instance is <c>Right</c>.</returns>
     public Either<TLeft, TOtherRight> LeftAnd<TOtherRight>(Either<TLeft, TOtherRight> other) =>
         other == null ? throw new ArgumentNullException(nameof(other)) : (IsLeft ? _left : other);
 
     /// <summary>
-    /// Returns <paramref name="other"/> if this instance is <c>Right</c>; otherwise returns the
-    /// original left value.
+    /// Returns this instance's right value, re-wrapped as an <see cref="Either{TOtherLeft, TRight}"/>,
+    /// if this instance is <c>Right</c>; otherwise returns <paramref name="other"/>.
     /// </summary>
     /// <typeparam name="TOtherLeft">The left type of <paramref name="other"/>.</typeparam>
-    /// <param name="other">The value to return if this instance is <c>Right</c>.</param>
-    /// <returns><paramref name="other"/> if this instance is <c>Right</c>; otherwise the original left value.</returns>
+    /// <param name="other">The value to return if this instance is <c>Left</c>.</param>
+    /// <returns>The right value re-wrapped, or <paramref name="other"/> if this instance is <c>Left</c>.</returns>
     public Either<TOtherLeft, TRight> RightAnd<TOtherLeft>(Either<TOtherLeft, TRight> other) =>
         other == null ? throw new ArgumentNullException(nameof(other)) : (IsRight ? _right : other);
 
@@ -789,6 +789,7 @@ public static class Scribe_Either
                 }
                 var refee = value as ILoadReferenceable;
                 Scribe_References.Look(ref refee, label, saveDestroyedThings);
+                value = (T)(object)refee!;
                 break;
             case LookMode.Def:
                 if (value is not null and not Def)
@@ -835,6 +836,7 @@ public static class Scribe_Either
                     defaultLocalTargetInfo,
                     preserveDefaultValues
                 );
+                value = (T)(object)localTargetInfo;
                 break;
             case LookMode.TargetInfo:
                 if (value is not TargetInfo targetInfo)
@@ -854,6 +856,7 @@ public static class Scribe_Either
                     defaultTargetInfo,
                     preserveDefaultValues
                 );
+                value = (T)(object)targetInfo;
                 break;
             case LookMode.GlobalTargetInfo:
                 if (value is not GlobalTargetInfo globalTargetInfo)
@@ -873,16 +876,19 @@ public static class Scribe_Either
                     defaultGlobalTargetInfo,
                     preserveDefaultValues
                 );
+                value = (T)(object)globalTargetInfo;
                 break;
             case LookMode.BodyPart:
-                if (value is not BodyPartRecord bodyPartRecord)
+                if (value is not null and not BodyPartRecord)
                 {
                     throw new InvalidOperationException(
                         $"Cannot save value of type '{typeof(T).ToStringSafe()}' with lookMode BodyPart"
                     );
                 }
+                var bodyPartRecord = value as BodyPartRecord;
                 var defaultBodyPartRecord = defaultValue as BodyPartRecord;
                 Scribe_BodyParts.Look(ref bodyPartRecord, label, defaultBodyPartRecord);
+                value = (T)(object)bodyPartRecord!;
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(lookMode), lookMode, null);
