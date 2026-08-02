@@ -21,6 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Mousing over a graph whose series have unevenly-sized target lines no longer occasionally shows values or tooltips from the wrong series.
 - GUIScope.Multiple() no longer permanently corrupts the game's shared font style when combining a font size change with a game font change.
 - GUIScope.ScrollView() no longer ends the scroll view twice if disposed more than once.
+- Saving/loading a CircularBuffer now correctly uses the requested look mode for its elements instead of always guessing based on the element type, and CircularBuffers of references (e.g. things) now load correctly instead of always coming back empty.
+- Loading a CircularBuffer from a corrupted save (zero capacity or a missing values list) no longer crashes; it now recovers with an empty buffer instead.
 
 ### Changed
 
