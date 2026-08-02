@@ -24,6 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Saving/loading a CircularBuffer now correctly uses the requested look mode for its elements instead of always guessing based on the element type, and CircularBuffers of references (e.g. things) now load correctly instead of always coming back empty.
 - Loading a CircularBuffer from a corrupted save (zero capacity or a missing values list) no longer crashes; it now recovers with an empty buffer instead.
 - A coroutine forced to run to completion immediately no longer freezes the game forever if it starts a child coroutine or waits on a condition that can't be resolved right away; it now gives up and logs an error instead.
+- The mod XML data used to resolve custom ParentName inheritance is now released when a mod list is reloaded, instead of accumulating in memory for the rest of the session.
+- A custom ParentName referencing a type that doesn't exist now logs a clear error instead of crashing with an undiagnostic exception.
 
 ### Changed
 

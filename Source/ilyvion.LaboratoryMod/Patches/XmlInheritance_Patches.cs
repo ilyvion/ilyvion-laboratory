@@ -38,6 +38,15 @@ internal static class XmlInheritance_GetResolvedNodeFor_Patches
         if (!_customParentNameHandlers.TryGetValue(typeName, out var handler))
         {
             var type = AccessTools.TypeByName(typeName);
+            if (type == null)
+            {
+                Logger.LogError(
+                    $"Encountered a 'ParentName' that starts with '::', but the type provided, '{typeName}', could not be found."
+                );
+                __result = null;
+                return false; // Skip the original method
+            }
+
             var customParentNameHandler = Activator.CreateInstance(type);
             if (customParentNameHandler is not ICustomParentNameHandler)
             {
@@ -93,4 +102,10 @@ internal static class XmlInheritance_TryRegister_Patches
     internal static List<XmlNode> allRegisteredNodes = [];
 
     private static void Prefix(XmlNode node) => allRegisteredNodes.Add(node);
+}
+
+[HarmonyPatch(typeof(XmlInheritance), nameof(XmlInheritance.Clear))]
+internal static class XmlInheritance_Clear_Patches
+{
+    private static void Postfix() => XmlInheritance_TryRegister_Patches.allRegisteredNodes.Clear();
 }
