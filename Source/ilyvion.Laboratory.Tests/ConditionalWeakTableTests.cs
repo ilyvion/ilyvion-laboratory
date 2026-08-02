@@ -16,8 +16,14 @@ internal static class ConditionalWeakTableTests
     {
         var field = table
             .GetType()
-            .GetField("keyReferences", BindingFlags.NonPublic | BindingFlags.Instance)!;
-        return ((ICollection)field.GetValue(table)!).Count;
+            .GetField("keyReferencesByHash", BindingFlags.NonPublic | BindingFlags.Instance)!;
+        var bucketsByHash = (IDictionary)field.GetValue(table)!;
+        var count = 0;
+        foreach (ICollection bucket in bucketsByHash.Values)
+        {
+            count += bucket.Count;
+        }
+        return count;
     }
 
     // Regression guard for BUG-12: GetOrCreateValue/GetValue used to add a fresh WeakReference
