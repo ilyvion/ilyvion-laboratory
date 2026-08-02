@@ -25,6 +25,14 @@ public class MultiTickCoroutineManager(Game _) : GameComponent
 
     private static CoroutineHandle? currentlyRunningCoroutine;
 
+    // The list new coroutines started via StartCoroutine() while a coroutine is being resumed
+    // should be added to. This tracks whichever list RunSingleTick is currently processing (the
+    // manager's own per-game list, or the local list used by RunCoroutineImmediatelyToCompletion),
+    // so a coroutine started as a child of one being force-completed gets force-completed too,
+    // instead of being scheduled onto the normal per-tick list where it would never run while
+    // the immediate-completion loop spins.
+    private static List<CoroutineHandle>? currentCoroutineList;
+
     private static void RunSingleTick(List<CoroutineHandle> coroutines)
     {
         // Bail early when there's nothing to do
@@ -41,71 +49,84 @@ public class MultiTickCoroutineManager(Game _) : GameComponent
 
         Logger.LogDebug($"Running {coroutineCount} coroutines", "Coroutines");
 
+        var previousCoroutineList = currentCoroutineList;
+        currentCoroutineList = coroutines;
         var anyFinished = false;
-        RunCoroutines(coroutines, 0, coroutineCount, finishedCoroutines, ref anyFinished);
-
-        List<bool>? additionallyFinishedCoroutines = coroutines.Count > coroutineCount ? [] : null;
-        var additionalCoroutinesStartIndex = 0;
-        while (coroutines.Count > coroutineCount)
+        try
         {
-            // New coroutines were added by the coroutines that were ran. These should also be run
-            // in this same tick.
-            var newCoroutineCount = coroutines.Count - coroutineCount;
-            Logger.LogDebug($"Running additional {newCoroutineCount} coroutines", "Coroutines");
+            RunCoroutines(coroutines, 0, coroutineCount, finishedCoroutines, ref anyFinished);
 
-            additionallyFinishedCoroutines!.AddRange(Enumerable.Repeat(false, newCoroutineCount));
-            Span<bool> additionallyFinishedCoroutinesSpan = additionallyFinishedCoroutines._items;
-            additionallyFinishedCoroutinesSpan = additionallyFinishedCoroutinesSpan.Slice(
-                additionalCoroutinesStartIndex,
-                newCoroutineCount
-            );
-
-            RunCoroutines(
-                coroutines,
-                coroutineCount,
-                coroutines.Count,
-                additionallyFinishedCoroutinesSpan,
-                ref anyFinished
-            );
-
-            additionalCoroutinesStartIndex += newCoroutineCount;
-            coroutineCount += newCoroutineCount;
-        }
-
-        if (anyFinished)
-        {
-            additionalCoroutinesStartIndex = finishedCoroutines.Length;
-            for (var i = finishedCoroutines.Length - 1; i >= 0; i--)
+            List<bool>? additionallyFinishedCoroutines =
+                coroutines.Count > coroutineCount ? [] : null;
+            var additionalCoroutinesStartIndex = 0;
+            while (coroutines.Count > coroutineCount)
             {
-                if (finishedCoroutines[i])
-                {
-                    Logger.LogDebug(
-                        $"Removing coroutine {coroutines[i].DebugHandle} "
-                            + "as it reported being finished",
-                        "Coroutines"
-                    );
-                    coroutines.RemoveAt(i);
-                    additionalCoroutinesStartIndex--;
-                }
+                // New coroutines were added by the coroutines that were ran. These should also be run
+                // in this same tick.
+                var newCoroutineCount = coroutines.Count - coroutineCount;
+                Logger.LogDebug($"Running additional {newCoroutineCount} coroutines", "Coroutines");
+
+                additionallyFinishedCoroutines!.AddRange(
+                    Enumerable.Repeat(false, newCoroutineCount)
+                );
+                Span<bool> additionallyFinishedCoroutinesSpan =
+                    additionallyFinishedCoroutines._items;
+                additionallyFinishedCoroutinesSpan = additionallyFinishedCoroutinesSpan.Slice(
+                    additionalCoroutinesStartIndex,
+                    newCoroutineCount
+                );
+
+                RunCoroutines(
+                    coroutines,
+                    coroutineCount,
+                    coroutines.Count,
+                    additionallyFinishedCoroutinesSpan,
+                    ref anyFinished
+                );
+
+                additionalCoroutinesStartIndex += newCoroutineCount;
+                coroutineCount += newCoroutineCount;
             }
 
-            if (additionallyFinishedCoroutines != null)
+            if (anyFinished)
             {
-                for (var i = additionallyFinishedCoroutines.Count - 1; i >= 0; i--)
+                additionalCoroutinesStartIndex = finishedCoroutines.Length;
+                for (var i = finishedCoroutines.Length - 1; i >= 0; i--)
                 {
-                    if (additionallyFinishedCoroutines[i])
+                    if (finishedCoroutines[i])
                     {
-                        var coroutineIndex = additionalCoroutinesStartIndex + i;
-
                         Logger.LogDebug(
-                            $"Removing coroutine {coroutines[coroutineIndex].DebugHandle} "
+                            $"Removing coroutine {coroutines[i].DebugHandle} "
                                 + "as it reported being finished",
                             "Coroutines"
                         );
-                        coroutines.RemoveAt(coroutineIndex);
+                        coroutines.RemoveAt(i);
+                        additionalCoroutinesStartIndex--;
+                    }
+                }
+
+                if (additionallyFinishedCoroutines != null)
+                {
+                    for (var i = additionallyFinishedCoroutines.Count - 1; i >= 0; i--)
+                    {
+                        if (additionallyFinishedCoroutines[i])
+                        {
+                            var coroutineIndex = additionalCoroutinesStartIndex + i;
+
+                            Logger.LogDebug(
+                                $"Removing coroutine {coroutines[coroutineIndex].DebugHandle} "
+                                    + "as it reported being finished",
+                                "Coroutines"
+                            );
+                            coroutines.RemoveAt(coroutineIndex);
+                        }
                     }
                 }
             }
+        }
+        finally
+        {
+            currentCoroutineList = previousCoroutineList;
         }
 
         static void RunCoroutines(
@@ -162,15 +183,28 @@ public class MultiTickCoroutineManager(Game _) : GameComponent
             coroutineFinishedCallback,
             coroutineFailedCallback
         );
+        // If this coroutine is being started while another coroutine is being resumed, add it to
+        // whichever list is currently being processed (the immediate-completion list, if that's
+        // what's running) instead of always going to the per-game list. Otherwise a coroutine
+        // started as a child of one being force-completed via RunCoroutineImmediatelyToCompletion
+        // would only ever get ticked on the normal per-game schedule, which never advances while
+        // the immediate-completion loop is spinning, hanging it forever.
+        var targetList =
+            currentCoroutineList
+            ?? Current.Game.GetComponent<MultiTickCoroutineManager>()._coroutines;
         Logger.LogDebug(
             $"Adding CoroutineHandle for {debugHandle} to MultiTickCoroutineManager",
             "Coroutines"
         );
-        Current.Game.GetComponent<MultiTickCoroutineManager>()._coroutines.Add(handle);
+        targetList.Add(handle);
         return handle;
     }
 
-    private static readonly List<CoroutineHandle> immediateCompletionList = [];
+    /// <summary>
+    /// The maximum number of ticks <see cref="RunCoroutineImmediatelyToCompletion"/> will spin
+    /// through before giving up on a coroutine that never completes.
+    /// </summary>
+    private const int MaxImmediateCompletionIterations = 100_000;
 
     public static void RunCoroutineImmediatelyToCompletion(IEnumerable<IResumeCondition> coroutine)
     {
@@ -179,18 +213,39 @@ public class MultiTickCoroutineManager(Game _) : GameComponent
             throw new ArgumentNullException(nameof(coroutine));
         }
 
-        immediateCompletionList.Add(
+        // A local list rather than a shared static one, so a coroutine that itself calls
+        // RunCoroutineImmediatelyToCompletion (reentrancy) gets its own independent batch instead
+        // of interfering with the batch of the outer call.
+        List<CoroutineHandle> immediateCompletionList =
+        [
             new(
                 coroutine.GetEnumerator(),
                 null,
                 $"Immediate({coroutine.GetHashCode()})",
                 null,
                 null
-            )
-        );
+            ),
+        ];
 
+        var iterations = 0;
         while (immediateCompletionList.Count > 0)
         {
+            if (++iterations > MaxImmediateCompletionIterations)
+            {
+                Logger.LogError(
+                    $"RunCoroutineImmediatelyToCompletion aborted after "
+                        + $"{MaxImmediateCompletionIterations} iterations; "
+                        + $"{immediateCompletionList.Count} coroutine(s) never completed. "
+                        + "This probably means one is waiting on a resume condition that "
+                        + "can't be resolved within a single tick."
+                );
+                foreach (var handle in immediateCompletionList)
+                {
+                    handle.Cancel();
+                }
+                break;
+            }
+
             RunSingleTick(immediateCompletionList);
         }
     }
