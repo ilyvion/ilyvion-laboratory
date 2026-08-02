@@ -9,7 +9,7 @@ namespace ilyvion.Laboratory.Extensions;
 public static class StringExtensions
 {
     private static readonly Dictionary<
-        Pair<string, float>,
+        (string text, float width, GameFont font),
         (bool fits, Vector2 textSize)
     > _fitsCache = [];
 
@@ -19,7 +19,7 @@ public static class StringExtensions
 
     public static bool Fits(this string text, float width, out Vector2 textSize)
     {
-        var key = new Pair<string, float>(text, width);
+        var key = (text, width, Text.Font);
         if (_fitsCache.TryGetValue(key, out var value))
         {
             textSize = value.textSize;

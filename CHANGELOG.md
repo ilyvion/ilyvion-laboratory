@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A coroutine forced to run to completion immediately no longer freezes the game forever if it starts a child coroutine or waits on a condition that can't be resolved right away; it now gives up and logs an error instead.
 - The mod XML data used to resolve custom ParentName inheritance is now released when a mod list is reloaded, instead of accumulating in memory for the rest of the session.
 - A custom ParentName referencing a type that doesn't exist now logs a clear error instead of crashing with an undiagnostic exception.
+- Text-fits-width measurements are no longer cached across different text sizes (e.g. tiny vs medium font), which could previously show stale results using the wrong font's measurement.
 
 ### Changed
 
