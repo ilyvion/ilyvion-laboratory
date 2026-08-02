@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A coroutine waiting a negative number of ticks no longer gets stuck forever; it now resumes right away, same as waiting zero ticks.
 - Starting a coroutine while no game is loaded now fails with a clear error instead of an undiagnostic crash.
 - VersionCheck.IsAtLeastVersion(version) now correctly returns true when the mod's version exactly matches the required version, instead of only when it's strictly newer.
+- Dumping a null value via Dump() in dev mode now logs 'DUMP: <null>' instead of just 'DUMP: '.
 
 ### Changed
 
