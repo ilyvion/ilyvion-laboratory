@@ -14,6 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CachedValues.Update() on a key that hadn't been added yet no longer stores a value that's immediately considered stale.
 - Graph axis labels no longer crash when a plotted value is large enough to run past the k/M/G unit suffixes.
 - Graph axis rounding now respects the requested precision for smaller values instead of always rounding to the nearest 10.
+- Graphs drawn without target lines and without target data no longer crash.
+- Clicking or right-clicking a graph legend entry now shows/hides the correct series when a hidden series is present.
+- Graphs with only a single data point no longer misbehave when hovered.
+- Graph series with a per-series unit label now use it in mouse-over tooltips instead of always falling back to the graph's Y-axis unit.
+- Mousing over a graph whose series have unevenly-sized target lines no longer occasionally shows values or tooltips from the wrong series.
 
 ### Changed
 

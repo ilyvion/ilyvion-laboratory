@@ -78,18 +78,12 @@ public class GraphRenderer(GraphSeries[] series)
             );
         }
 
-#pragma warning disable CA1062
-        if (DrawTargetLine && targetData!.Length != data.Length)
-        {
-            throw new GraphException(
-                $"{nameof(data)}'s length must match {nameof(targetData)}'s length"
-            );
-        }
-#pragma warning restore CA1062
+        ValidateTargetDataLength(data, targetData);
 
         var visibleSeries = Series
-            .Where(s => !s.Hidden)
-            .Select((series, index) => (index, series, shown: ShownSeries[index]))
+            .Select((series, index) => (index, series))
+            .Where(t => !t.series.Hidden)
+            .Select(t => (t.index, t.series, shown: ShownSeries[t.index]))
             .ToArray();
         var visibleIndexes = visibleSeries.Select(s => s.index).ToArray();
 
@@ -186,7 +180,10 @@ public class GraphRenderer(GraphSeries[] series)
             .Select(s => s.series)
             .ToArray();
         var shownData = data.Where((_, i) => visibleSeries[i].shown).ToArray();
-        var shownTargetData = targetData.Where((_, i) => visibleSeries[i].shown).ToArray();
+        var shownTargetData =
+            targetData != null
+                ? targetData.Where((_, i) => visibleSeries[i].shown).ToArray()
+                : new int[shownData.Length][];
 
         if (shownData.Length == 0)
         {
@@ -201,7 +198,7 @@ public class GraphRenderer(GraphSeries[] series)
 
         var plotWidth = plotRect.width;
         var plotHeight = plotRect.height;
-        var widthUnit = plotWidth / (entries - 1);
+        var widthUnit = ComputeWidthUnit(plotWidth, entries);
         var heightUnit = plotHeight / Math.Max(max, 2);
         var breakInterval = (float)Math.Max(max, 2) / (Breaks + 1);
         var breakUnit = heightUnit * breakInterval;
@@ -356,45 +353,19 @@ public class GraphRenderer(GraphSeries[] series)
 
         var unitXPosition = (int)Mathf.Round(unitPosition.x);
 
-        var distances = shownData
-            .Where(data => unitXPosition < data.Length)
-            .Select(data => Math.Abs(data[unitXPosition] - unitPosition.y))
-            .Concat(
-                DrawTargetLine
-                    ? shownTargetData
-                        .Where(target =>
-                            unitXPosition < (target?.Length ?? shownData.Max(d => d.Length))
-                        )
-                        .Select(target =>
-                            Math.Abs(
-                                (target != null ? target[unitXPosition] : short.MaxValue)
-                                    - unitPosition.y
-                            )
-                        )
-                    : []
-            )
-            .ToArray();
+        var (minSeriesIndex, minIsTarget) = FindClosestSeries(
+            shownData,
+            shownTargetData,
+            unitXPosition,
+            unitPosition.y,
+            DrawTargetLine
+        );
 
-        // get the minimum index
-        float min = int.MaxValue;
-        var minIndex = 0;
-        for (var i = distances.Length - 1; i >= 0; i--)
-        {
-            if (
-                distances[i] < min
-                && (i < shownData.Length || shownTargetData[i % shownData.Length] != null)
-            )
-            {
-                minIndex = i;
-                min = distances[i];
-            }
-        }
+        var useValue = !minIsTarget;
 
-        var useValue = minIndex < shownData.Length;
-
-        var closestSeries = shownSeries[minIndex % shownData.Length];
-        var closestData = shownData[minIndex % shownData.Length];
-        var closestTargetData = shownTargetData[minIndex % shownData.Length];
+        var closestSeries = shownSeries[minSeriesIndex];
+        var closestData = shownData[minSeriesIndex];
+        var closestTargetData = shownTargetData[minSeriesIndex];
 
         if (unitXPosition < closestData.Length)
         {
@@ -449,14 +420,18 @@ public class GraphRenderer(GraphSeries[] series)
                         closestSeries.Label,
                         Utils.FormatCount(
                             closestData[unitXPosition],
-                            closestSeries.UnitLabel ?? YAxisUnitLabel
+                            closestSeries.UnitLabel.NullOrEmpty()
+                                ? YAxisUnitLabel
+                                : closestSeries.UnitLabel
                         )
                     )
                     : "ilyvion.Laboratory.Graph.TargetTooltip".Translate(
                         closestSeries.Label,
                         Utils.FormatCount(
                             closestTargetData![unitXPosition],
-                            closestSeries.UnitLabel ?? YAxisUnitLabel
+                            closestSeries.UnitLabel.NullOrEmpty()
+                                ? YAxisUnitLabel
+                                : closestSeries.UnitLabel
                         )
                     );
                 var tipsize = Text.CalcSize(tip);
@@ -497,6 +472,64 @@ public class GraphRenderer(GraphSeries[] series)
                 }
             }
         }
+    }
+
+    internal static void ValidateTargetDataLength(int[][] data, int[]?[]? targetData)
+    {
+        if (targetData != null && targetData.Length != data.Length)
+        {
+            throw new GraphException(
+                $"{nameof(data)}'s length must match {nameof(targetData)}'s length"
+            );
+        }
+    }
+
+    internal static float ComputeWidthUnit(float plotWidth, int entries) =>
+        plotWidth / Math.Max(entries - 1, 1);
+
+    /// <summary>Finds the shown series/target line closest to (unitXPosition, unitYPosition).</summary>
+    internal static (int SeriesIndex, bool IsTarget) FindClosestSeries(
+        int[][] shownData,
+        int[]?[] shownTargetData,
+        int unitXPosition,
+        float unitYPosition,
+        bool drawTargetLine
+    )
+    {
+        var minSeriesIndex = 0;
+        var minIsTarget = false;
+        float min = int.MaxValue;
+        for (var i = shownData.Length - 1; i >= 0; i--)
+        {
+            var data = shownData[i];
+            if (unitXPosition < data.Length)
+            {
+                var distance = Math.Abs(data[unitXPosition] - unitYPosition);
+                if (distance < min)
+                {
+                    minSeriesIndex = i;
+                    minIsTarget = false;
+                    min = distance;
+                }
+            }
+
+            if (drawTargetLine)
+            {
+                var target = shownTargetData[i];
+                if (target != null && unitXPosition < target.Length)
+                {
+                    var distance = Math.Abs(target[unitXPosition] - unitYPosition);
+                    if (distance < min)
+                    {
+                        minSeriesIndex = i;
+                        minIsTarget = true;
+                        min = distance;
+                    }
+                }
+            }
+        }
+
+        return (minSeriesIndex, minIsTarget);
     }
 }
 
