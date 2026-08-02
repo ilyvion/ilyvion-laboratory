@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added IlyvionDebugLogCategories, letting mods enable/disable specific debug log categories (such as coroutine scheduling diagnostics) at runtime for easier troubleshooting.
+
 ### Changed
 
 - MultiTickCachedValue.DoUpdateIfNeeded(bool force) is now obsolete and will become private in a future version; use the new parameterless DoUpdateIfNeeded() or ForceUpdate() instead, which no longer break compile-time null-checking for calling code.
