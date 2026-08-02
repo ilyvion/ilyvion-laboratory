@@ -138,7 +138,7 @@ public sealed class CircularBuffer<T> : IEnumerable<T>
                     string.Format("Cannot access index {0}. Buffer is empty", index)
                 );
             }
-            if (index >= Size)
+            if (index < 0 || index >= Size)
             {
                 throw new ArgumentException(
                     string.Format("Cannot access index {0}. Buffer size is {1}", index, Size)
@@ -155,7 +155,7 @@ public sealed class CircularBuffer<T> : IEnumerable<T>
                     string.Format("Cannot access index {0}. Buffer is empty", index)
                 );
             }
-            if (index >= Size)
+            if (index < 0 || index >= Size)
             {
                 throw new ArgumentException(
                     string.Format("Cannot access index {0}. Buffer size is {1}", index, Size)
