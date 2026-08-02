@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - VersionCheck.IsAtLeastVersion(version) now correctly returns true when the mod's version exactly matches the required version, instead of only when it's strictly newer.
 - Dumping a null value via Dump() in dev mode now logs 'DUMP: <null>' instead of just 'DUMP: '.
 - ArrayPool.RentWithSelfReturn() rentals no longer risk returning the same pooled array to the pool twice when the rental is copied, which could previously let two unrelated rentals end up sharing the same array.
+- IlyvionMod.LogException() now prefixes logged messages with the mod's name, like the other logging methods, instead of leaving it off.
 
 ### Changed
 

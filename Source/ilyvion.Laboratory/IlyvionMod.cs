@@ -40,13 +40,7 @@ public abstract class IlyvionMod(ModContentPack content) : Mod(content)
 
     public virtual void LogError(string msg) => Log.Error($"[{Content.Name}] " + msg);
 
-    public virtual void LogException(string msg, Exception e) =>
-        Log.Error(
-            $"""
-                {msg}
-                {e}
-            """
-        );
+    public virtual void LogException(string msg, Exception e) => LogError($"{msg}\n{e}");
 
     public virtual void LogMessageOnce(string msg, ref bool hasLogged)
     {
