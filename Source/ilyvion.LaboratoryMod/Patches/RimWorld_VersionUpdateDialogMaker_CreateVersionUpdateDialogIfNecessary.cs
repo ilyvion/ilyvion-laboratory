@@ -24,7 +24,21 @@ internal static class RimWorld_VersionUpdateDialogMaker_CreateVersionUpdateDialo
             requiredVersionRequests ??= [];
             if (!VersionCheck.IsAtLeastVersion(requiredVersion))
             {
-                requiredVersionRequests.Add(item.modName, requiredVersion);
+                if (requiredVersionRequests.TryGetValue(item.modName, out var existingVersion))
+                {
+                    Laboratory.Logger.LogWarning(
+                        $"Multiple VersionCheckDefs present for mod '{item.modName}'; "
+                            + "keeping the highest requested version."
+                    );
+                    if (existingVersion < requiredVersion)
+                    {
+                        requiredVersionRequests[item.modName] = requiredVersion;
+                    }
+                }
+                else
+                {
+                    requiredVersionRequests.Add(item.modName, requiredVersion);
+                }
             }
         }
 

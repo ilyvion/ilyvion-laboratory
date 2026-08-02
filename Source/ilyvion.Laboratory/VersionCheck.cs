@@ -35,23 +35,4 @@ public static class VersionCheck
     public static bool IsAtLeastVersion(Version requiredVersion) => OurVersion >= requiredVersion;
 
     public static Version OurVersion => Assembly.GetExecutingAssembly().GetName().Version;
-
-    [Obsolete(
-        "By the time we try to call this, it's already too late. "
-            + "Use the VersionCheckDef in a Def XML file instead."
-    )]
-    public static void ShowRequiresAtLeastVersionMessageFor(Version requiredVersion, string modName)
-    {
-        if (RequiredVersionRequests == null)
-        {
-            throw new InvalidOperationException(
-                "Calls to ShowRequiresAtLeastVersionMessageFor "
-                    + "may only be made before the game's main menu is shown for the first time"
-            );
-        }
-        if (!IsAtLeastVersion(requiredVersion))
-        {
-            RequiredVersionRequests.Add(modName, requiredVersion);
-        }
-    }
 }
