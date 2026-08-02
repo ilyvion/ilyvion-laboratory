@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Saving/loading an Either using the Reference, LocalTargetInfo, TargetInfo, GlobalTargetInfo, or BodyPart modes no longer silently loses the loaded value.
 - Saving/loading an Either holding a null BodyPart value no longer crashes on load.
 - CachedValues.Update() on a key that hadn't been added yet no longer stores a value that's immediately considered stale.
+- Graph axis labels no longer crash when a plotted value is large enough to run past the k/M/G unit suffixes.
+- Graph axis rounding now respects the requested precision for smaller values instead of always rounding to the nearest 10.
 
 ### Changed
 

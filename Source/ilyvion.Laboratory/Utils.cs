@@ -18,7 +18,7 @@ public static class Utils
     public static int CeilToPrecision(float value, int precision = 1)
     {
         var magnitude = Mathf.FloorToInt(Mathf.Log10(value + 1));
-        var unit = Mathf.FloorToInt(Mathf.Pow(10, Mathf.Max(magnitude - precision, 1)));
+        var unit = Mathf.FloorToInt(Mathf.Pow(10, Mathf.Max(magnitude - precision, 0)));
         return Mathf.CeilToInt((value + 1) / unit) * unit;
     }
 
@@ -32,7 +32,7 @@ public static class Utils
         unitSuffixes ??= ["", "k", "M", "G"];
 
         var i = 0;
-        while (value > threshold && i < unitSuffixes.Length)
+        while (value > threshold && i < unitSuffixes.Length - 1)
         {
             value /= threshold;
             i++;
