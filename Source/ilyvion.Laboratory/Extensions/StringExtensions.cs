@@ -1,6 +1,7 @@
 ﻿// Parts of the code:
 // Copyright Karel Kroeze, 2020-2020
 
+using ilyvion.Laboratory.Collections;
 using ilyvion.Laboratory.UI;
 
 namespace ilyvion.Laboratory.Extensions;
@@ -8,10 +9,10 @@ namespace ilyvion.Laboratory.Extensions;
 [HotSwappable]
 public static class StringExtensions
 {
-    private static readonly Dictionary<
+    private static readonly LruCache<
         (string text, float width, GameFont font),
         (bool fits, Vector2 textSize)
-    > _fitsCache = [];
+    > _fitsCache = new(100);
 
     public static string Bold(this TaggedString text) => text.Resolve().Bold();
 
@@ -26,18 +27,13 @@ public static class StringExtensions
             return value.fits;
         }
 
-        if (_fitsCache.Count >= 100)
-        {
-            _fitsCache.Clear();
-        }
-
         using (GUIScope.WordWrap(false))
         {
             textSize = Text.CalcSize(text);
             value = (textSize.x < width, textSize);
         }
 
-        _fitsCache.Add(key, value);
+        _fitsCache.Set(key, value);
         return value.fits;
     }
 

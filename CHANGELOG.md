@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added IlyvionDebugLogCategories, letting mods enable/disable specific debug log categories (such as coroutine scheduling diagnostics) at runtime for easier troubleshooting.
+- Added LruCache, a reusable bounded cache that evicts only its least-recently-used entry once full, for mods that want the same eviction behaviour used internally for text-measurement caching.
 
 ### Changed
 
@@ -17,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- The internal cache used to measure whether text fits a given width no longer wipes itself entirely once it fills up.
 - Saving/loading an Either using the Reference, LocalTargetInfo, TargetInfo, GlobalTargetInfo, or BodyPart modes no longer silently loses the loaded value.
 - Saving/loading an Either holding a null BodyPart value no longer crashes on load.
 - CachedValues.Update() on a key that hadn't been added yet no longer stores a value that's immediately considered stale.
