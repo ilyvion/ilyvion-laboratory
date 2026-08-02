@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Graphs with only a single data point no longer misbehave when hovered.
 - Graph series with a per-series unit label now use it in mouse-over tooltips instead of always falling back to the graph's Y-axis unit.
 - Mousing over a graph whose series have unevenly-sized target lines no longer occasionally shows values or tooltips from the wrong series.
+- GUIScope.Multiple() no longer permanently corrupts the game's shared font style when combining a font size change with a game font change.
+- GUIScope.ScrollView() no longer ends the scroll view twice if disposed more than once.
 
 ### Changed
 

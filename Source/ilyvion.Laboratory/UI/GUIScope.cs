@@ -179,13 +179,13 @@ public static class GUIScope
             TextAnchor? textAnchor
         )
         {
-            if (fontSize.HasValue)
-            {
-                _fontSizeScope = new FontSizeScope(fontSize.Value);
-            }
             if (gameFont.HasValue)
             {
                 _fontScope = new FontScope(gameFont.Value);
+            }
+            if (fontSize.HasValue)
+            {
+                _fontSizeScope = new FontSizeScope(fontSize.Value);
             }
             if (color.HasValue)
             {
@@ -250,6 +250,7 @@ public class ScrollViewStatus
 {
     internal Vector2 Position;
     internal float Height;
+    internal bool Disposed;
 }
 
 public readonly record struct ScrollViewScope : IDisposable
@@ -277,10 +278,40 @@ public readonly record struct ScrollViewScope : IDisposable
         }
 
         Height = 0f;
+        ResetForNewScope(_scrollViewStatus);
         Widgets.BeginScrollView(outRect, ref _scrollViewStatus.Position, _viewRect, showScrollbars);
     }
 
-    public void Dispose() => Widgets.EndScrollView();
+    public void Dispose()
+    {
+        if (TryMarkDisposed(_scrollViewStatus))
+        {
+            Widgets.EndScrollView();
+        }
+    }
+
+    /// <summary>
+    /// Marks <paramref name="scrollViewStatus"/> as not yet disposed, so a status object reused
+    /// across multiple <see cref="ScrollViewScope"/> instances gets its own <see cref="Dispose"/>
+    /// call honored instead of being permanently skipped by a previous scope's disposal.
+    /// </summary>
+    internal static void ResetForNewScope(ScrollViewStatus scrollViewStatus) =>
+        scrollViewStatus.Disposed = false;
+
+    /// <summary>
+    /// Marks <paramref name="scrollViewStatus"/> as disposed and reports whether this call is
+    /// the one that did so, so <see cref="Dispose"/> ends the scroll view at most once.
+    /// </summary>
+    internal static bool TryMarkDisposed(ScrollViewStatus scrollViewStatus)
+    {
+        if (scrollViewStatus.Disposed)
+        {
+            return false;
+        }
+
+        scrollViewStatus.Disposed = true;
+        return true;
+    }
 
     public bool CanCull(float entryHeight, float entryY) =>
         entryY + entryHeight < _scrollViewStatus.Position.y
