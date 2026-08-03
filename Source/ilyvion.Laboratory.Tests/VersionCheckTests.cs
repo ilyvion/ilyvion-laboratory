@@ -42,4 +42,88 @@ internal static class VersionCheckTests
 
         Assert.That(result).Is.False();
     }
+
+    [Test]
+    public static void VersionCheckDefModIdDefaultsToOurOwnModId()
+    {
+        var def = new VersionCheckDef();
+
+        Assert.That(def.modId).Is.EqualTo(VersionCheck.OurModId);
+    }
+
+    [Test]
+    public static void VersionCheckDefRequiredVersionUsesTwoPartCtorWhenBuildAndRevisionUnset()
+    {
+        var def = new VersionCheckDef { majorVersion = 1, minorVersion = 2 };
+
+        var result = def.RequiredVersion;
+
+        Assert.That(result).Is.EqualTo(new Version(1, 2));
+    }
+
+    [Test]
+    public static void VersionCheckDefRequiredVersionUsesThreePartCtorWhenOnlyBuildSet()
+    {
+        var def = new VersionCheckDef
+        {
+            majorVersion = 1,
+            minorVersion = 2,
+            buildVersion = 3,
+        };
+
+        var result = def.RequiredVersion;
+
+        Assert.That(result).Is.EqualTo(new Version(1, 2, 3));
+    }
+
+    [Test]
+    public static void VersionCheckDefRequiredVersionUsesFourPartCtorWhenBuildAndRevisionSet()
+    {
+        var def = new VersionCheckDef
+        {
+            majorVersion = 1,
+            minorVersion = 2,
+            buildVersion = 3,
+            revisionVersion = 4,
+        };
+
+        var result = def.RequiredVersion;
+
+        Assert.That(result).Is.EqualTo(new Version(1, 2, 3, 4));
+    }
+
+    [Test]
+    public static void VersionCheckDefRequiredVersionIgnoresRevisionWithoutBuild()
+    {
+        var def = new VersionCheckDef
+        {
+            majorVersion = 1,
+            minorVersion = 2,
+            revisionVersion = 4,
+        };
+
+        var result = def.RequiredVersion;
+
+        Assert.That(result).Is.EqualTo(new Version(1, 2));
+    }
+
+    [Test]
+    public static void VersionCheckDefConfigErrorsFlagsRevisionVersionSetWithoutBuildVersion()
+    {
+        var def = new VersionCheckDef
+        {
+            majorVersion = 1,
+            minorVersion = 2,
+            revisionVersion = 4,
+            modName = "Some Mod",
+        };
+
+        var errors = def.ConfigErrors();
+
+        Assert
+            .ThatCollection(errors.ToList())
+            .Does.Contain(
+                "revisionVersion is set without buildVersion; revisionVersion is ignored unless buildVersion is also set"
+            );
+    }
 }

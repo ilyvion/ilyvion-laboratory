@@ -30,9 +30,24 @@ public static class VersionCheck
             ) { }
     }
 
-    internal static Dictionary<string, Version>? RequiredVersionRequests { get; set; } = [];
+    internal readonly record struct VersionRequirement(
+        string TargetModId,
+        string TargetModName,
+        Version RequiredVersion,
+        Version ActualVersion
+    );
+
+    internal static Dictionary<string, VersionRequirement>? RequiredVersionRequests { get; set; } =
+    [];
 
     public static bool IsAtLeastVersion(Version requiredVersion) => OurVersion >= requiredVersion;
 
     public static Version OurVersion => Assembly.GetExecutingAssembly().GetName().Version;
+
+    /// <summary>
+    /// The package ID ilyvion's Laboratory itself is published under, i.e. the default a
+    /// <see cref="VersionCheckDef"/> checks against when no other mod is specified.
+    /// </summary>
+    [SinceVersion(0, 23, 0)]
+    public const string OurModId = "ilyvion.laboratory";
 }
