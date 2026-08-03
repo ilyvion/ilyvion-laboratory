@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LanguageData>
+    <ilyvion.Laboratory.UpdateNotifications.ModUpdates>Mod Updates</ilyvion.Laboratory.UpdateNotifications.ModUpdates>
+    <ilyvion.Laboratory.UpdateNotifications.Close>Close</ilyvion.Laboratory.UpdateNotifications.Close>
+    <ilyvion.Laboratory.UpdateNotifications.MarkAsRead>Mark as read</ilyvion.Laboratory.UpdateNotifications.MarkAsRead>
+    <ilyvion.Laboratory.UpdateNotifications.Settings.ShowModUpdates>Show mod update notifications</ilyvion.Laboratory.UpdateNotifications.Settings.ShowModUpdates>
+    <ilyvion.Laboratory.UpdateNotifications.Settings.ShowAllOldUpdates>Show all old updates</ilyvion.Laboratory.UpdateNotifications.Settings.ShowAllOldUpdates>
+    <ilyvion.Laboratory.UpdateNotifications.Settings.UnmarkAllAsSeen>Unmark all updates as seen</ilyvion.Laboratory.UpdateNotifications.Settings.UnmarkAllAsSeen>
+</LanguageData>

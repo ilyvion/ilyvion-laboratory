@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <RootNamespace>ilyvion.LaboratoryMod.TabulaRasa</RootNamespace>
+        <AssemblyName>ilyvion.LaboratoryMod.TabulaRasa</AssemblyName>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <OutputPath>../../Integrations/TabulaRasa/$(RimWorldVersion)/Assemblies</OutputPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\ilyvion.Laboratory\ilyvion.Laboratory.csproj">
+            <Private>false</Private>
+        </ProjectReference>
+    </ItemGroup>
+
+    <!-- Tabula Rasa's assembly is named TabulaRasa.dll across all supported RimWorld versions
+         (workshop id 1660622094). This integration only ever loads while Tabula Rasa is active
+         (see About/LoadFolders.xml's IfModActive), so the reference is guaranteed to resolve at
+         runtime even though it isn't copied into our own output. -->
+    <ItemGroup>
+        <Reference Include="TabulaRasa">
+            <HintPath>$(RimWorldSteamWorkshopFolderPath)\1660622094\$(RimWorldVersion)\Assemblies\TabulaRasa.dll</HintPath>
+            <CopyLocal>False</CopyLocal>
+            <Private>false</Private>
+        </Reference>
+    </ItemGroup>
+</Project>

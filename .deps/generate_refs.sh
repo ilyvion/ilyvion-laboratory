@@ -1,0 +1,1 @@
+../../rimworld-utils/.deps/generate_refs.sh

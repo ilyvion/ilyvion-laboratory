@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ilyvion.LaboratoryMod", "So
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ilyvion.Laboratory.Tests", "Source\ilyvion.Laboratory.Tests\ilyvion.Laboratory.Tests.csproj", "{96B0EE99-3539-4D84-89CC-9FFB4340B0D7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ilyvion.LaboratoryMod.TabulaRasa", "Source\ilyvion.LaboratoryMod.TabulaRasa\ilyvion.LaboratoryMod.TabulaRasa.csproj", "{A32EAB2E-FD2C-403A-9E56-5E9D47255CA5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,5 +31,9 @@ Global
 		{96B0EE99-3539-4D84-89CC-9FFB4340B0D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{96B0EE99-3539-4D84-89CC-9FFB4340B0D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{96B0EE99-3539-4D84-89CC-9FFB4340B0D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A32EAB2E-FD2C-403A-9E56-5E9D47255CA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A32EAB2E-FD2C-403A-9E56-5E9D47255CA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A32EAB2E-FD2C-403A-9E56-5E9D47255CA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A32EAB2E-FD2C-403A-9E56-5E9D47255CA5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

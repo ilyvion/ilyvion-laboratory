@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added IlyvionDebugLogCategories, letting mods enable/disable specific debug log categories (such as coroutine scheduling diagnostics) at runtime for easier troubleshooting.
 - Added LruCache, a reusable bounded cache that evicts only its least-recently-used entry once full, for mods that want the same eviction behaviour used internally for text-measurement caching.
 - VersionCheckDefs (the outdated-version warning popup) can now target any installed mod, not just ilyvion's Laboratory itself, so mods can warn players when one of their own dependencies is out of date. This also lets a version requirement be as precise as a build/revision number, not just major.minor. Requires RimWorld 1.4 or newer to check a mod other than ilyvion's Laboratory; on 1.3 only ilyvion's Laboratory itself can still be checked.
+- Added a main-menu update notification widget: any mod depending on ilyvion's Laboratory can define an UpdateDef to announce its own updates to players, either by authoring the content directly on the def or by pointing it at an existing Keep-a-Changelog-formatted CHANGELOG.md file to generate entries from. Includes settings to disable the popup, show all past updates again, or unmark everything as seen.
+- Mods using both ilyvion's Laboratory and Tabula Rasa get a combined update popup instead of two competing ones; Tabula Rasa's own popup is disabled and its update defs (including its legacy plain-text content field) are folded into ilyvion's Laboratory's.
 
 ### Changed
 

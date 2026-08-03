@@ -13,4 +13,13 @@ internal static class Resources
     // Assigned from StaticConstructorOnStartup in ilyvion.LaboratoryMod project.
     // Can't find a way to disable the stupid warning for this type, though.
     public static Texture2D GraphDot { get; set; }
+
+    public static Texture2D? UpdateMarkAsRead { get; set; }
+    public static Texture2D? UpdateHyperlink { get; set; }
+
+    public static Texture2D? AdmonitionNote { get; set; }
+    public static Texture2D? AdmonitionTip { get; set; }
+    public static Texture2D? AdmonitionImportant { get; set; }
+    public static Texture2D? AdmonitionWarning { get; set; }
+    public static Texture2D? AdmonitionCaution { get; set; }
 }

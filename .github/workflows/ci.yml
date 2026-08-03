@@ -27,6 +27,8 @@ jobs:
         1.4
         1.5
         1.6
+      extra_files: |-
+        Integrations
       license_files: |-
         LICENSE
         LICENSE.Apache-2.0

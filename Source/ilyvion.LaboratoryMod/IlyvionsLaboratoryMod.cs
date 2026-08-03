@@ -13,6 +13,10 @@ internal sealed class IlyvionsLaboratoryMod : IlyvionMod
     internal static IlyvionsLaboratoryMod _mod;
 #pragma warning restore CS8618
 
+    protected override bool HasSettings => true;
+
+    internal IlyvionsLaboratorySettings Settings { get; }
+
     public IlyvionsLaboratoryMod(ModContentPack content)
         : base(content)
     {
@@ -31,6 +35,22 @@ internal sealed class IlyvionsLaboratoryMod : IlyvionMod
             Verse_ScribeLoader_InitLoading_Reverse.InitLoadingWithCustomStreamReader;
         CustomStreamScribeSaver.initSavingWithCustomStream =
             Verse_ScribeSaver_InitSaving_Reverse.InitSavingWithCustomStream;
+
+        UpdateNotifications.SaveSettings = WriteSettings;
+
+        Settings = GetSettings<IlyvionsLaboratorySettings>();
+        if (!Settings.HasInitializedUpdateCutoff)
+        {
+            UpdateNotifications.CutoffDate = DateTime.Today;
+            Settings.HasInitializedUpdateCutoff = true;
+            WriteSettings();
+        }
+    }
+
+    public override void DoSettingsWindowContents(Rect inRect)
+    {
+        base.DoSettingsWindowContents(inRect);
+        IlyvionsLaboratorySettings.DoWindowContents(inRect);
     }
 }
 
@@ -57,6 +77,25 @@ internal static class ResourceLoading
     {
         Laboratory.Resources.GraphDot = ContentFinder<Texture2D>.Get(
             "UI/Icons/ilyvion.Laboratory.GraphDot"
+        );
+        Laboratory.Resources.UpdateMarkAsRead = ContentFinder<Texture2D>.Get(
+            "UI/Icons/Updates/MarkAsRead"
+        );
+        Laboratory.Resources.UpdateHyperlink = ContentFinder<Texture2D>.Get(
+            "UI/Icons/Updates/Hyperlink"
+        );
+        Laboratory.Resources.AdmonitionNote = ContentFinder<Texture2D>.Get(
+            "UI/Icons/Updates/Information"
+        );
+        Laboratory.Resources.AdmonitionTip = ContentFinder<Texture2D>.Get("UI/Icons/Updates/Tip");
+        Laboratory.Resources.AdmonitionImportant = ContentFinder<Texture2D>.Get(
+            "UI/Icons/Updates/Important"
+        );
+        Laboratory.Resources.AdmonitionWarning = ContentFinder<Texture2D>.Get(
+            "UI/Icons/Updates/Warning"
+        );
+        Laboratory.Resources.AdmonitionCaution = ContentFinder<Texture2D>.Get(
+            "UI/Icons/Updates/Caution"
         );
     }
 }
