@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - The internal cache used to measure whether text fits a given width no longer wipes itself entirely once it fills up.
+- The internal cache used to measure whether text fits a given width no longer confuses measurements between different custom fonts sharing the same base font size, which could make text using a custom font wrap or truncate incorrectly.
 - Saving/loading an Either using the Reference, LocalTargetInfo, TargetInfo, GlobalTargetInfo, or BodyPart modes no longer silently loses the loaded value.
 - Saving/loading an Either holding a null BodyPart value no longer crashes on load.
 - CachedValues.Update() on a key that hadn't been added yet no longer stores a value that's immediately considered stale.

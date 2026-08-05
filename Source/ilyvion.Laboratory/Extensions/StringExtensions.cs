@@ -10,7 +10,7 @@ namespace ilyvion.Laboratory.Extensions;
 public static class StringExtensions
 {
     private static readonly LruCache<
-        (string text, float width, GameFont font),
+        (string text, float width, GameFont font, string? customFontKey),
         (bool fits, Vector2 textSize)
     > _fitsCache = new(100);
 
@@ -20,7 +20,10 @@ public static class StringExtensions
 
     public static bool Fits(this string text, float width, out Vector2 textSize)
     {
-        var key = (text, width, Text.Font);
+        var customFontKey = CustomFontManager.featureEnabled
+            ? CustomFontManager.Instance.CurrentFontKey
+            : null;
+        var key = (text, width, Text.Font, customFontKey);
         if (_fitsCache.TryGetValue(key, out var value))
         {
             textSize = value.textSize;
