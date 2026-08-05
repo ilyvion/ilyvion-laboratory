@@ -15,12 +15,15 @@ public class PatchOperationFindModById : PatchOperation
     protected override bool ApplyWorker(XmlDocument xml)
     {
         var matched = false;
-        foreach (var mod in mods)
+        if (mods != null)
         {
-            if (ModsConfig.IsActive(mod))
+            foreach (var mod in mods)
             {
-                matched = true;
-                break;
+                if (ModsConfig.IsActive(mod))
+                {
+                    matched = true;
+                    break;
+                }
             }
         }
         if (matched)

@@ -52,6 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Two loaded mods requiring an update to a newer version of ilyvion's Laboratory no longer crashes the version-check dialog when both mods share the same name; a warning is logged and the higher required version is kept instead.
 - Two mods registering a custom back-compatibility type replacement for the same base type or class name no longer crashes the game with an undiagnostic exception; a warning is logged and the later registration takes precedence instead.
 - Two mods registering a custom font under the same key no longer crashes the game with an undiagnostic exception; a warning is logged and the later registration takes precedence instead.
+- A PatchOperationFindModById patch missing its 'mods' list no longer crashes def-loading; it's now treated as not matching any mod instead.
 
 ## [0.22.0] - 2026-07-31
 
