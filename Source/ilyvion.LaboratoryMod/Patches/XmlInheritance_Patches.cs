@@ -47,7 +47,19 @@ internal static class XmlInheritance_GetResolvedNodeFor_Patches
                 return false; // Skip the original method
             }
 
-            var customParentNameHandler = Activator.CreateInstance(type);
+            object? customParentNameHandler;
+            try
+            {
+                customParentNameHandler = Activator.CreateInstance(type);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(
+                    $"Encountered a 'ParentName' that starts with '::', but the type provided, '{typeName}' ({type.FullName}) could not be instantiated.\nException: {e}"
+                );
+                __result = null;
+                return false; // Skip the original method
+            }
             if (customParentNameHandler is not ICustomParentNameHandler)
             {
                 Logger.LogError(
