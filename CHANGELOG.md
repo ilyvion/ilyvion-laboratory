@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added Widgets_TextField, a text field that loses focus when the player clicks outside of it instead of staying focused (and capturing keyboard input) until something else is clicked, matching vanilla's search-box behavior.
+
 ## [0.23.0] - 2026-08-05
 
 ### Added
