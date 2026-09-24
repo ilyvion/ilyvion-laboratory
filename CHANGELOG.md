@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- CachedValue has a new constructor taking an 'updated' argument, so the initial value can be declared fresh (a real value) or stale (a placeholder to be replaced on first use).
+
+### Changed
+
+- The CachedValue constructor that takes only an initial value is now marked obsolete; it treats the initial value as fresh.
+
+### Fixed
+
+- A CachedValue created with an initial value now treats that value as fresh, instead of considering it stale until the first Update().
+
 ## [0.24.0] - 2026-09-13
 
 ### Added

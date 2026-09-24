@@ -103,4 +103,59 @@ internal static class CacheTests
 
         Assert.That(cache.TryGetValue("key", out _)).Is.False();
     }
+
+    [Test]
+    public static void InitialValueIsImmediatelyRetrievable()
+    {
+        var cached = new CachedValue<int>(42, updated: true, updateInterval: 10);
+
+        Assert.That(cached.TryGetValue(out var value)).Is.True();
+        Assert.That(value).Is.EqualTo(42);
+    }
+
+    [Test]
+    public static void InitialValueGoesStaleAfterUpdateInterval()
+    {
+        var cached = new CachedValue<int>(42, updated: true, updateInterval: 10);
+
+        _tick = 11;
+
+        Assert.That(cached.TryGetValue(out _)).Is.False();
+    }
+
+    [Test]
+    public static void InitialValueWithoutATickManagerIsStaleUntilUpdated()
+    {
+#pragma warning disable CA2201 // Simulates the null Find.TickManager the real clock dereferences
+        CacheClock.CurrentTick = () => throw new NullReferenceException();
+#pragma warning restore CA2201
+        var cached = new CachedValue<int>(42, updated: true, updateInterval: 10);
+        CacheClock.CurrentTick = () => _tick;
+
+        Assert.That(cached.TryGetValue(out _)).Is.False();
+    }
+
+    [Test]
+    public static void InitialValueMarkedNotUpdatedIsStaleUntilUpdated()
+    {
+        var cached = new CachedValue<int>(0, updated: false, updateInterval: 10);
+
+        Assert.That(cached.TryGetValue(out _)).Is.False();
+
+        _ = cached.Update(5);
+
+        Assert.That(cached.TryGetValue(out var value)).Is.True();
+        Assert.That(value).Is.EqualTo(5);
+    }
+
+    [Test]
+    public static void ObsoleteInitialValueConstructorTreatsTheValueAsFresh()
+    {
+#pragma warning disable CS0618 // Verifies the behavior existing callers get
+        var cached = new CachedValue<int>(42, updateInterval: 10);
+#pragma warning restore CS0618
+
+        Assert.That(cached.TryGetValue(out var value)).Is.True();
+        Assert.That(value).Is.EqualTo(42);
+    }
 }

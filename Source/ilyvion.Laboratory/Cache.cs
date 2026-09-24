@@ -15,6 +15,19 @@ internal static class CacheClock
 {
     internal static Func<int> CurrentTick { get; set; } = () => Find.TickManager.TicksGame;
 
+    // Null when there is no tick manager yet (e.g. a value constructed at the main menu).
+    internal static int? TryGetCurrentTick()
+    {
+        try
+        {
+            return CurrentTick();
+        }
+        catch (NullReferenceException)
+        {
+            return null;
+        }
+    }
+
     internal static void ResetCurrentTick() => CurrentTick = () => Find.TickManager.TicksGame;
 }
 
@@ -70,7 +83,7 @@ public class CachedValues<TKey, TValue>(int updateInterval = 250)
         }
         else
         {
-            var cacheEntry = new CachedValue<TValue>(value, updateInterval);
+            var cacheEntry = new CachedValue<TValue>(value, updated: true, updateInterval);
             _ = cacheEntry.Update(value);
             _cacheEntries.Add(key, cacheEntry);
         }
@@ -92,11 +105,29 @@ public class CachedValue<T>
     private T? _cached;
     private int? _lastUpdateTick;
 
+    [Obsolete(
+        "Whether the initial value starts out fresh or stale is easy to get wrong. Use the "
+            + "overload that takes an 'updated' argument, or the one that takes an updater."
+    )]
     public CachedValue(T initial, int updateInterval = 250)
+        : this(initial, updated: true, updateInterval) { }
+
+    /// <summary>
+    /// Creates a cached value holding <paramref name="initial"/>.
+    /// </summary>
+    /// <param name="initial">The value held until the first update.</param>
+    /// <param name="updated">
+    /// Whether <paramref name="initial"/> is fresh (a real value, valid for
+    /// <paramref name="updateInterval"/> ticks) or stale (a placeholder; the first
+    /// <see cref="TryGetValue"/> reports a miss so the caller computes and stores the real value).
+    /// </param>
+    /// <param name="updateInterval">How many ticks a value stays fresh.</param>
+    [SinceVersion(0, 25, 0)]
+    public CachedValue(T initial, bool updated, int updateInterval = 250)
     {
         _updateInterval = updateInterval;
         _cached = initial;
-        _lastUpdateTick = null;
+        _lastUpdateTick = updated ? CacheClock.TryGetCurrentTick() : null;
     }
 
     public CachedValue(Func<T>? updater, int updateInterval = 250)
@@ -190,13 +221,13 @@ public class MultiTickCachedValue<T>(
         return _updaterCoroutineHandle;
     }
 
-    [SinceVersion(23, 0, 0)]
+    [SinceVersion(0, 23, 0)]
     public CoroutineHandle? DoUpdateIfNeeded() =>
 #pragma warning disable CS0618 // Type or member is obsolete
         DoUpdateIfNeeded(force: false);
 #pragma warning restore CS0618
 
-    [SinceVersion(23, 0, 0)]
+    [SinceVersion(0, 23, 0)]
     public CoroutineHandle ForceUpdate() =>
 #pragma warning disable CS0618 // Type or member is obsolete
         DoUpdateIfNeeded(force: true)!;
