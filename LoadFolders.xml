@@ -22,5 +22,6 @@
         <li>1.6</li>
         <li IfModActive="neronix17.toolbox">Integrations/TabulaRasa/Common</li>
         <li IfModActive="neronix17.toolbox">Integrations/TabulaRasa/1.6</li>
+        <li IfModActive="ilyvion.rimtestredux">Integrations/RimTestRedux/1.6</li>
     </v1.6>
 </loadFolders>
