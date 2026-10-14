@@ -2,7 +2,7 @@
 // Copyright Karel Kroeze, 2020-2020
 
 using ilyvion.Laboratory.Extensions;
-#if !v1_3 && !v1_4
+#if DEBUG && v1_5_OR_GREATER
 using LudeonTK;
 #endif
 
