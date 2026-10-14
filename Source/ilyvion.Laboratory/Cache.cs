@@ -32,6 +32,7 @@ internal static class CacheClock
 }
 
 public class CachedValues<TKey, TValue>(int updateInterval = 250)
+    where TKey : notnull
 {
     private readonly Dictionary<TKey, CachedValue<TValue>> _cacheEntries = [];
     private readonly int updateInterval = updateInterval;
@@ -55,10 +56,7 @@ public class CachedValues<TKey, TValue>(int updateInterval = 250)
 
     public void Add(TKey key, Func<TValue> updater)
     {
-        if (updater == null)
-        {
-            throw new ArgumentNullException(nameof(updater));
-        }
+        ArgumentNullException.ThrowIfNull(updater);
 
         var cacheEntry = new CachedValue<TValue>(updater, updateInterval);
         _cacheEntries.Add(key, cacheEntry);

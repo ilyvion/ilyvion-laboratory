@@ -69,8 +69,16 @@ public class MultiTickCoroutineManager(Game _) : GameComponent
                 additionallyFinishedCoroutines!.AddRange(
                     Enumerable.Repeat(false, newCoroutineCount)
                 );
+#if v1_7_OR_GREATER
+                // List<T>'s private fields aren't in the .NET reference assemblies.
+                var additionallyFinishedCoroutinesSpan =
+                    System.Runtime.InteropServices.CollectionsMarshal.AsSpan(
+                        additionallyFinishedCoroutines
+                    );
+#else
                 Span<bool> additionallyFinishedCoroutinesSpan =
                     additionallyFinishedCoroutines._items;
+#endif
                 additionallyFinishedCoroutinesSpan = additionallyFinishedCoroutinesSpan.Slice(
                     additionalCoroutinesStartIndex,
                     newCoroutineCount
@@ -168,10 +176,7 @@ public class MultiTickCoroutineManager(Game _) : GameComponent
         string? debugHandle = null
     )
     {
-        if (coroutine == null)
-        {
-            throw new ArgumentNullException(nameof(coroutine));
-        }
+        ArgumentNullException.ThrowIfNull(coroutine);
 
         debugHandle ??= $"Unnamed({coroutine.GetHashCode()})";
 
@@ -216,10 +221,7 @@ public class MultiTickCoroutineManager(Game _) : GameComponent
 
     public static void RunCoroutineImmediatelyToCompletion(IEnumerable<IResumeCondition> coroutine)
     {
-        if (coroutine == null)
-        {
-            throw new ArgumentNullException(nameof(coroutine));
-        }
+        ArgumentNullException.ThrowIfNull(coroutine);
 
         // A local list rather than a shared static one, so a coroutine that itself calls
         // RunCoroutineImmediatelyToCompletion (reentrancy) gets its own independent batch instead

@@ -11,7 +11,7 @@ internal class OrderedEnumerable<TSource>(
 {
     public IOrderedEnumerable<TSource> CreateOrderedEnumerable<TKey>(
         Func<TSource, TKey> keySelector,
-        IComparer<TKey> comparer,
+        IComparer<TKey>? comparer,
         bool descending
     )
     {

@@ -115,10 +115,7 @@ public sealed class LruCache<TKey, TValue>
     /// <param name="valueFactory">Produces the value to store when <paramref name="key"/> isn't already present.</param>
     public TValue GetOrAdd(TKey key, Func<TKey, TValue> valueFactory)
     {
-        if (valueFactory == null)
-        {
-            throw new ArgumentNullException(nameof(valueFactory));
-        }
+        ArgumentNullException.ThrowIfNull(valueFactory);
 
         if (TryGetValue(key, out var value))
         {

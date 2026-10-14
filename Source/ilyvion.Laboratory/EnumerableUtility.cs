@@ -17,15 +17,9 @@ public static class EnumerableUtility
     /// when the count may be much larger than the count being tested.</remarks>
     public static bool CountIsExactly<T>(this IEnumerable<T> source, int count)
     {
-        if (source == null)
-        {
-            throw new ArgumentNullException(nameof(source));
-        }
+        ArgumentNullException.ThrowIfNull(source);
 
-        if (count < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(count));
-        }
+        ArgumentOutOfRangeException.ThrowIfNegative(count);
 
         if (source is ICollection<T> collection)
         {

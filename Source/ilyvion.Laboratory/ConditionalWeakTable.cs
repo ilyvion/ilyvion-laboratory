@@ -1,4 +1,6 @@
-#if !v1_6
+#if !v1_6_OR_GREATER
+using System.Diagnostics.CodeAnalysis;
+
 namespace ilyvion.Laboratory;
 
 internal sealed class ConditionalWeakTable<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
@@ -117,7 +119,7 @@ internal sealed class ConditionalWeakTable<TKey, TValue> : IEnumerable<KeyValueP
         return innerConditionalWeakTable.Remove(key);
     }
 
-    public bool TryGetValue(TKey key, out TValue value) =>
+    public bool TryGetValue(TKey key, [NotNullWhen(true)] out TValue? value) =>
         innerConditionalWeakTable.TryGetValue(key, out value);
 
     public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()

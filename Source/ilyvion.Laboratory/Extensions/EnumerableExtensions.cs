@@ -4,10 +4,7 @@ public static class EnumerableExtensions
 {
     public static IEnumerable<(T, T)> ChunkToTuple<T>(this IEnumerable<T> items)
     {
-        if (items == null)
-        {
-            throw new ArgumentNullException(nameof(items));
-        }
+        ArgumentNullException.ThrowIfNull(items);
 
         using var enumerator = items.GetEnumerator();
 
@@ -27,10 +24,7 @@ public static class EnumerableExtensions
 
     public static (int, int) SumTuple(this IEnumerable<(int, int)> source)
     {
-        if (source == null)
-        {
-            throw new ArgumentNullException(nameof(source));
-        }
+        ArgumentNullException.ThrowIfNull(source);
 
         var num1 = 0;
         var num2 = 0;

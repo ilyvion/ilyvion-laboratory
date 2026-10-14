@@ -185,10 +185,7 @@ public static class ListingStandardBackwardsCompatible
         string? tooltip = null
     )
     {
-        if (listing == null)
-        {
-            throw new ArgumentNullException(nameof(listing));
-        }
+        ArgumentNullException.ThrowIfNull(listing);
 
         var rect = listing.GetRect(30f);
         Text.Anchor = TextAnchor.MiddleLeft;

@@ -1,40 +1,40 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - "v*"
+    push:
+        tags:
+            - "v*"
 
 jobs:
-  build:
-    uses: ilyvion/rimworld-utils/.github/workflows/build_mod.yml@main
-    with:
-      mod_name: "ilyvion.Laboratory"
-      rw_versions: |-
-        1.3
-        1.4
-        1.5
-        1.6
-      extra_files: |-
-        Integrations
-      license_files: |-
-        LICENSE
-        LICENSE.Apache-2.0
-        LICENSE.MIT
-        LICENSE.Content
-      artifact_suffix: Release
+    build:
+        uses: ilyvion/rimworld-utils/.github/workflows/build_mod.yml@main
+        with:
+            mod_name: "ilyvion.Laboratory"
+            rw_versions: |-
+                1.3
+                1.4
+                1.5
+                1.6
+            extra_files: |-
+                Integrations
+            license_files: |-
+                LICENSE
+                LICENSE.Apache-2.0
+                LICENSE.MIT
+                LICENSE.Content
+            artifact_suffix: Release
 
-  release:
-    permissions:
-      contents: write
-    needs: build
-    uses: ilyvion/rimworld-utils/.github/workflows/release_mod.yml@main
-    secrets: inherit
-    with:
-      artifact_name: ${{ needs.build.outputs.artifact_name }}
-      mod_name: "ilyvion.Laboratory"
-      rw_versions: |-
-        1.3
-        1.4
-        1.5
-        1.6
+    release:
+        permissions:
+            contents: write
+        needs: build
+        uses: ilyvion/rimworld-utils/.github/workflows/release_mod.yml@main
+        secrets: inherit
+        with:
+            artifact_name: ${{ needs.build.outputs.artifact_name }}
+            mod_name: "ilyvion.Laboratory"
+            rw_versions: |-
+                1.3
+                1.4
+                1.5
+                1.6

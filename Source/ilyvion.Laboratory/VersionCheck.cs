@@ -42,7 +42,8 @@ public static class VersionCheck
 
     public static bool IsAtLeastVersion(Version requiredVersion) => OurVersion >= requiredVersion;
 
-    public static Version OurVersion => Assembly.GetExecutingAssembly().GetName().Version;
+    public static Version OurVersion =>
+        Assembly.GetExecutingAssembly().GetName().Version ?? new Version(0, 0);
 
     /// <summary>
     /// The package ID ilyvion's Laboratory itself is published under, i.e. the default a

@@ -10,16 +10,13 @@ public class XPathParent : ICustomParentNameHandler
         List<XmlNode> allRegisteredNodes
     )
     {
-        if (node == null)
-        {
-            throw new ArgumentNullException(nameof(node));
-        }
+        ArgumentNullException.ThrowIfNull(node);
 
         var resolvedXPath = $"/Defs/{node.Name}{parentNameData}";
-        XmlNodeList matches;
+        XmlNodeList? matches;
         try
         {
-            matches = node.OwnerDocument.SelectNodes(resolvedXPath);
+            matches = node.OwnerDocument?.SelectNodes(resolvedXPath);
         }
         catch (Exception e)
         {
@@ -29,7 +26,7 @@ public class XPathParent : ICustomParentNameHandler
             );
             return null;
         }
-        if (matches.Count == 0)
+        if (matches == null || matches.Count == 0)
         {
             Logger.LogError(
                 $"No matches found for ilyvion.XPathParent using provided XPath fragment "

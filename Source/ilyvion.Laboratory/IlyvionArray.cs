@@ -5,10 +5,7 @@ public static class IlyvionArray
     public static void SortBy<T, TSortBy>(this T[] list, Func<T, TSortBy> selector)
         where TSortBy : IComparable<TSortBy>
     {
-        if (list == null)
-        {
-            throw new ArgumentNullException(nameof(list));
-        }
+        ArgumentNullException.ThrowIfNull(list);
 
         if (list.Length > 1)
         {
@@ -24,10 +21,7 @@ public static class IlyvionArray
     )
         where TSortBy : IComparable<TSortBy>
     {
-        if (list == null)
-        {
-            throw new ArgumentNullException(nameof(list));
-        }
+        ArgumentNullException.ThrowIfNull(list);
 
         if (list.Length > 1)
         {

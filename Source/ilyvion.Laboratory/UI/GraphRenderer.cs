@@ -47,10 +47,7 @@ public class GraphRenderer(GraphSeries[] series)
     public void DrawGraph(in Rect rect, in int[][] data, in int[]?[]? targetData)
 #pragma warning restore CA1502
     {
-        if (data == null)
-        {
-            throw new ArgumentNullException(nameof(data));
-        }
+        ArgumentNullException.ThrowIfNull(data);
         if (DrawTargetLine && targetData == null)
         {
             throw new ArgumentNullException(nameof(targetData));
@@ -192,7 +189,7 @@ public class GraphRenderer(GraphSeries[] series)
 
         var max = DrawTargetLine
             ? Utils.CeilToPrecision(
-                shownData.Concat(shownTargetData.Where(t => t != null)).Max(s => s.Max())
+                shownData.Concat(shownTargetData.OfType<int[]>()).Max(s => s.Max())
             )
             : Utils.CeilToPrecision(shownData.Max(s => s.Max()));
 
@@ -572,11 +569,13 @@ public class GraphException : Exception
     public GraphException(string message, Exception inner)
         : base(message, inner) { }
 
+#if !v1_7_OR_GREATER
     protected GraphException(
         System.Runtime.Serialization.SerializationInfo info,
         System.Runtime.Serialization.StreamingContext context
     )
         : base(info, context) { }
+#endif
 }
 
 #if DEBUG

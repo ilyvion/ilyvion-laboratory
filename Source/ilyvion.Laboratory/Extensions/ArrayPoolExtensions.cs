@@ -47,7 +47,7 @@ public readonly struct SelfReturningRent<T>(ArrayPool<T> arrayPool, int minimumL
         arrayPool.Return(arr);
     }
 
-    public override readonly bool Equals(object obj) =>
+    public override readonly bool Equals(object? obj) =>
         obj is SelfReturningRent<T> safeRent && Equals(safeRent);
 
     public override readonly int GetHashCode() => box.Arr?.GetHashCode() ?? 0;

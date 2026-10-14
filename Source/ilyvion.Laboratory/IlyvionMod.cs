@@ -20,10 +20,7 @@ public abstract class IlyvionMod(ModContentPack content) : Mod(content)
     {
         if (Prefs.DevMode)
         {
-            if (produceMsg == null)
-            {
-                throw new ArgumentNullException(nameof(produceMsg));
-            }
+            ArgumentNullException.ThrowIfNull(produceMsg);
 
             Log.Message($"[{Content.Name}][DEV] " + produceMsg());
         }

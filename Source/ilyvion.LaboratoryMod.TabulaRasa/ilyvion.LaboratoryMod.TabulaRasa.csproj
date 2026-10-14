@@ -18,11 +18,17 @@
          (workshop id 1660622094). This integration only ever loads while Tabula Rasa is active
          (see About/LoadFolders.xml's IfModActive), so the reference is guaranteed to resolve at
          runtime even though it isn't copied into our own output. -->
-    <ItemGroup>
+    <ItemGroup Condition="'$(RimWorldVersion)' != '1.7'">
         <Reference Include="TabulaRasa">
             <HintPath>$(RimWorldSteamWorkshopFolderPath)\1660622094\$(RimWorldVersion)\Assemblies\TabulaRasa.dll</HintPath>
             <CopyLocal>False</CopyLocal>
             <Private>false</Private>
         </Reference>
+    </ItemGroup>
+
+    <!-- Tabula Rasa has no 1.7 release, so on 1.7 this project builds as an empty assembly that
+         LoadFolders.xml never loads. -->
+    <ItemGroup Condition="'$(RimWorldVersion)' == '1.7'">
+        <Compile Remove="**/*.cs" />
     </ItemGroup>
 </Project>

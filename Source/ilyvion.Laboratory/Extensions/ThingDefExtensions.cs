@@ -8,14 +8,8 @@ public static class ThingDefExtensions
 {
     public static bool HasCompOrChildCompOf(this ThingDef def, Type compType)
     {
-        if (def == null)
-        {
-            throw new ArgumentNullException(nameof(def));
-        }
-        if (compType == null)
-        {
-            throw new ArgumentNullException(nameof(compType));
-        }
+        ArgumentNullException.ThrowIfNull(def);
+        ArgumentNullException.ThrowIfNull(compType);
 
         foreach (var compProperties in def.comps)
         {

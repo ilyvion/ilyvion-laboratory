@@ -42,7 +42,7 @@ public static class Scribe_CircularBuffer
                     }
                     else if (Scribe.mode == LoadSaveMode.LoadingVars)
                     {
-                        var xmlAttribute = Scribe.loader.curXmlParent.Attributes["IsNull"];
+                        var xmlAttribute = Scribe.loader.curXmlParent.Attributes?["IsNull"];
                         if (
                             xmlAttribute != null
                             && xmlAttribute.Value.Equals("true", StringComparison.OrdinalIgnoreCase)

@@ -10,10 +10,7 @@ public static class DebugExtensions
 
     public static T Dump<T, TDumped>(this T dump, Func<T, TDumped> dumper)
     {
-        if (dumper == null)
-        {
-            throw new ArgumentNullException(nameof(dumper));
-        }
+        ArgumentNullException.ThrowIfNull(dumper);
         Logger.LogDevMessage("DUMP: " + (dumper(dump)?.ToString() ?? "<null>"));
         return dump;
     }

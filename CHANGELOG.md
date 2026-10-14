@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - CachedValue has a new constructor taking an 'updated' argument, so the initial value can be declared fresh (a real value) or stale (a placeholder to be replaced on first use).
+- Support for RimWorld 1.7.
+- On RimWorld 1.6 and earlier, mods depending on ilyvion's Laboratory can use ArgumentNullException.ThrowIfNull and the ArgumentOutOfRangeException.ThrowIf* helpers (ThrowIfNegative, ThrowIfZero, ThrowIfGreaterThan, etc.), so the same argument checks compile on every RimWorld version.
 
 ### Changed
 

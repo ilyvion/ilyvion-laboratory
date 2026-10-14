@@ -361,10 +361,7 @@ public class Either<TLeft, TRight> : IEquatable<Either<TLeft, TRight>>
     /// <returns>This instance.</returns>
     public Either<TLeft, TRight> IfLeft(Action<TLeft> action)
     {
-        if (action == null)
-        {
-            throw new ArgumentNullException(nameof(action));
-        }
+        ArgumentNullException.ThrowIfNull(action);
         if (IsLeft)
         {
             action(_left);
@@ -380,10 +377,7 @@ public class Either<TLeft, TRight> : IEquatable<Either<TLeft, TRight>>
     /// <returns>This instance.</returns>
     public Either<TLeft, TRight> IfRight(Action<TRight> action)
     {
-        if (action == null)
-        {
-            throw new ArgumentNullException(nameof(action));
-        }
+        ArgumentNullException.ThrowIfNull(action);
         if (IsRight)
         {
             action(_right);
@@ -549,10 +543,7 @@ public static class EitherExtensions
         this IEnumerable<Either<TLeft, TRight>> source
     )
     {
-        if (source == null)
-        {
-            throw new ArgumentNullException(nameof(source));
-        }
+        ArgumentNullException.ThrowIfNull(source);
 
         var lefts = new List<TLeft>();
         var rights = new List<TRight>();
@@ -692,7 +683,7 @@ public static class Scribe_Either
                 {
                     if (Scribe.mode == LoadSaveMode.LoadingVars)
                     {
-                        var xmlAttribute = Scribe.loader.curXmlParent.Attributes["IsNull"];
+                        var xmlAttribute = Scribe.loader.curXmlParent.Attributes?["IsNull"];
                         either =
                             xmlAttribute != null
                             && xmlAttribute.Value.Equals("true", StringComparison.OrdinalIgnoreCase)

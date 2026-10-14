@@ -59,10 +59,7 @@ public sealed class CircularBuffer<T> : IEnumerable<T>
                 nameof(capacity)
             );
         }
-        if (items == null)
-        {
-            throw new ArgumentNullException(nameof(items));
-        }
+        ArgumentNullException.ThrowIfNull(items);
         if (items.Length > capacity)
         {
             throw new ArgumentException("Too many items to fit circular buffer", nameof(items));
@@ -264,7 +261,11 @@ public sealed class CircularBuffer<T> : IEnumerable<T>
         var segments = ToArraySegments();
         foreach (var segment in segments)
         {
-            Array.Copy(segment.Array, segment.Offset, newArray, newArrayOffset, segment.Count);
+            if (segment.Array is not { } array)
+            {
+                continue;
+            }
+            Array.Copy(array, segment.Offset, newArray, newArrayOffset, segment.Count);
             newArrayOffset += segment.Count;
         }
         return newArray;
@@ -294,9 +295,13 @@ public sealed class CircularBuffer<T> : IEnumerable<T>
         var segments = ToArraySegments();
         foreach (var segment in segments)
         {
+            if (segment.Array is not { } array)
+            {
+                continue;
+            }
             for (var i = 0; i < segment.Count; i++)
             {
-                yield return segment.Array[segment.Offset + i];
+                yield return array[segment.Offset + i];
             }
         }
     }
