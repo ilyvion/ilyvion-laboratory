@@ -7,13 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- The release package now includes the 1.7 folder; version 0.25.0 was published without it, so it did not load the 1.7-specific assembly.
+
 ## [0.25.0] - 2026-10-14
 
 ### Added
 
 - CachedValue has a new constructor taking an 'updated' argument, so the initial value can be declared fresh (a real value) or stale (a placeholder to be replaced on first use).
 - Support for RimWorld 1.7.
-- On RimWorld 1.6 and earlier, mods depending on ilyvion's Laboratory can use ArgumentNullException.ThrowIfNull and the ArgumentOutOfRangeException.ThrowIf* helpers (ThrowIfNegative, ThrowIfZero, ThrowIfGreaterThan, etc.), so the same argument checks compile on every RimWorld version.
+- On RimWorld 1.6 and earlier, mods depending on ilyvion's Laboratory can use ArgumentNullException.ThrowIfNull and the ArgumentOutOfRangeException.ThrowIf\* helpers (ThrowIfNegative, ThrowIfZero, ThrowIfGreaterThan, etc.), so the same argument checks compile on every RimWorld version.
 - On RimWorld 1.6 and earlier, mods depending on ilyvion's Laboratory can declare locks as Lock (System.Threading.Lock on 1.7), so the same lock fields and lock statements compile on every RimWorld version.
 - On RimWorld 1.6 and earlier, mods depending on ilyvion's Laboratory can append an interpolated string to a StringBuilder with a format provider (StringBuilder.Append(IFormatProvider, $'...') and StringBuilder.AppendLine(IFormatProvider, $'...')), so the same culture-aware appends compile on every RimWorld version.
 - On RimWorld 1.6 and earlier, mods depending on ilyvion's Laboratory can use Regex.Count, SHA256.HashData and Convert.ToHexString, so the same match counting, hashing and hex encoding compile on every RimWorld version.
