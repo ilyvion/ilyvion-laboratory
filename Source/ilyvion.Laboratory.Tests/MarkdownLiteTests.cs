@@ -1,86 +1,88 @@
 // MarkdownLiteTests.cs
 // Copyright (c) 2026 Alexander Krivács Schrøder
 
-using RimTestRedux;
+using DevTools.Testing;
 
 namespace ilyvion.Laboratory.Tests;
 
-[TestSuite]
-internal static class MarkdownLiteTests
+[TestFixture(TestType.MainMenu)]
+internal sealed class MarkdownLiteTests
 {
     [Test]
     public static void ConvertsBold() =>
-        Assert.That(MarkdownLite.ToRichText("**bold**")).Is.EqualTo("<b>bold</b>");
+        Expect.AreEqual("<b>bold</b>", MarkdownLite.ToRichText("**bold**"));
 
     [Test]
     public static void ConvertsAsteriskItalic() =>
-        Assert.That(MarkdownLite.ToRichText("*italic*")).Is.EqualTo("<i>italic</i>");
+        Expect.AreEqual("<i>italic</i>", MarkdownLite.ToRichText("*italic*"));
 
     [Test]
     public static void ConvertsUnderscoreItalic() =>
-        Assert.That(MarkdownLite.ToRichText("_italic_")).Is.EqualTo("<i>italic</i>");
+        Expect.AreEqual("<i>italic</i>", MarkdownLite.ToRichText("_italic_"));
 
     [Test]
     public static void ConvertsInlineCodeToColoredText() =>
-        Assert.That(MarkdownLite.ToRichText("`code`")).Is.EqualTo("<color=#8caaee>code</color>");
+        Expect.AreEqual("<color=#8caaee>code</color>", MarkdownLite.ToRichText("`code`"));
 
     [Test]
     public static void LiteralAsterisksInsideInlineCodeAreNotReformattedAsBold() =>
-        Assert
-            .That(MarkdownLite.ToRichText("`**bold**`"))
-            .Is.EqualTo("<color=#8caaee>**bold**</color>");
+        Expect.AreEqual("<color=#8caaee>**bold**</color>", MarkdownLite.ToRichText("`**bold**`"));
 
     [Test]
     public static void ConvertsLinksToPlainStyledText() =>
-        Assert
-            .That(MarkdownLite.ToRichText("[label](https://example.com)"))
-            .Is.EqualTo("<color=#8caaee>label</color>");
+        Expect.AreEqual(
+            "<color=#8caaee>label</color>",
+            MarkdownLite.ToRichText("[label](https://example.com)")
+        );
 
     [Test]
     public static void ConvertsLinksWithABracketedTagPrefixInTheLabel() =>
-        Assert
-            .That(
-                MarkdownLite.ToRichText(
-                    "[[JGH] Colony Manager retexture](https://steamcommunity.com/sharedfiles/filedetails/?id=2603340242)"
-                )
+        Expect.AreEqual(
+            "<color=#8caaee>[JGH] Colony Manager retexture</color>",
+            MarkdownLite.ToRichText(
+                "[[JGH] Colony Manager retexture](https://steamcommunity.com/sharedfiles/filedetails/?id=2603340242)"
             )
-            .Is.EqualTo("<color=#8caaee>[JGH] Colony Manager retexture</color>");
+        );
 
     [Test]
     public static void BackslashEscapesRenderTheLiteralCharacter() =>
-        Assert.That(MarkdownLite.ToRichText(@"Log\*Once")).Is.EqualTo("Log*Once");
+        Expect.AreEqual("Log*Once", MarkdownLite.ToRichText(@"Log\*Once"));
 
     [Test]
     public static void EscapedAsteriskDoesNotTriggerItalic() =>
-        Assert.That(MarkdownLite.ToRichText(@"a \*b\* c")).Is.EqualTo("a *b* c");
+        Expect.AreEqual("a *b* c", MarkdownLite.ToRichText(@"a \*b\* c"));
 
     [Test]
     public static void LiteralAngleBracketsAreEscapedSoTheyRenderInsteadOfBeingSwallowed() =>
-        Assert
-            .That(MarkdownLite.ToRichText("<ThingDef ParentName=\"x\">"))
-            .Is.EqualTo("‹ThingDef ParentName=\"x\"›");
+        Expect.AreEqual(
+            "‹ThingDef ParentName=\"x\"›",
+            MarkdownLite.ToRichText("<ThingDef ParentName=\"x\">")
+        );
 
     [Test]
     public static void EscapedAngleBracketsAlsoRenderAsTheLookalike() =>
-        Assert.That(MarkdownLite.ToRichText(@"\<b\>")).Is.EqualTo("‹b›");
+        Expect.AreEqual("‹b›", MarkdownLite.ToRichText(@"\<b\>"));
 
     [Test]
     public static void PlainTextIsUnchanged() =>
-        Assert
-            .That(MarkdownLite.ToRichText("plain text, nothing special."))
-            .Is.EqualTo("plain text, nothing special.");
+        Expect.AreEqual(
+            "plain text, nothing special.",
+            MarkdownLite.ToRichText("plain text, nothing special.")
+        );
 
     [Test]
     public static void ConvertsNakedUrlsToStyledText() =>
-        Assert
-            .That(MarkdownLite.ToRichText("See https://example.com for details."))
-            .Is.EqualTo("See <color=#8caaee>https://example.com</color> for details.");
+        Expect.AreEqual(
+            "See <color=#8caaee>https://example.com</color> for details.",
+            MarkdownLite.ToRichText("See https://example.com for details.")
+        );
 
     [Test]
     public static void NakedUrlTrailingPunctuationStaysOutsideTheStyledSpan() =>
-        Assert
-            .That(MarkdownLite.ToRichText("(https://example.com)"))
-            .Is.EqualTo("(<color=#8caaee>https://example.com</color>)");
+        Expect.AreEqual(
+            "(<color=#8caaee>https://example.com</color>)",
+            MarkdownLite.ToRichText("(https://example.com)")
+        );
 
     [Test]
     public static void ToBlocksSplitsAGitHubAdmonitionOutAsItsOwnBlockquoteBlock()
@@ -89,12 +91,13 @@ internal static class MarkdownLiteTests
             "> [!IMPORTANT]\n> This release requires an update to ilyvion's Laboratory!"
         );
 
-        Assert.ThatCollection(blocks).Has.Count(1);
-        Assert.That(blocks[0].IsBlockquote).Is.True();
-        Assert.That(blocks[0].Admonition).Is.EqualTo(AdmonitionKind.Important);
-        Assert
-            .That(blocks[0].RichText)
-            .Is.EqualTo("This release requires an update to ilyvion's Laboratory!");
+        Expect.AreEqual(1, blocks.Count);
+        Expect.IsTrue(blocks[0].IsBlockquote);
+        Expect.AreEqual(AdmonitionKind.Important, blocks[0].Admonition);
+        Expect.AreEqual(
+            "This release requires an update to ilyvion's Laboratory!",
+            blocks[0].RichText
+        );
     }
 
     [Test]
@@ -102,9 +105,9 @@ internal static class MarkdownLiteTests
     {
         var blocks = MarkdownLite.ToBlocks("> [!NOTE]\n> See **the docs**.");
 
-        Assert.ThatCollection(blocks).Has.Count(1);
-        Assert.That(blocks[0].Admonition).Is.EqualTo(AdmonitionKind.Note);
-        Assert.That(blocks[0].RichText).Is.EqualTo("See <b>the docs</b>.");
+        Expect.AreEqual(1, blocks.Count);
+        Expect.AreEqual(AdmonitionKind.Note, blocks[0].Admonition);
+        Expect.AreEqual("See <b>the docs</b>.", blocks[0].RichText);
     }
 
     [Test]
@@ -112,10 +115,10 @@ internal static class MarkdownLiteTests
     {
         var blocks = MarkdownLite.ToBlocks("> Just a quote.");
 
-        Assert.ThatCollection(blocks).Has.Count(1);
-        Assert.That(blocks[0].IsBlockquote).Is.True();
-        Assert.That(blocks[0].Admonition).Is.EqualTo(AdmonitionKind.None);
-        Assert.That(blocks[0].RichText).Is.EqualTo("Just a quote.");
+        Expect.AreEqual(1, blocks.Count);
+        Expect.IsTrue(blocks[0].IsBlockquote);
+        Expect.AreEqual(AdmonitionKind.None, blocks[0].Admonition);
+        Expect.AreEqual("Just a quote.", blocks[0].RichText);
     }
 
     [Test]
@@ -123,19 +126,17 @@ internal static class MarkdownLiteTests
     {
         var blocks = MarkdownLite.ToBlocks("Before\n> [!WARNING]\n> Careful.\nAfter");
 
-        Assert.ThatCollection(blocks).Has.Count(3);
-        Assert.That(blocks[0].IsBlockquote).Is.False();
-        Assert.That(blocks[0].RichText).Is.EqualTo("Before");
-        Assert.That(blocks[1].IsBlockquote).Is.True();
-        Assert.That(blocks[1].Admonition).Is.EqualTo(AdmonitionKind.Warning);
-        Assert.That(blocks[1].RichText).Is.EqualTo("Careful.");
-        Assert.That(blocks[2].IsBlockquote).Is.False();
-        Assert.That(blocks[2].RichText).Is.EqualTo("After");
+        Expect.AreEqual(3, blocks.Count);
+        Expect.IsFalse(blocks[0].IsBlockquote);
+        Expect.AreEqual("Before", blocks[0].RichText);
+        Expect.IsTrue(blocks[1].IsBlockquote);
+        Expect.AreEqual(AdmonitionKind.Warning, blocks[1].Admonition);
+        Expect.AreEqual("Careful.", blocks[1].RichText);
+        Expect.IsFalse(blocks[2].IsBlockquote);
+        Expect.AreEqual("After", blocks[2].RichText);
     }
 
     [Test]
     public static void ToRichTextFoldsABlockquoteInAsItalicizedInlineText() =>
-        Assert
-            .That(MarkdownLite.ToRichText("> [!IMPORTANT]\n> Careful."))
-            .Is.EqualTo("<i>Careful.</i>");
+        Expect.AreEqual("<i>Careful.</i>", MarkdownLite.ToRichText("> [!IMPORTANT]\n> Careful."));
 }

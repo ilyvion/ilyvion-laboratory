@@ -1,12 +1,12 @@
 // ThrowHelperExtensionsTests.cs
 // Copyright (c) 2026 Alexander Krivács Schrøder
 
-using RimTestRedux;
+using DevTools.Testing;
 
 namespace ilyvion.Laboratory.Tests;
 
-[TestSuite]
-internal static class ThrowHelperExtensionsTests
+[TestFixture(TestType.MainMenu)]
+internal sealed class ThrowHelperExtensionsTests
 {
     private static TException? Catch<TException>(Action action)
         where TException : Exception
@@ -31,8 +31,8 @@ internal static class ThrowHelperExtensionsTests
             ArgumentNullException.ThrowIfNull(argument)
         );
 
-        Assert.That(caught?.GetType() == typeof(ArgumentNullException)).Is.True();
-        Assert.That(caught?.ParamName).Is.EqualTo(nameof(argument));
+        Expect.IsTrue(caught?.GetType() == typeof(ArgumentNullException));
+        Expect.AreEqual(nameof(argument), caught?.ParamName);
     }
 
     [Test]
@@ -44,7 +44,7 @@ internal static class ThrowHelperExtensionsTests
             ArgumentNullException.ThrowIfNull(argument)
         );
 
-        Assert.That(caught == null).Is.True();
+        Expect.IsTrue(caught == null);
     }
 
     [Test]
@@ -56,108 +56,79 @@ internal static class ThrowHelperExtensionsTests
             ArgumentOutOfRangeException.ThrowIfNegative(count)
         );
 
-        Assert.That(caught?.GetType() == typeof(ArgumentOutOfRangeException)).Is.True();
-        Assert.That(caught?.ParamName).Is.EqualTo(nameof(count));
-        Assert.That(Equals(caught?.ActualValue, -1)).Is.True();
+        Expect.IsTrue(caught?.GetType() == typeof(ArgumentOutOfRangeException));
+        Expect.AreEqual(nameof(count), caught?.ParamName);
+        Expect.IsTrue(Equals(caught?.ActualValue, -1));
     }
 
     [Test]
     public static void SignHelpersAcceptAndRejectTheExpectedValues()
     {
-        Assert
-            .That(
-                Catch<ArgumentOutOfRangeException>(() =>
-                    ArgumentOutOfRangeException.ThrowIfNegative(0)
-                ) == null
-            )
-            .Is.True();
-        Assert
-            .That(
-                Catch<ArgumentOutOfRangeException>(() => ArgumentOutOfRangeException.ThrowIfZero(0))
-                    != null
-            )
-            .Is.True();
-        Assert
-            .That(
-                Catch<ArgumentOutOfRangeException>(() =>
-                    ArgumentOutOfRangeException.ThrowIfZero(-1f)
-                ) == null
-            )
-            .Is.True();
-        Assert
-            .That(
-                Catch<ArgumentOutOfRangeException>(() =>
-                    ArgumentOutOfRangeException.ThrowIfNegativeOrZero(0L)
-                ) != null
-            )
-            .Is.True();
-        Assert
-            .That(
-                Catch<ArgumentOutOfRangeException>(() =>
-                    ArgumentOutOfRangeException.ThrowIfNegativeOrZero(0.5)
-                ) == null
-            )
-            .Is.True();
+        Expect.IsTrue(
+            Catch<ArgumentOutOfRangeException>(() => ArgumentOutOfRangeException.ThrowIfNegative(0))
+                == null
+        );
+        Expect.IsTrue(
+            Catch<ArgumentOutOfRangeException>(() => ArgumentOutOfRangeException.ThrowIfZero(0))
+                != null
+        );
+        Expect.IsTrue(
+            Catch<ArgumentOutOfRangeException>(() => ArgumentOutOfRangeException.ThrowIfZero(-1f))
+                == null
+        );
+        Expect.IsTrue(
+            Catch<ArgumentOutOfRangeException>(() =>
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(0L)
+            ) != null
+        );
+        Expect.IsTrue(
+            Catch<ArgumentOutOfRangeException>(() =>
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(0.5)
+            ) == null
+        );
     }
 
     [Test]
     public static void ComparisonHelpersAcceptAndRejectTheExpectedValues()
     {
-        Assert
-            .That(
-                Catch<ArgumentOutOfRangeException>(() =>
-                    ArgumentOutOfRangeException.ThrowIfEqual(1, 1)
-                ) != null
-            )
-            .Is.True();
-        Assert
-            .That(
-                Catch<ArgumentOutOfRangeException>(() =>
-                    ArgumentOutOfRangeException.ThrowIfNotEqual(1, 1)
-                ) == null
-            )
-            .Is.True();
-        Assert
-            .That(
-                Catch<ArgumentOutOfRangeException>(() =>
-                    ArgumentOutOfRangeException.ThrowIfGreaterThan(2, 1)
-                ) != null
-            )
-            .Is.True();
-        Assert
-            .That(
-                Catch<ArgumentOutOfRangeException>(() =>
-                    ArgumentOutOfRangeException.ThrowIfGreaterThan(1, 1)
-                ) == null
-            )
-            .Is.True();
-        Assert
-            .That(
-                Catch<ArgumentOutOfRangeException>(() =>
-                    ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(1, 1)
-                ) != null
-            )
-            .Is.True();
-        Assert
-            .That(
-                Catch<ArgumentOutOfRangeException>(() =>
-                    ArgumentOutOfRangeException.ThrowIfLessThan(0, 1)
-                ) != null
-            )
-            .Is.True();
-        Assert
-            .That(
-                Catch<ArgumentOutOfRangeException>(() =>
-                    ArgumentOutOfRangeException.ThrowIfLessThan(1, 1)
-                ) == null
-            )
-            .Is.True();
-        Assert
-            .That(
-                Catch<ArgumentOutOfRangeException>(() =>
-                    ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(1, 1)
-                ) != null
-            )
-            .Is.True();
+        Expect.IsTrue(
+            Catch<ArgumentOutOfRangeException>(() => ArgumentOutOfRangeException.ThrowIfEqual(1, 1))
+                != null
+        );
+        Expect.IsTrue(
+            Catch<ArgumentOutOfRangeException>(() =>
+                ArgumentOutOfRangeException.ThrowIfNotEqual(1, 1)
+            ) == null
+        );
+        Expect.IsTrue(
+            Catch<ArgumentOutOfRangeException>(() =>
+                ArgumentOutOfRangeException.ThrowIfGreaterThan(2, 1)
+            ) != null
+        );
+        Expect.IsTrue(
+            Catch<ArgumentOutOfRangeException>(() =>
+                ArgumentOutOfRangeException.ThrowIfGreaterThan(1, 1)
+            ) == null
+        );
+        Expect.IsTrue(
+            Catch<ArgumentOutOfRangeException>(() =>
+                ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(1, 1)
+            ) != null
+        );
+        Expect.IsTrue(
+            Catch<ArgumentOutOfRangeException>(() =>
+                ArgumentOutOfRangeException.ThrowIfLessThan(0, 1)
+            ) != null
+        );
+        Expect.IsTrue(
+            Catch<ArgumentOutOfRangeException>(() =>
+                ArgumentOutOfRangeException.ThrowIfLessThan(1, 1)
+            ) == null
+        );
+        Expect.IsTrue(
+            Catch<ArgumentOutOfRangeException>(() =>
+                ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(1, 1)
+            ) != null
+        );
     }
 }

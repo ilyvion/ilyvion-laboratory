@@ -1,12 +1,12 @@
 // EitherTests.cs
 // Copyright (c) 2026 Alexander Krivács Schrøder
 
-using RimTestRedux;
+using DevTools.Testing;
 
 namespace ilyvion.Laboratory.Tests;
 
-[TestSuite]
-internal static class EitherTests
+[TestFixture(TestType.MainMenu)]
+internal sealed class EitherTests
 {
     // Regression guard for commit 0bf0f96: LeftAnd/RightAnd's XML docs previously described the
     // opposite of what the implementation did (docs said "returns other if Left", the code
@@ -20,8 +20,8 @@ internal static class EitherTests
         Either<int, string> either = 1;
         var result = either.LeftAnd(Either<int, bool>.Right(true));
 
-        Assert.That(result.IsLeft).Is.True();
-        Assert.That(result.UnwrapLeft()).Is.EqualTo(1);
+        Expect.IsTrue(result.IsLeft);
+        Expect.AreEqual(1, result.UnwrapLeft());
     }
 
     [Test]
@@ -31,7 +31,7 @@ internal static class EitherTests
         var other = Either<int, bool>.Right(true);
         var result = either.LeftAnd(other);
 
-        Assert.That(ReferenceEquals(result, other)).Is.True();
+        Expect.IsTrue(ReferenceEquals(result, other));
     }
 
     [Test]
@@ -39,7 +39,7 @@ internal static class EitherTests
     {
         Either<int, string> either = 1;
 
-        Assert.ThatFunc(() => either.LeftAnd<bool>(null!)).Does.Throw();
+        _ = Expect.Throws<Exception>(() => either.LeftAnd<bool>(null!));
     }
 
     [Test]
@@ -48,8 +48,8 @@ internal static class EitherTests
         Either<int, string> either = "right";
         var result = either.RightAnd(Either<bool, string>.Left(true));
 
-        Assert.That(result.IsRight).Is.True();
-        Assert.That(result.UnwrapRight()).Is.EqualTo("right");
+        Expect.IsTrue(result.IsRight);
+        Expect.AreEqual("right", result.UnwrapRight());
     }
 
     [Test]
@@ -59,7 +59,7 @@ internal static class EitherTests
         var other = Either<bool, string>.Left(true);
         var result = either.RightAnd(other);
 
-        Assert.That(ReferenceEquals(result, other)).Is.True();
+        Expect.IsTrue(ReferenceEquals(result, other));
     }
 
     [Test]
@@ -67,6 +67,6 @@ internal static class EitherTests
     {
         Either<int, string> either = "right";
 
-        Assert.ThatFunc(() => either.RightAnd<bool>(null!)).Does.Throw();
+        _ = Expect.Throws<Exception>(() => either.RightAnd<bool>(null!));
     }
 }

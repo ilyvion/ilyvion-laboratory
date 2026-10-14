@@ -1,13 +1,13 @@
 // GraphRendererTests.cs
 // Copyright (c) 2026 Alexander Krivács Schrøder
 
+using DevTools.Testing;
 using ilyvion.Laboratory.UI;
-using RimTestRedux;
 
 namespace ilyvion.Laboratory.Tests;
 
-[TestSuite]
-internal static class GraphRendererTests
+[TestFixture(TestType.MainMenu)]
+internal sealed class GraphRendererTests
 {
     [Test]
     public static void ValidateTargetDataLengthAllowsNullTargetData()
@@ -18,7 +18,7 @@ internal static class GraphRendererTests
             [3, 4],
         ];
 
-        Assert.ThatFunc(() => GraphRenderer.ValidateTargetDataLength(data, null)).Does.Not.Throw();
+        GraphRenderer.ValidateTargetDataLength(data, null);
     }
 
     [Test]
@@ -35,9 +35,7 @@ internal static class GraphRendererTests
             null,
         ];
 
-        Assert
-            .ThatFunc(() => GraphRenderer.ValidateTargetDataLength(data, targetData))
-            .Does.Not.Throw();
+        GraphRenderer.ValidateTargetDataLength(data, targetData);
     }
 
     // Regression guard for commit 20d259d: the length check used to be gated behind
@@ -56,9 +54,9 @@ internal static class GraphRendererTests
             [1, 2],
         ];
 
-        Assert
-            .ThatFunc(() => GraphRenderer.ValidateTargetDataLength(data, targetData))
-            .Does.Throw();
+        _ = Expect.Throws<Exception>(() =>
+            GraphRenderer.ValidateTargetDataLength(data, targetData)
+        );
     }
 
     // Regression guard for commit 20d259d: widthUnit used to divide by (entries - 1) with no
@@ -68,7 +66,7 @@ internal static class GraphRendererTests
     {
         var result = GraphRenderer.ComputeWidthUnit(100f, 1);
 
-        Assert.That(result).Is.EqualTo(100f);
+        Expect.AreEqual(100f, result);
     }
 
     [Test]
@@ -76,7 +74,7 @@ internal static class GraphRendererTests
     {
         var result = GraphRenderer.ComputeWidthUnit(100f, 5);
 
-        Assert.That(result).Is.EqualTo(25f);
+        Expect.AreEqual(25f, result);
     }
 
     // Regression guard for commit 20d259d: the mouse-over closest-series search used to filter
@@ -101,8 +99,8 @@ internal static class GraphRendererTests
             drawTargetLine: false
         );
 
-        Assert.That(seriesIndex).Is.EqualTo(1);
-        Assert.That(isTarget).Is.False();
+        Expect.AreEqual(1, seriesIndex);
+        Expect.IsFalse(isTarget);
     }
 
     [Test]
@@ -125,8 +123,8 @@ internal static class GraphRendererTests
             drawTargetLine: true
         );
 
-        Assert.That(seriesIndex).Is.EqualTo(0);
-        Assert.That(isTarget).Is.False();
+        Expect.AreEqual(0, seriesIndex);
+        Expect.IsFalse(isTarget);
     }
 
     [Test]
@@ -149,8 +147,8 @@ internal static class GraphRendererTests
             drawTargetLine: true
         );
 
-        Assert.That(seriesIndex).Is.EqualTo(0);
-        Assert.That(isTarget).Is.True();
+        Expect.AreEqual(0, seriesIndex);
+        Expect.IsTrue(isTarget);
     }
 
     [Test]
@@ -173,7 +171,7 @@ internal static class GraphRendererTests
             drawTargetLine: false
         );
 
-        Assert.That(seriesIndex).Is.EqualTo(0);
-        Assert.That(isTarget).Is.False();
+        Expect.AreEqual(0, seriesIndex);
+        Expect.IsFalse(isTarget);
     }
 }

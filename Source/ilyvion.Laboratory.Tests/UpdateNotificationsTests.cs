@@ -1,12 +1,12 @@
 // UpdateNotificationsTests.cs
 // Copyright (c) 2026 Alexander Krivács Schrøder
 
-using RimTestRedux;
+using DevTools.Testing;
 
 namespace ilyvion.Laboratory.Tests;
 
-[TestSuite]
-internal static class UpdateNotificationsTests
+[TestFixture(TestType.MainMenu)]
+internal sealed class UpdateNotificationsTests
 {
     [Test]
     public static void ConfigErrorsFlagsMissingDate()
@@ -15,8 +15,8 @@ internal static class UpdateNotificationsTests
 
         var errors = def.ConfigErrors().ToList();
 
-        Assert.ThatCollection(errors).Is.Not.Empty();
-        Assert.That(def.hasErrors).Is.True();
+        Expect.IsNotEmpty(errors);
+        Expect.IsTrue(def.hasErrors);
     }
 
     [Test]
@@ -26,8 +26,8 @@ internal static class UpdateNotificationsTests
 
         var errors = def.ConfigErrors().ToList();
 
-        Assert.ThatCollection(errors).Is.Not.Empty();
-        Assert.That(def.hasErrors).Is.True();
+        Expect.IsNotEmpty(errors);
+        Expect.IsTrue(def.hasErrors);
     }
 
     [Test]
@@ -37,8 +37,8 @@ internal static class UpdateNotificationsTests
 
         var errors = def.ConfigErrors().ToList();
 
-        Assert.ThatCollection(errors).Is.Empty();
-        Assert.That(def.hasErrors).Is.False();
+        Expect.IsEmpty(errors);
+        Expect.IsFalse(def.hasErrors);
     }
 
     [Test]
@@ -48,8 +48,8 @@ internal static class UpdateNotificationsTests
 
         var errors = def.ConfigErrors().ToList();
 
-        Assert.ThatCollection(errors).Is.Empty();
-        Assert.That(def.hasErrors).Is.False();
+        Expect.IsEmpty(errors);
+        Expect.IsFalse(def.hasErrors);
     }
 
     private static UpdateEntry MakeEntry(string key, DateTime date, bool withContent = true) =>
@@ -77,8 +77,8 @@ internal static class UpdateNotificationsTests
             DateTime.MinValue
         );
 
-        Assert.ThatCollection(result).Has.Count(1);
-        Assert.That(result[0].Key).Is.EqualTo("unseen");
+        Expect.AreEqual(1, result.Count);
+        Expect.AreEqual("unseen", result[0].Key);
     }
 
     [Test]
@@ -94,8 +94,8 @@ internal static class UpdateNotificationsTests
             new DateTime(2023, 1, 1)
         );
 
-        Assert.ThatCollection(result).Has.Count(1);
-        Assert.That(result[0].Key).Is.EqualTo("recent");
+        Expect.AreEqual(1, result.Count);
+        Expect.AreEqual("recent", result[0].Key);
     }
 
     [Test]
@@ -111,8 +111,8 @@ internal static class UpdateNotificationsTests
             DateTime.MinValue
         );
 
-        Assert.ThatCollection(result).Has.Count(1);
-        Assert.That(result[0].Key).Is.EqualTo("withContent");
+        Expect.AreEqual(1, result.Count);
+        Expect.AreEqual("withContent", result[0].Key);
     }
 
     [Test]
@@ -129,9 +129,9 @@ internal static class UpdateNotificationsTests
             DateTime.MinValue
         );
 
-        Assert.ThatCollection(result.Select(entry => entry.Key).ToList()).Does.Contain("newest");
-        Assert.That(result[0].Key).Is.EqualTo("newest");
-        Assert.That(result[1].Key).Is.EqualTo("middle");
-        Assert.That(result[2].Key).Is.EqualTo("oldest");
+        Expect.IsTrue(result.Select(entry => entry.Key).ToList().Contains("newest"));
+        Expect.AreEqual("newest", result[0].Key);
+        Expect.AreEqual("middle", result[1].Key);
+        Expect.AreEqual("oldest", result[2].Key);
     }
 }

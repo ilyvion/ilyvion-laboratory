@@ -1,12 +1,12 @@
 // ChangeLogParserTests.cs
 // Copyright (c) 2026 Alexander Krivács Schrøder
 
-using RimTestRedux;
+using DevTools.Testing;
 
 namespace ilyvion.Laboratory.Tests;
 
-[TestSuite]
-internal static class ChangeLogParserTests
+[TestFixture(TestType.MainMenu)]
+internal sealed class ChangeLogParserTests
 {
     private const string SampleChangeLog = """
         # Changelog
@@ -56,9 +56,7 @@ internal static class ChangeLogParserTests
             false
         );
 
-        Assert
-            .ThatCollection(entries.Select(entry => entry.Key).ToList())
-            .Does.Not.Contain("Test:Unreleased");
+        Expect.IsFalse(entries.Select(entry => entry.Key).ToList().Contains("Test:Unreleased"));
     }
 
     [Test]
@@ -76,14 +74,12 @@ internal static class ChangeLogParserTests
 
         var entry = entries.Single(entry => entry.Key == "Test:1.1.0");
 
-        Assert.That(entry.Date).Is.EqualTo(new DateTime(2024, 3, 14));
-        Assert.ThatCollection(entry.ContentList).Has.Count(2);
-        Assert.That(entry.ContentList[0].header).Is.EqualTo("Added");
-        Assert
-            .That(entry.ContentList[0].text)
-            .Is.EqualTo("- First added thing.\n- Second added thing.");
-        Assert.That(entry.ContentList[1].header).Is.EqualTo("Fixed");
-        Assert.That(entry.ContentList[1].text).Is.EqualTo("- A bug.");
+        Expect.AreEqual(new DateTime(2024, 3, 14), entry.Date);
+        Expect.AreEqual(2, entry.ContentList.Count);
+        Expect.AreEqual("Added", entry.ContentList[0].header);
+        Expect.AreEqual("- First added thing.\n- Second added thing.", entry.ContentList[0].text);
+        Expect.AreEqual("Fixed", entry.ContentList[1].header);
+        Expect.AreEqual("- A bug.", entry.ContentList[1].text);
     }
 
     [Test]
@@ -101,10 +97,10 @@ internal static class ChangeLogParserTests
 
         var entry = entries.Single(entry => entry.Key == "Test:1.0.0");
 
-        Assert.That(entry.Date).Is.EqualTo(new DateTime(2023, 1, 1));
-        Assert.ThatCollection(entry.ContentList).Has.Count(1);
-        Assert.That(entry.ContentList[0].header).Is.Null();
-        Assert.That(entry.ContentList[0].text).Is.EqualTo("- Initial release, no subsections.");
+        Expect.AreEqual(new DateTime(2023, 1, 1), entry.Date);
+        Expect.AreEqual(1, entry.ContentList.Count);
+        Expect.IsNull(entry.ContentList[0].header);
+        Expect.AreEqual("- Initial release, no subsections.", entry.ContentList[0].text);
     }
 
     [Test]
@@ -122,12 +118,11 @@ internal static class ChangeLogParserTests
 
         var entry = entries.Single(entry => entry.Key == "Test:0.5.0");
 
-        Assert.ThatCollection(entry.ContentList).Has.Count(1);
-        Assert
-            .That(entry.ContentList[0].text)
-            .Is.EqualTo(
-                "- ilyvion's Laboratory: v0.13\n> [!IMPORTANT]\n> This release requires an update to ilyvion's Laboratory!"
-            );
+        Expect.AreEqual(1, entry.ContentList.Count);
+        Expect.AreEqual(
+            "- ilyvion's Laboratory: v0.13\n> [!IMPORTANT]\n> This release requires an update to ilyvion's Laboratory!",
+            entry.ContentList[0].text
+        );
     }
 
     [Test]
@@ -143,13 +138,13 @@ internal static class ChangeLogParserTests
             true
         );
 
-        Assert.ThatCollection(entries).Is.Not.Empty();
+        Expect.IsNotEmpty(entries);
         foreach (var entry in entries)
         {
-            Assert.That(entry.SourceModName).Is.EqualTo("Test mod");
-            Assert.That(entry.Banner).Is.EqualTo("Banner.png");
-            Assert.That(entry.LinkUrl).Is.EqualTo("https://example.com");
-            Assert.That(entry.Important).Is.True();
+            Expect.AreEqual("Test mod", entry.SourceModName);
+            Expect.AreEqual("Banner.png", entry.Banner);
+            Expect.AreEqual("https://example.com", entry.LinkUrl);
+            Expect.IsTrue(entry.Important);
         }
     }
 }

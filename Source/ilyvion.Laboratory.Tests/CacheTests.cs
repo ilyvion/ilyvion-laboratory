@@ -1,23 +1,23 @@
 // CacheTests.cs
 // Copyright (c) 2026 Alexander Krivács Schrøder
 
-using RimTestRedux;
+using DevTools.Testing;
 
 namespace ilyvion.Laboratory.Tests;
 
-[TestSuite]
-internal static class CacheTests
+[TestFixture(TestType.MainMenu)]
+internal sealed class CacheTests
 {
     private static int _tick;
 
-    [BeforeEach]
+    [SetUp]
     public static void SetUp()
     {
         _tick = 0;
         CacheClock.CurrentTick = () => _tick;
     }
 
-    [AfterEach]
+    [TearDown]
     public static void TearDown() => CacheClock.ResetCurrentTick();
 
     // Regression guard for commit b0a00fb: CachedValues<TKey, TValue>.Update() on a key that
@@ -32,8 +32,8 @@ internal static class CacheTests
 
         cache.Update("key", 42);
 
-        Assert.That(cache.TryGetValue("key", out var value)).Is.True();
-        Assert.That(value).Is.EqualTo(42);
+        Expect.IsTrue(cache.TryGetValue("key", out var value));
+        Expect.AreEqual(42, value);
     }
 
     [Test]
@@ -44,8 +44,8 @@ internal static class CacheTests
 
         cache.Update("key", 42);
 
-        Assert.That(cache.TryGetValue("key", out var value)).Is.True();
-        Assert.That(value).Is.EqualTo(42);
+        Expect.IsTrue(cache.TryGetValue("key", out var value));
+        Expect.AreEqual(42, value);
     }
 
     [Test]
@@ -56,8 +56,8 @@ internal static class CacheTests
 
         _tick = 10;
 
-        Assert.That(cache.TryGetValue("key", out var value)).Is.True();
-        Assert.That(value).Is.EqualTo(1);
+        Expect.IsTrue(cache.TryGetValue("key", out var value));
+        Expect.AreEqual(1, value);
     }
 
     [Test]
@@ -68,7 +68,7 @@ internal static class CacheTests
 
         _tick = 11;
 
-        Assert.That(cache.TryGetValue("key", out _)).Is.False();
+        Expect.IsFalse(cache.TryGetValue("key", out _));
     }
 
     [Test]
@@ -84,13 +84,13 @@ internal static class CacheTests
             updateInterval: 10
         );
 
-        Assert.That(cached.TryGetValue(out var first)).Is.True();
-        Assert.That(first).Is.EqualTo(1);
+        Expect.IsTrue(cached.TryGetValue(out var first));
+        Expect.AreEqual(1, first);
 
         _tick = 11;
 
-        Assert.That(cached.TryGetValue(out var second)).Is.True();
-        Assert.That(second).Is.EqualTo(2);
+        Expect.IsTrue(cached.TryGetValue(out var second));
+        Expect.AreEqual(2, second);
     }
 
     [Test]
@@ -101,7 +101,7 @@ internal static class CacheTests
 
         cache.Invalidate("key");
 
-        Assert.That(cache.TryGetValue("key", out _)).Is.False();
+        Expect.IsFalse(cache.TryGetValue("key", out _));
     }
 
     [Test]
@@ -109,8 +109,8 @@ internal static class CacheTests
     {
         var cached = new CachedValue<int>(42, updated: true, updateInterval: 10);
 
-        Assert.That(cached.TryGetValue(out var value)).Is.True();
-        Assert.That(value).Is.EqualTo(42);
+        Expect.IsTrue(cached.TryGetValue(out var value));
+        Expect.AreEqual(42, value);
     }
 
     [Test]
@@ -120,7 +120,7 @@ internal static class CacheTests
 
         _tick = 11;
 
-        Assert.That(cached.TryGetValue(out _)).Is.False();
+        Expect.IsFalse(cached.TryGetValue(out _));
     }
 
     [Test]
@@ -132,7 +132,7 @@ internal static class CacheTests
         var cached = new CachedValue<int>(42, updated: true, updateInterval: 10);
         CacheClock.CurrentTick = () => _tick;
 
-        Assert.That(cached.TryGetValue(out _)).Is.False();
+        Expect.IsFalse(cached.TryGetValue(out _));
     }
 
     [Test]
@@ -140,12 +140,12 @@ internal static class CacheTests
     {
         var cached = new CachedValue<int>(0, updated: false, updateInterval: 10);
 
-        Assert.That(cached.TryGetValue(out _)).Is.False();
+        Expect.IsFalse(cached.TryGetValue(out _));
 
         _ = cached.Update(5);
 
-        Assert.That(cached.TryGetValue(out var value)).Is.True();
-        Assert.That(value).Is.EqualTo(5);
+        Expect.IsTrue(cached.TryGetValue(out var value));
+        Expect.AreEqual(5, value);
     }
 
     [Test]
@@ -155,7 +155,7 @@ internal static class CacheTests
         var cached = new CachedValue<int>(42, updateInterval: 10);
 #pragma warning restore CS0618
 
-        Assert.That(cached.TryGetValue(out var value)).Is.True();
-        Assert.That(value).Is.EqualTo(42);
+        Expect.IsTrue(cached.TryGetValue(out var value));
+        Expect.AreEqual(42, value);
     }
 }

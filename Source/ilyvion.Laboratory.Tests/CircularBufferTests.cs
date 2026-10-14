@@ -1,13 +1,13 @@
 // CircularBufferTests.cs
 // Copyright (c) 2026 Alexander Krivács Schrøder
 
+using DevTools.Testing;
 using ilyvion.Laboratory.Collections;
-using RimTestRedux;
 
 namespace ilyvion.Laboratory.Tests;
 
-[TestSuite]
-internal static class CircularBufferTests
+[TestFixture(TestType.MainMenu)]
+internal sealed class CircularBufferTests
 {
     [Test]
     public static void NegativeIndexerGetThrows()
@@ -21,7 +21,7 @@ internal static class CircularBufferTests
         // Advance _start past 0 so a negative index would otherwise wrap into bounds.
         buffer.PushBack(4);
 
-        Assert.ThatFunc(() => buffer[-1]).Does.Throw();
+        _ = Expect.Throws<Exception>(() => _ = buffer[-1]);
     }
 
     [Test]
@@ -33,6 +33,6 @@ internal static class CircularBufferTests
         buffer.PushBack(3);
         buffer.PushBack(4);
 
-        Assert.ThatFunc(() => buffer[-1] = 0).Does.Throw();
+        _ = Expect.Throws<Exception>(() => buffer[-1] = 0);
     }
 }

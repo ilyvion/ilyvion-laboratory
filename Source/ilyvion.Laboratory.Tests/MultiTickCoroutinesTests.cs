@@ -1,12 +1,12 @@
 // MultiTickCoroutinesTests.cs
 // Copyright (c) 2026 Alexander Krivács Schrøder
 
-using RimTestRedux;
+using DevTools.Testing;
 
 namespace ilyvion.Laboratory.Tests;
 
-[TestSuite]
-internal static class MultiTickCoroutinesTests
+[TestFixture(TestType.MainMenu)]
+internal sealed class MultiTickCoroutinesTests
 {
     private static Coroutine ImmediatelyDone()
     {
@@ -35,7 +35,7 @@ internal static class MultiTickCoroutinesTests
 
         MultiTickCoroutineManager.RunCoroutineImmediatelyToCompletion(Parent());
 
-        Assert.That(childCompleted).Is.True();
+        Expect.IsTrue(childCompleted);
     }
 
     // Regression guard for BUG-16: RunCoroutineImmediatelyToCompletion() used to track its batch
@@ -65,8 +65,8 @@ internal static class MultiTickCoroutinesTests
 
         MultiTickCoroutineManager.RunCoroutineImmediatelyToCompletion(Outer());
 
-        Assert.That(innerCompleted).Is.True();
-        Assert.That(outerCompleted).Is.True();
+        Expect.IsTrue(innerCompleted);
+        Expect.IsTrue(outerCompleted);
     }
 
     // Regression guard for BUG-16: a coroutine waiting on a condition that can never resolve
@@ -74,6 +74,7 @@ internal static class MultiTickCoroutinesTests
     // never scheduled into this batch) used to spin RunCoroutineImmediatelyToCompletion() forever.
     // It must give up after a bounded number of iterations instead of hanging the caller.
     [Test]
+    [ErrorsAllowed(@"RunCoroutineImmediatelyToCompletion aborted after \d+ iterations")]
     public static void NeverResumingCoroutineDoesNotHangImmediateCompletion()
     {
         static Coroutine NeverResumes()
@@ -81,10 +82,6 @@ internal static class MultiTickCoroutinesTests
             yield return new ResumeWhenTrue(() => false);
         }
 
-        Assert
-            .ThatFunc(() =>
-                MultiTickCoroutineManager.RunCoroutineImmediatelyToCompletion(NeverResumes())
-            )
-            .Not.Throw();
+        MultiTickCoroutineManager.RunCoroutineImmediatelyToCompletion(NeverResumes());
     }
 }

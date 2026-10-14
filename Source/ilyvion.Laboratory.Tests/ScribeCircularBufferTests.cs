@@ -1,8 +1,8 @@
 // ScribeCircularBufferTests.cs
 // Copyright (c) 2026 Alexander Krivács Schrøder
 
+using DevTools.Testing;
 using ilyvion.Laboratory.Collections;
-using RimTestRedux;
 
 namespace ilyvion.Laboratory.Tests;
 
@@ -12,8 +12,8 @@ namespace ilyvion.Laboratory.Tests;
 // were unconditionally nulled out during the ResolvingCrossRefs pass instead of being populated
 // with the resolved references. A corrupt/hand-edited save with capacity 0 or a missing "values"
 // node also used to throw/NRE instead of loading a recoverable empty buffer.
-[TestSuite]
-internal static class ScribeCircularBufferTests
+[TestFixture(TestType.MainMenu)]
+internal sealed class ScribeCircularBufferTests
 {
     /// <summary>
     /// A <see cref="Stream"/> wrapper whose dispose is a no-op, so the wrapped stream survives
@@ -170,12 +170,16 @@ internal static class ScribeCircularBufferTests
             lookMode: LookMode.Value
         );
 
-        Assert.That(loaded != null).Is.True();
-        Assert.That(loaded!.Capacity).Is.EqualTo(5);
-        Assert.ThatCollection(loaded).Has.Count(3);
-        Assert.ThatCollection(loaded).Does.Contain(1);
-        Assert.ThatCollection(loaded).Does.Contain(2);
-        Assert.ThatCollection(loaded).Does.Contain(3);
+        Expect.IsTrue(loaded != null);
+        if (loaded == null)
+        {
+            return;
+        }
+        Expect.AreEqual(5, loaded.Capacity);
+        Expect.AreEqual(3, loaded.Count());
+        Expect.IsTrue(loaded.Contains(1));
+        Expect.IsTrue(loaded.Contains(2));
+        Expect.IsTrue(loaded.Contains(3));
     }
 
     [Test]
@@ -197,10 +201,14 @@ internal static class ScribeCircularBufferTests
             second
         );
 
-        Assert.That(loaded != null).Is.True();
-        Assert.ThatCollection(loaded).Has.Count(2);
-        Assert.That(ReferenceEquals(loaded![0], first)).Is.True();
-        Assert.That(ReferenceEquals(loaded[1], second)).Is.True();
+        Expect.IsTrue(loaded != null);
+        if (loaded == null)
+        {
+            return;
+        }
+        Expect.AreEqual(2, loaded.Count());
+        Expect.IsTrue(ReferenceEquals(loaded[0], first));
+        Expect.IsTrue(ReferenceEquals(loaded[1], second));
     }
 
     [Test]
@@ -208,7 +216,7 @@ internal static class ScribeCircularBufferTests
     {
         var loaded = CircularBufferRoundTripHarness<int>.RoundTrip(null, lookMode: LookMode.Value);
 
-        Assert.That(loaded == null).Is.True();
+        Expect.IsTrue(loaded == null);
     }
 
     [Test]
@@ -248,8 +256,12 @@ internal static class ScribeCircularBufferTests
             }
         }
 
-        Assert.That(harness.Value != null).Is.True();
-        Assert.That(harness.Value!.Capacity).Is.EqualTo(1);
-        Assert.That(harness.Value.Size).Is.EqualTo(0);
+        Expect.IsTrue(harness.Value != null);
+        if (harness.Value == null)
+        {
+            return;
+        }
+        Expect.AreEqual(1, harness.Value.Capacity);
+        Expect.AreEqual(0, harness.Value.Size);
     }
 }

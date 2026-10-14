@@ -1,12 +1,12 @@
 // VersionCheckTests.cs
 // Copyright (c) 2026 Alexander Krivács Schrøder
 
-using RimTestRedux;
+using DevTools.Testing;
 
 namespace ilyvion.Laboratory.Tests;
 
-[TestSuite]
-internal static class VersionCheckTests
+[TestFixture(TestType.MainMenu)]
+internal sealed class VersionCheckTests
 {
     // Regression guard for BUG-19: IsAtLeastVersion used > instead of >=, so checking a
     // dependency against the exact version currently loaded reported it as too old.
@@ -15,7 +15,7 @@ internal static class VersionCheckTests
     {
         var result = VersionCheck.IsAtLeastVersion(VersionCheck.OurVersion);
 
-        Assert.That(result).Is.True();
+        Expect.IsTrue(result);
     }
 
     [Test]
@@ -25,7 +25,7 @@ internal static class VersionCheckTests
 
         var result = VersionCheck.IsAtLeastVersion(older);
 
-        Assert.That(result).Is.True();
+        Expect.IsTrue(result);
     }
 
     [Test]
@@ -40,7 +40,7 @@ internal static class VersionCheckTests
 
         var result = VersionCheck.IsAtLeastVersion(newer);
 
-        Assert.That(result).Is.False();
+        Expect.IsFalse(result);
     }
 
     [Test]
@@ -48,7 +48,7 @@ internal static class VersionCheckTests
     {
         var def = new VersionCheckDef();
 
-        Assert.That(def.modId).Is.EqualTo(VersionCheck.OurModId);
+        Expect.AreEqual(VersionCheck.OurModId, def.modId);
     }
 
     [Test]
@@ -58,7 +58,7 @@ internal static class VersionCheckTests
 
         var result = def.RequiredVersion;
 
-        Assert.That(result).Is.EqualTo(new Version(1, 2));
+        Expect.AreEqual(new Version(1, 2), result);
     }
 
     [Test]
@@ -73,7 +73,7 @@ internal static class VersionCheckTests
 
         var result = def.RequiredVersion;
 
-        Assert.That(result).Is.EqualTo(new Version(1, 2, 3));
+        Expect.AreEqual(new Version(1, 2, 3), result);
     }
 
     [Test]
@@ -89,7 +89,7 @@ internal static class VersionCheckTests
 
         var result = def.RequiredVersion;
 
-        Assert.That(result).Is.EqualTo(new Version(1, 2, 3, 4));
+        Expect.AreEqual(new Version(1, 2, 3, 4), result);
     }
 
     [Test]
@@ -104,7 +104,7 @@ internal static class VersionCheckTests
 
         var result = def.RequiredVersion;
 
-        Assert.That(result).Is.EqualTo(new Version(1, 2));
+        Expect.AreEqual(new Version(1, 2), result);
     }
 
     [Test]
@@ -120,10 +120,12 @@ internal static class VersionCheckTests
 
         var errors = def.ConfigErrors();
 
-        Assert
-            .ThatCollection(errors.ToList())
-            .Does.Contain(
-                "revisionVersion is set without buildVersion; revisionVersion is ignored unless buildVersion is also set"
-            );
+        Expect.IsTrue(
+            errors
+                .ToList()
+                .Contains(
+                    "revisionVersion is set without buildVersion; revisionVersion is ignored unless buildVersion is also set"
+                )
+        );
     }
 }

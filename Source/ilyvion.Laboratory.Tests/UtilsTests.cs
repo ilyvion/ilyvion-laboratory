@@ -1,12 +1,12 @@
 // UtilsTests.cs
 // Copyright (c) 2026 Alexander Krivács Schrøder
 
-using RimTestRedux;
+using DevTools.Testing;
 
 namespace ilyvion.Laboratory.Tests;
 
-[TestSuite]
-internal static class UtilsTests
+[TestFixture(TestType.MainMenu)]
+internal sealed class UtilsTests
 {
     // Regression guard for commit 6964fbc: CeilToPrecision() clamped the exponent to a minimum
     // of 1, so any precision request finer than "round to the nearest 10" was ignored and small
@@ -16,7 +16,7 @@ internal static class UtilsTests
     {
         var result = Utils.CeilToPrecision(4, precision: 0);
 
-        Assert.That(result).Is.EqualTo(5);
+        Expect.AreEqual(5, result);
     }
 
     [Test]
@@ -24,7 +24,7 @@ internal static class UtilsTests
     {
         var result = Utils.CeilToPrecision(25);
 
-        Assert.That(result).Is.EqualTo(26);
+        Expect.AreEqual(26, result);
     }
 
     [Test]
@@ -32,7 +32,7 @@ internal static class UtilsTests
     {
         var result = Utils.CeilToPrecision(1234, precision: 2);
 
-        Assert.That(result).Is.EqualTo(1240);
+        Expect.AreEqual(1240, result);
     }
 
     // Regression guard for commit 6964fbc: FormatCount() looped while
@@ -43,7 +43,7 @@ internal static class UtilsTests
     {
         var result = Utils.FormatCount(1_000_000_000_000f, "s");
 
-        Assert.That(result).Is.EqualTo("1000 Gs");
+        Expect.AreEqual("1000 Gs", result);
     }
 
     [Test]
@@ -51,7 +51,7 @@ internal static class UtilsTests
     {
         var result = Utils.FormatCount(500f, "s");
 
-        Assert.That(result).Is.EqualTo("500 s");
+        Expect.AreEqual("500 s", result);
     }
 
     [Test]
@@ -59,6 +59,6 @@ internal static class UtilsTests
     {
         var result = Utils.FormatCount(1500f, "s");
 
-        Assert.That(result).Is.EqualTo("1.5 ks");
+        Expect.AreEqual("1.5 ks", result);
     }
 }

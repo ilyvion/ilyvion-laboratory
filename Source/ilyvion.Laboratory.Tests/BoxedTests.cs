@@ -1,19 +1,19 @@
 // BoxedTests.cs
 // Copyright (c) 2026 Alexander Krivács Schrøder
 
-using RimTestRedux;
+using DevTools.Testing;
 
 namespace ilyvion.Laboratory.Tests;
 
-[TestSuite]
-internal static class BoxedTests
+[TestFixture(TestType.MainMenu)]
+internal sealed class BoxedTests
 {
     [Test]
     public static void ValueGetReturnsInitialValue()
     {
         var boxed = new Boxed<int>(5);
 
-        Assert.That(boxed.Value).Is.EqualTo(5);
+        Expect.AreEqual(5, boxed.Value);
     }
 
     [Test]
@@ -21,18 +21,18 @@ internal static class BoxedTests
     {
         var boxed = new Boxed<int>(5) { Value = 10 };
 
-        Assert.That(boxed.Value).Is.EqualTo(10);
+        Expect.AreEqual(10, boxed.Value);
     }
 
     [Test]
     public static void RefValueMutatesThroughReference()
     {
         var boxed = new Boxed<int>(5);
-        Assert.That(boxed.Value).Is.EqualTo(5);
+        Expect.AreEqual(5, boxed.Value);
 
         boxed.RefValue = 42;
 
-        Assert.That(boxed.Value).Is.EqualTo(42);
+        Expect.AreEqual(42, boxed.Value);
     }
 
     [Test]
@@ -42,7 +42,7 @@ internal static class BoxedTests
 
         int converted = boxed;
 
-        Assert.That(converted).Is.EqualTo(7);
+        Expect.AreEqual(7, converted);
     }
 
     [Test]
@@ -50,7 +50,7 @@ internal static class BoxedTests
     {
         var boxed = (Boxed<int>)7;
 
-        Assert.That(boxed.Value).Is.EqualTo(7);
+        Expect.AreEqual(7, boxed.Value);
     }
 
     [Test]
@@ -60,7 +60,7 @@ internal static class BoxedTests
 
         var anyBoxed = boxed.ToAnyBoxed();
 
-        Assert.That(anyBoxed.Value).Is.EqualTo(3);
+        Expect.AreEqual(3, anyBoxed.Value);
     }
 
     [Test]
@@ -68,7 +68,7 @@ internal static class BoxedTests
     {
         var anyBoxed = new AnyBoxed<string>("hello");
 
-        Assert.That(anyBoxed.Value).Is.EqualTo("hello");
+        Expect.AreEqual("hello", anyBoxed.Value);
     }
 
     [Test]
@@ -76,18 +76,18 @@ internal static class BoxedTests
     {
         var anyBoxed = new AnyBoxed<string>("hello") { Value = "world" };
 
-        Assert.That(anyBoxed.Value).Is.EqualTo("world");
+        Expect.AreEqual("world", anyBoxed.Value);
     }
 
     [Test]
     public static void AnyBoxedRefValueMutatesThroughReference()
     {
         var anyBoxed = new AnyBoxed<string>("hello");
-        Assert.That(anyBoxed.Value).Is.EqualTo("hello");
+        Expect.AreEqual("hello", anyBoxed.Value);
 
         anyBoxed.RefValue = "world";
 
-        Assert.That(anyBoxed.Value).Is.EqualTo("world");
+        Expect.AreEqual("world", anyBoxed.Value);
     }
 
     [Test]
@@ -97,7 +97,7 @@ internal static class BoxedTests
 
         string converted = anyBoxed;
 
-        Assert.That(converted).Is.EqualTo("hello");
+        Expect.AreEqual("hello", converted);
     }
 
     [Test]
@@ -105,6 +105,6 @@ internal static class BoxedTests
     {
         var anyBoxed = (AnyBoxed<string>)"hello";
 
-        Assert.That(anyBoxed.Value).Is.EqualTo("hello");
+        Expect.AreEqual("hello", anyBoxed.Value);
     }
 }

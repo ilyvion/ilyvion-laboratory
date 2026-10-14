@@ -1,13 +1,13 @@
 // LruCacheTests.cs
 // Copyright (c) 2026 Alexander Krivács Schrøder
 
+using DevTools.Testing;
 using ilyvion.Laboratory.Collections;
-using RimTestRedux;
 
 namespace ilyvion.Laboratory.Tests;
 
-[TestSuite]
-internal static class LruCacheTests
+[TestFixture(TestType.MainMenu)]
+internal sealed class LruCacheTests
 {
     [Test]
     public static void SetThenTryGetValueReturnsStoredValue()
@@ -17,8 +17,8 @@ internal static class LruCacheTests
 
         var found = cache.TryGetValue("a", out var value);
 
-        Assert.That(found).Is.True();
-        Assert.That(value).Is.EqualTo(1);
+        Expect.IsTrue(found);
+        Expect.AreEqual(1, value);
     }
 
     [Test]
@@ -28,7 +28,7 @@ internal static class LruCacheTests
 
         var found = cache.TryGetValue("missing", out _);
 
-        Assert.That(found).Is.False();
+        Expect.IsFalse(found);
     }
 
     [Test]
@@ -42,10 +42,10 @@ internal static class LruCacheTests
 
         cache.Set("c", 3);
 
-        Assert.That(cache.Count).Is.EqualTo(2);
-        Assert.That(cache.ContainsKey("a")).Is.False();
-        Assert.That(cache.ContainsKey("b")).Is.True();
-        Assert.That(cache.ContainsKey("c")).Is.True();
+        Expect.AreEqual(2, cache.Count);
+        Expect.IsFalse(cache.ContainsKey("a"));
+        Expect.IsTrue(cache.ContainsKey("b"));
+        Expect.IsTrue(cache.ContainsKey("c"));
     }
 
     [Test]
@@ -59,9 +59,9 @@ internal static class LruCacheTests
 
         cache.Set("c", 3);
 
-        Assert.That(cache.ContainsKey("a")).Is.True();
-        Assert.That(cache.ContainsKey("b")).Is.False();
-        Assert.That(cache.ContainsKey("c")).Is.True();
+        Expect.IsTrue(cache.ContainsKey("a"));
+        Expect.IsFalse(cache.ContainsKey("b"));
+        Expect.IsTrue(cache.ContainsKey("c"));
     }
 
     [Test]
@@ -74,10 +74,10 @@ internal static class LruCacheTests
         cache.Set("a", 100);
         cache.Set("c", 3);
 
-        Assert.That(cache.Count).Is.EqualTo(2);
+        Expect.AreEqual(2, cache.Count);
         _ = cache.TryGetValue("a", out var value);
-        Assert.That(value).Is.EqualTo(100);
-        Assert.That(cache.ContainsKey("b")).Is.False();
+        Expect.AreEqual(100, value);
+        Expect.IsFalse(cache.ContainsKey("b"));
     }
 
     [Test]
@@ -103,9 +103,9 @@ internal static class LruCacheTests
             }
         );
 
-        Assert.That(first).Is.EqualTo(1);
-        Assert.That(second).Is.EqualTo(1);
-        Assert.That(calls).Is.EqualTo(1);
+        Expect.AreEqual(1, first);
+        Expect.AreEqual(1, second);
+        Expect.AreEqual(1, calls);
     }
 
     [Test]
@@ -117,9 +117,9 @@ internal static class LruCacheTests
         var removedExisting = cache.Remove("a");
         var removedMissing = cache.Remove("a");
 
-        Assert.That(removedExisting).Is.True();
-        Assert.That(removedMissing).Is.False();
-        Assert.That(cache.ContainsKey("a")).Is.False();
+        Expect.IsTrue(removedExisting);
+        Expect.IsFalse(removedMissing);
+        Expect.IsFalse(cache.ContainsKey("a"));
     }
 
     [Test]
@@ -131,10 +131,10 @@ internal static class LruCacheTests
 
         cache.Clear();
 
-        Assert.That(cache.Count).Is.EqualTo(0);
+        Expect.AreEqual(0, cache.Count);
     }
 
     [Test]
     public static void NonPositiveCapacityThrows() =>
-        Assert.ThatFunc(() => new LruCache<string, int>(0)).Does.Throw();
+        Expect.Throws<Exception>(() => _ = new LruCache<string, int>(0));
 }

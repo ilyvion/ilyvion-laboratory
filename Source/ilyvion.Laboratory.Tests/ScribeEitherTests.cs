@@ -1,7 +1,7 @@
 // ScribeEitherTests.cs
 // Copyright (c) 2026 Alexander Krivács Schrøder
 
-using RimTestRedux;
+using DevTools.Testing;
 using RimWorld.Planet;
 
 namespace ilyvion.Laboratory.Tests;
@@ -15,8 +15,8 @@ namespace ilyvion.Laboratory.Tests;
 // Scribe just resolved. These tests drive a real Scribe save/load/cross-ref-resolve cycle (via
 // ilyvion.Laboratory's CustomStream Scribe helpers, so no on-disk save file is needed) and assert
 // the round-tripped Either actually carries the resolved value.
-[TestSuite]
-internal static class ScribeEitherTests
+[TestFixture(TestType.MainMenu)]
+internal sealed class ScribeEitherTests
 {
     /// <summary>
     /// A <see cref="Stream"/> wrapper whose dispose is a no-op, so the wrapped stream survives
@@ -216,9 +216,13 @@ internal static class ScribeEitherTests
             referenced
         );
 
-        Assert.That(loaded != null).Is.True();
-        Assert.That(loaded!.IsLeft).Is.True();
-        Assert.That(ReferenceEquals(loaded.UnwrapLeft(), referenced)).Is.True();
+        Expect.IsTrue(loaded != null);
+        if (loaded == null)
+        {
+            return;
+        }
+        Expect.IsTrue(loaded.IsLeft);
+        Expect.IsTrue(ReferenceEquals(loaded.UnwrapLeft(), referenced));
     }
 
     [Test]
@@ -234,9 +238,13 @@ internal static class ScribeEitherTests
             referenced
         );
 
-        Assert.That(loaded != null).Is.True();
-        Assert.That(loaded!.IsRight).Is.True();
-        Assert.That(ReferenceEquals(loaded.UnwrapRight(), referenced)).Is.True();
+        Expect.IsTrue(loaded != null);
+        if (loaded == null)
+        {
+            return;
+        }
+        Expect.IsTrue(loaded.IsRight);
+        Expect.IsTrue(ReferenceEquals(loaded.UnwrapRight(), referenced));
     }
 
     [Test]
@@ -253,9 +261,13 @@ internal static class ScribeEitherTests
             thing
         );
 
-        Assert.That(loaded != null).Is.True();
-        Assert.That(loaded!.IsLeft).Is.True();
-        Assert.That(ReferenceEquals(loaded.UnwrapLeft().Thing, thing)).Is.True();
+        Expect.IsTrue(loaded != null);
+        if (loaded == null)
+        {
+            return;
+        }
+        Expect.IsTrue(loaded.IsLeft);
+        Expect.IsTrue(ReferenceEquals(loaded.UnwrapLeft().Thing, thing));
     }
 
     [Test]
@@ -272,9 +284,13 @@ internal static class ScribeEitherTests
             thing
         );
 
-        Assert.That(loaded != null).Is.True();
-        Assert.That(loaded!.IsLeft).Is.True();
-        Assert.That(ReferenceEquals(loaded.UnwrapLeft().Thing, thing)).Is.True();
+        Expect.IsTrue(loaded != null);
+        if (loaded == null)
+        {
+            return;
+        }
+        Expect.IsTrue(loaded.IsLeft);
+        Expect.IsTrue(ReferenceEquals(loaded.UnwrapLeft().Thing, thing));
     }
 
     [Test]
@@ -291,9 +307,13 @@ internal static class ScribeEitherTests
             thing
         );
 
-        Assert.That(loaded != null).Is.True();
-        Assert.That(loaded!.IsLeft).Is.True();
-        Assert.That(ReferenceEquals(loaded.UnwrapLeft().Thing, thing)).Is.True();
+        Expect.IsTrue(loaded != null);
+        if (loaded == null)
+        {
+            return;
+        }
+        Expect.IsTrue(loaded.IsLeft);
+        Expect.IsTrue(ReferenceEquals(loaded.UnwrapLeft().Thing, thing));
     }
 
     [Test]
@@ -308,9 +328,13 @@ internal static class ScribeEitherTests
             rightLookMode: LookMode.Value
         );
 
-        Assert.That(loaded != null).Is.True();
-        Assert.That(loaded!.IsLeft).Is.True();
-        Assert.That(ReferenceEquals(loaded.UnwrapLeft(), corePart)).Is.True();
+        Expect.IsTrue(loaded != null);
+        if (loaded == null)
+        {
+            return;
+        }
+        Expect.IsTrue(loaded.IsLeft);
+        Expect.IsTrue(ReferenceEquals(loaded.UnwrapLeft(), corePart));
     }
 
     [Test]
@@ -329,8 +353,12 @@ internal static class ScribeEitherTests
             rightLookMode: LookMode.Value
         );
 
-        Assert.That(loaded != null).Is.True();
-        Assert.That(loaded!.IsLeft).Is.True();
-        Assert.That(loaded.UnwrapLeft() is null).Is.True();
+        Expect.IsTrue(loaded != null);
+        if (loaded == null)
+        {
+            return;
+        }
+        Expect.IsTrue(loaded.IsLeft);
+        Expect.IsTrue(loaded.UnwrapLeft() is null);
     }
 }

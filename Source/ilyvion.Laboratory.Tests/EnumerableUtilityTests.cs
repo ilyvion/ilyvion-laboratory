@@ -1,12 +1,12 @@
 // EnumerableUtilityTests.cs
 // Copyright (c) 2026 Alexander Krivács Schrøder
 
-using RimTestRedux;
+using DevTools.Testing;
 
 namespace ilyvion.Laboratory.Tests;
 
-[TestSuite]
-internal static class EnumerableUtilityTests
+[TestFixture(TestType.MainMenu)]
+internal sealed class EnumerableUtilityTests
 {
     [Test]
     public static void LazyOrderBySortsAscending()
@@ -15,12 +15,12 @@ internal static class EnumerableUtilityTests
 
         var result = source.LazyOrderBy(x => x).ToArray();
 
-        Assert.ThatCollection(result).Has.Count(5);
-        Assert.That(result[0]).Is.EqualTo(1);
-        Assert.That(result[1]).Is.EqualTo(2);
-        Assert.That(result[2]).Is.EqualTo(3);
-        Assert.That(result[3]).Is.EqualTo(4);
-        Assert.That(result[4]).Is.EqualTo(5);
+        Expect.AreEqual(5, result.Length);
+        Expect.AreEqual(1, result[0]);
+        Expect.AreEqual(2, result[1]);
+        Expect.AreEqual(3, result[2]);
+        Expect.AreEqual(4, result[3]);
+        Expect.AreEqual(5, result[4]);
     }
 
     [Test]
@@ -30,11 +30,11 @@ internal static class EnumerableUtilityTests
 
         var result = source.LazyOrderByDescending(x => x).ToArray();
 
-        Assert.That(result[0]).Is.EqualTo(5);
-        Assert.That(result[1]).Is.EqualTo(4);
-        Assert.That(result[2]).Is.EqualTo(3);
-        Assert.That(result[3]).Is.EqualTo(2);
-        Assert.That(result[4]).Is.EqualTo(1);
+        Expect.AreEqual(5, result[0]);
+        Expect.AreEqual(4, result[1]);
+        Expect.AreEqual(3, result[2]);
+        Expect.AreEqual(2, result[3]);
+        Expect.AreEqual(1, result[4]);
     }
 
     [Test]
@@ -47,10 +47,10 @@ internal static class EnumerableUtilityTests
 
         var result = source.LazyOrderBy(x => x).ToArray();
 
-        Assert.ThatCollection(result).Has.Count(100);
+        Expect.AreEqual(100, result.Length);
         for (var i = 0; i < result.Length; i++)
         {
-            Assert.That(result[i]).Is.EqualTo(i);
+            Expect.AreEqual(i, result[i]);
         }
     }
 
@@ -65,14 +65,14 @@ internal static class EnumerableUtilityTests
         var onesInOrder = result.Where(x => x.Key == 1).Select(x => x.OriginalIndex).ToArray();
         var twosInOrder = result.Where(x => x.Key == 2).Select(x => x.OriginalIndex).ToArray();
 
-        Assert.ThatCollection(onesInOrder).Has.Count(3);
-        Assert.That(onesInOrder[0]).Is.EqualTo(0);
-        Assert.That(onesInOrder[1]).Is.EqualTo(2);
-        Assert.That(onesInOrder[2]).Is.EqualTo(4);
+        Expect.AreEqual(3, onesInOrder.Length);
+        Expect.AreEqual(0, onesInOrder[0]);
+        Expect.AreEqual(2, onesInOrder[1]);
+        Expect.AreEqual(4, onesInOrder[2]);
 
-        Assert.ThatCollection(twosInOrder).Has.Count(2);
-        Assert.That(twosInOrder[0]).Is.EqualTo(1);
-        Assert.That(twosInOrder[1]).Is.EqualTo(3);
+        Expect.AreEqual(2, twosInOrder.Length);
+        Expect.AreEqual(1, twosInOrder[0]);
+        Expect.AreEqual(3, twosInOrder[1]);
     }
 
     [Test]
@@ -85,10 +85,10 @@ internal static class EnumerableUtilityTests
             .CreateOrderedEnumerable(x => x.Secondary, null, false)
             .ToArray();
 
-        Assert.That(result[0]).Is.EqualTo((0, 1));
-        Assert.That(result[1]).Is.EqualTo((0, 2));
-        Assert.That(result[2]).Is.EqualTo((1, 1));
-        Assert.That(result[3]).Is.EqualTo((1, 2));
+        Expect.AreEqual((0, 1), result[0]);
+        Expect.AreEqual((0, 2), result[1]);
+        Expect.AreEqual((1, 1), result[2]);
+        Expect.AreEqual((1, 2), result[3]);
     }
 
     [Test]
@@ -98,7 +98,7 @@ internal static class EnumerableUtilityTests
 
         var result = source.LazyOrderBy(x => x).ToArray();
 
-        Assert.ThatCollection(result).Is.Empty();
+        Expect.IsEmpty(result);
     }
 
     [Test]
@@ -108,7 +108,7 @@ internal static class EnumerableUtilityTests
 
         var result = source.LazyOrderBy(x => x).ToArray();
 
-        Assert.ThatCollection(result).Has.Count(1);
-        Assert.That(result[0]).Is.EqualTo(42);
+        Expect.AreEqual(1, result.Length);
+        Expect.AreEqual(42, result[0]);
     }
 }

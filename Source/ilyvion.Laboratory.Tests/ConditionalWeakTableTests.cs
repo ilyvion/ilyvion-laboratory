@@ -1,13 +1,13 @@
 // ConditionalWeakTableTests.cs
 // Copyright (c) 2026 Alexander Krivács Schrøder
 
-#if !v1_6
-using RimTestRedux;
+#if !v1_6_OR_GREATER
+using DevTools.Testing;
 
 namespace ilyvion.Laboratory.Tests;
 
-[TestSuite]
-internal static class ConditionalWeakTableTests
+[TestFixture(TestType.MainMenu)]
+internal sealed class ConditionalWeakTableTests
 {
     // GetOrCreateValue requires a public parameterless constructor at runtime.
     private sealed class Value { }
@@ -40,8 +40,8 @@ internal static class ConditionalWeakTableTests
         _ = table.GetOrCreateValue(key);
         _ = table.GetOrCreateValue(key);
 
-        Assert.That(KeyReferenceCount(table)).Is.EqualTo(1);
-        Assert.ThatCollection(table).Has.Count(1);
+        Expect.AreEqual(1, KeyReferenceCount(table));
+        Expect.AreEqual(1, table.Count());
     }
 
     [Test]
@@ -53,8 +53,8 @@ internal static class ConditionalWeakTableTests
         _ = table.GetValue(key, _ => "value");
         _ = table.GetValue(key, _ => "value");
 
-        Assert.That(KeyReferenceCount(table)).Is.EqualTo(1);
-        Assert.ThatCollection(table).Has.Count(1);
+        Expect.AreEqual(1, KeyReferenceCount(table));
+        Expect.AreEqual(1, table.Count());
     }
 
     [Test]
@@ -69,7 +69,7 @@ internal static class ConditionalWeakTableTests
 
         table.Add(new object(), "value");
 
-        Assert.That(KeyReferenceCount(table)).Is.EqualTo(1);
+        Expect.AreEqual(1, KeyReferenceCount(table));
     }
 
     private static void AddAndDropKey(ConditionalWeakTable<object, string> table) =>

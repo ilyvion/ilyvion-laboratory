@@ -1,13 +1,13 @@
 // StringExtensionsTests.cs
 // Copyright (c) 2026 Alexander Krivács Schrøder
 
+using DevTools.Testing;
 using ilyvion.Laboratory.Extensions;
-using RimTestRedux;
 
 namespace ilyvion.Laboratory.Tests;
 
-[TestSuite]
-internal static class StringExtensionsTests
+[TestFixture(TestType.MainMenu)]
+internal sealed class StringExtensionsTests
 {
     // Regression guard for BUG-25: the Fits cache used to be keyed only on (text, width),
     // ignoring Text.Font, so a size measured under one GameFont was served back for every
@@ -29,7 +29,7 @@ internal static class StringExtensionsTests
             Text.Font = GameFont.Medium;
             _ = text.Fits(width, out var mediumSize);
 
-            Assert.That(tinySize.x).Is.Not.EqualTo(mediumSize.x);
+            Expect.AreNotEqual(mediumSize.x, tinySize.x);
         }
         finally
         {

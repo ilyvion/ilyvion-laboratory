@@ -1,13 +1,13 @@
 // GUIScopeTests.cs
 // Copyright (c) 2026 Alexander Krivács Schrøder
 
+using DevTools.Testing;
 using ilyvion.Laboratory.UI;
-using RimTestRedux;
 
 namespace ilyvion.Laboratory.Tests;
 
-[TestSuite]
-internal static class GUIScopeTests
+[TestFixture(TestType.MainMenu)]
+internal sealed class GUIScopeTests
 {
     // Regression guard for commit 551ad5e: FontSizeScope used to be constructed before
     // FontScope switched Text.Font, so it captured and later restored the font size on the
@@ -28,15 +28,15 @@ internal static class GUIScopeTests
 
             using (GUIScope.Multiple(fontSize: originalMediumSize + 7, gameFont: GameFont.Medium))
             {
-                Assert.That(Text.Font).Is.EqualTo(GameFont.Medium);
-                Assert.That(Text.CurFontStyle.fontSize).Is.EqualTo(originalMediumSize + 7);
+                Expect.AreEqual(GameFont.Medium, Text.Font);
+                Expect.AreEqual(originalMediumSize + 7, Text.CurFontStyle.fontSize);
             }
 
-            Assert.That(Text.Font).Is.EqualTo(GameFont.Small);
-            Assert.That(Text.CurFontStyle.fontSize).Is.EqualTo(originalSmallSize);
+            Expect.AreEqual(GameFont.Small, Text.Font);
+            Expect.AreEqual(originalSmallSize, Text.CurFontStyle.fontSize);
 
             Text.Font = GameFont.Medium;
-            Assert.That(Text.CurFontStyle.fontSize).Is.EqualTo(originalMediumSize);
+            Expect.AreEqual(originalMediumSize, Text.CurFontStyle.fontSize);
         }
         finally
         {
@@ -53,11 +53,11 @@ internal static class GUIScopeTests
     {
         var status = new ScrollViewStatus();
 
-        Assert.That(ScrollViewScope.TryMarkDisposed(status)).Is.True();
-        Assert.That(status.Disposed).Is.True();
+        Expect.IsTrue(ScrollViewScope.TryMarkDisposed(status));
+        Expect.IsTrue(status.Disposed);
 
-        Assert.That(ScrollViewScope.TryMarkDisposed(status)).Is.False();
-        Assert.That(status.Disposed).Is.True();
+        Expect.IsFalse(ScrollViewScope.TryMarkDisposed(status));
+        Expect.IsTrue(status.Disposed);
     }
 
     // Regression guard for commit 551ad5e: without resetting ScrollViewStatus.Disposed for a
@@ -69,12 +69,12 @@ internal static class GUIScopeTests
     {
         var status = new ScrollViewStatus();
         _ = ScrollViewScope.TryMarkDisposed(status);
-        Assert.That(status.Disposed).Is.True();
+        Expect.IsTrue(status.Disposed);
 
         ScrollViewScope.ResetForNewScope(status);
-        Assert.That(status.Disposed).Is.False();
+        Expect.IsFalse(status.Disposed);
 
-        Assert.That(ScrollViewScope.TryMarkDisposed(status)).Is.True();
-        Assert.That(status.Disposed).Is.True();
+        Expect.IsTrue(ScrollViewScope.TryMarkDisposed(status));
+        Expect.IsTrue(status.Disposed);
     }
 }
