@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- On RimWorld 1.6 and earlier, mods depending on ilyvion's Laboratory can use the generic overloads of Enum.GetValues, GetNames, GetName, IsDefined and Parse, so the same enum lookups compile on every RimWorld version.
+
 ### Fixed
 
 - On RimWorld 1.5 and earlier, code analysis (CA1062) now recognizes ArgumentNullException.ThrowIfNull as a null check in mods depending on ilyvion's Laboratory.
