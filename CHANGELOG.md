@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- On RimWorld 1.5 and earlier, code analysis (CA1062) now recognizes ArgumentNullException.ThrowIfNull as a null check in mods depending on ilyvion's Laboratory.
+
 ## [0.25.1] - 2026-10-14
 
 ### Fixed

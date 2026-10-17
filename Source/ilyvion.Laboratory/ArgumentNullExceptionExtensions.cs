@@ -20,7 +20,7 @@ public static class ArgumentNullExceptionExtensions
         /// <param name="argument">The reference type argument to validate as non-null.</param>
         /// <param name="paramName">The name of the parameter with which <paramref name="argument"/> corresponds.</param>
         public static void ThrowIfNull(
-            [NotNull] object? argument,
+            [NotNull, ValidatedNotNull] object? argument,
             [CallerArgumentExpression(nameof(argument))] string? paramName = null
         )
         {
