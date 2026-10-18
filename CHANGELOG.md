@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - On RimWorld 1.6 and earlier, mods depending on ilyvion's Laboratory can use the generic overloads of Enum.GetValues, GetNames, GetName, IsDefined and Parse, so the same enum lookups compile on every RimWorld version.
+- ActivatorUtility.CreateInstance creates an instance of a type cast to the requested type, and throws instead of returning null, so callers don't need their own null checks.
 
 ### Fixed
 
