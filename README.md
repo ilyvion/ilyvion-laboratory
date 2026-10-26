@@ -8,6 +8,22 @@ ilyvion's Laboratory is a library/framework mod for use by my other mods to avoi
 
 Just to be perfectly clear: **_I take no responsibility whatsoever if your mod blows up due to me making a change to this mod — depend on it at your own risk and don't @ me if something breaks for you!_**
 
+## Building from source
+
+ilyvion's Laboratory is part of a family of mods that share build tooling. To build it, check out this sibling repository alongside this one (i.e. `../rimworld-utils` relative to this repo):
+
+- [`rimworld-utils`](https://github.com/ilyvion/rimworld-utils) — shared MSBuild props/targets and build scripts.
+
+The test projects are only built in the Debug configuration, and additionally need [`SmashPhil-DevTools`](https://github.com/ilyvion/SmashPhil-DevTools) checked out at `../Third-Party/DevTools`.
+
+Then build with the .NET SDK (targets `net481` for RimWorld 1.3 through 1.6, `net10.0` for RimWorld 1.7):
+
+```sh
+dotnet build --configuration Release --property RimWorldVersion=1.7 ilyvion.Laboratory.sln
+```
+
+Or use `.vscode/build.sh`, which builds and copies the mod's files into your RimWorld `Mods` folder (see `.vscode/build_config.sh` for the target path).
+
 ## License
 
 Licensed under either of
