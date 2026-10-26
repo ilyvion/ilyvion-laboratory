@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- TranspilerUtility, with helpers for Harmony transpilers: InjectCallBeforeReturn inserts a method call before the last matching instruction ahead of a method's return (throwing InjectCallBeforeReturnException when the IL doesn't match), and WidenShortBranches turns short branch instructions into long ones so inserted instructions can't push a branch out of range.
+
 ## [0.26.0] - 2026-10-20
 
 ### Added
