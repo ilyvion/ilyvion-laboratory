@@ -11,6 +11,30 @@ public abstract class IlyvionMod(ModContentPack content) : Mod(content)
 
     public override string SettingsCategory() => HasSettings ? Content.Name : "";
 
+    /// <summary>
+    /// Applies every Harmony patch in the assembly that declares this mod class.
+    /// </summary>
+    /// <param name="harmonyId">The Harmony id to patch with; defaults to the mod's package id.</param>
+    /// <returns>The <see cref="Harmony"/> instance that applied the patches.</returns>
+    [SinceVersion(0, 27, 0)]
+    protected Harmony PatchAll(string? harmonyId = null)
+    {
+        var harmony = new Harmony(harmonyId ?? Content.PackageId);
+        harmony.PatchAll(GetType().Assembly);
+        return harmony;
+    }
+
+    /// <summary>
+    /// Loads the mod's settings once the game has finished its current long event. Settings read
+    /// for the first time while a save is loading fail, because the Scribe can only load one
+    /// thing at a time.
+    /// </summary>
+    /// <typeparam name="T">The mod's settings class.</typeparam>
+    [SinceVersion(0, 27, 0)]
+    protected void LoadSettingsWhenFinished<T>()
+        where T : ModSettings, new() =>
+        LongEventHandler.ExecuteWhenFinished(() => GetSettings<T>());
+
     public virtual void LogMessage(string msg) => Log.Message($"[{Content.Name}] " + msg);
 
     public virtual void LogDevMessage(string msg) => LogDevMessage(() => msg);
