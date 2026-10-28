@@ -141,4 +141,113 @@ internal sealed class TranspilerUtilityTests
         Expect.AreEqual(OpCodes.Nop, result[pairs.Length].opcode);
         Expect.AreEqual(OpCodes.Br, result[pairs.Length + 1].opcode);
     }
+
+    [Test]
+    public static void PatchOrOriginalReturnsTranspiledInstructionsOnMatch()
+    {
+        var logged = new List<string>();
+
+        var result = TranspilerUtility
+            .PatchOrOriginal(
+                [
+                    new CodeInstruction(OpCodes.Nop),
+                    new CodeInstruction(OpCodes.Ldc_I4_1),
+                    new CodeInstruction(OpCodes.Ret),
+                ],
+                "patch Target",
+                logged.Add,
+                codeMatcher =>
+                {
+                    _ = codeMatcher.ExpectForward(i => i.opcode == OpCodes.Ldc_I4_1, "ldc.i4.1");
+                    _ = codeMatcher.Insert([new CodeInstruction(OpCodes.Ldarg_0)]);
+                }
+            )
+            .ToList();
+
+        Expect.AreEqual(0, logged.Count);
+        Expect.AreEqual(4, result.Count);
+        Expect.AreEqual(OpCodes.Ldarg_0, result[1].opcode);
+        Expect.AreEqual(OpCodes.Ldc_I4_1, result[2].opcode);
+    }
+
+    [Test]
+    public static void PatchOrOriginalLogsAndReturnsUnmodifiedOriginalOnMismatch()
+    {
+        var logged = new List<string>();
+
+        var result = TranspilerUtility
+            .PatchOrOriginal(
+                [new CodeInstruction(OpCodes.Ldc_I4_1), new CodeInstruction(OpCodes.Ret)],
+                "reverse patch Target",
+                logged.Add,
+                codeMatcher =>
+                {
+                    _ = codeMatcher.ExpectForward(i => i.opcode == OpCodes.Ldc_I4_1, "ldc.i4.1");
+                    codeMatcher.Opcode = OpCodes.Ldc_I4_2;
+                    _ = codeMatcher.ExpectForward(i => i.opcode == OpCodes.Pop, "[pop]");
+                }
+            )
+            .ToList();
+
+        Expect.AreEqual(1, logged.Count);
+        Expect.AreEqual(
+            "Could not reverse patch Target, IL does not match expectations: [pop] not found.",
+            logged[0]
+        );
+        Expect.AreEqual(2, result.Count);
+        Expect.AreEqual(OpCodes.Ldc_I4_1, result[0].opcode);
+        Expect.AreEqual(OpCodes.Ret, result[1].opcode);
+    }
+
+    [Test]
+    public static void PatchOrOriginalLogsDirectlyThrownMismatch()
+    {
+        var logged = new List<string>();
+
+        _ = TranspilerUtility
+            .PatchOrOriginal(
+                [new CodeInstruction(OpCodes.Ret)],
+                "patch Target",
+                logged.Add,
+                _ => throw new TranspilerMismatchException("expected ldarg.0; was ret.")
+            )
+            .ToList();
+
+        Expect.AreEqual(
+            "Could not patch Target, IL does not match expectations: expected ldarg.0; was ret.",
+            logged[0]
+        );
+    }
+
+    [Test]
+    public static void ExpectBackwardsFindsEarlierInstruction()
+    {
+        var codeMatcher = new CodeMatcher([
+            new CodeInstruction(OpCodes.Ldarg_0),
+            new CodeInstruction(OpCodes.Nop),
+            new CodeInstruction(OpCodes.Ret),
+        ]).End();
+
+        _ = codeMatcher.ExpectBackwards(i => i.opcode == OpCodes.Ldarg_0, "ldarg.0");
+
+        Expect.AreEqual(0, codeMatcher.Pos);
+    }
+
+    [Test]
+    public static void ExpectBackwardsThrowsWhenNotFound()
+    {
+        var codeMatcher = new CodeMatcher([new CodeInstruction(OpCodes.Ret)]).End();
+        TranspilerMismatchException? caught = null;
+        try
+        {
+            _ = codeMatcher.ExpectBackwards(i => i.opcode == OpCodes.Ldarg_0, "ldarg.0");
+        }
+        catch (TranspilerMismatchException e)
+        {
+            caught = e;
+        }
+
+        Expect.IsNotNull(caught);
+        Expect.AreEqual("ldarg.0 not found.", caught!.Detail);
+    }
 }

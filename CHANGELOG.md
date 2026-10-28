@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - TranspilerUtility, with helpers for Harmony transpilers: InjectCallBeforeReturn inserts a method call before the last matching instruction ahead of a method's return (throwing InjectCallBeforeReturnException when the IL doesn't match), and WidenShortBranches turns short branch instructions into long ones so inserted instructions can't push a branch out of range.
 - IlyvionMod.PatchAll applies every Harmony patch in the mod's own assembly, using the mod's package id as the Harmony id unless another is given, and IlyvionMod.LoadSettingsWhenFinished loads the mod's settings once the game has finished its current loading step, so they aren't first read in the middle of loading a save.
+- TranspilerUtility.PatchOrOriginal runs a transpiler body on a CodeMatcher and, when the IL doesn't match what it expects, logs a standard 'Could not patch ..., IL does not match expectations: ...' error and returns the original instructions unchanged. The CodeMatcher extensions ExpectForward and ExpectBackwards search for an instruction and report a mismatch when none is found; a transpiler can also throw TranspilerMismatchException for its own checks.
 
 ## [0.26.0] - 2026-10-20
 

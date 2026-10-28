@@ -54,6 +54,48 @@ public static class TranspilerUtility
         throw new InjectCallBeforeReturnException(codeMatcher.Instructions());
     }
 
+    /// <summary>
+    /// Runs <paramref name="transpile"/> on a <see cref="CodeMatcher"/> over
+    /// <paramref name="instructions"/> and returns its instructions. If it throws
+    /// <see cref="TranspilerMismatchException"/> (e.g. from
+    /// <see cref="CodeMatcherExtensions.ExpectForward"/>), logs
+    /// <c>Could not {target}, IL does not match expectations: {detail}</c> through
+    /// <paramref name="logError"/> and returns the original instructions unchanged.
+    /// </summary>
+    /// <param name="instructions">The transpiler's incoming instructions.</param>
+    /// <param name="target">
+    /// What is being patched, including the verb, e.g. <c>patch Dialog_Trade.DoWindowContents</c>
+    /// or <c>reverse patch Widgets.TextFieldNumeric</c>.
+    /// </param>
+    /// <param name="logError">Where to log the mismatch, e.g. the mod's <c>LogError</c>.</param>
+    /// <param name="transpile">The transpiler body.</param>
+    /// <param name="generator">The transpiler's <see cref="ILGenerator"/>, if it needs one.</param>
+    public static IEnumerable<CodeInstruction> PatchOrOriginal(
+        IEnumerable<CodeInstruction> instructions,
+        string target,
+        Action<string> logError,
+        Action<CodeMatcher> transpile,
+        ILGenerator? generator = null
+    )
+    {
+        ArgumentNullException.ThrowIfNull(logError);
+        ArgumentNullException.ThrowIfNull(transpile);
+
+        var original = instructions.ToList();
+        var codeMatcher = new CodeMatcher(original, generator);
+        try
+        {
+            transpile(codeMatcher);
+        }
+        catch (TranspilerMismatchException e)
+        {
+            logError($"Could not {target}, IL does not match expectations: {e.Detail}");
+            return original;
+        }
+
+        return codeMatcher.Instructions();
+    }
+
     private static readonly Dictionary<OpCode, OpCode> ShortToLongBranchOpCodes = new()
     {
         [OpCodes.Br_S] = OpCodes.Br,
