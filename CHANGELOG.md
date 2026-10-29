@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - IlyvionMod.PatchAll applies every Harmony patch in the mod's own assembly, using the mod's package id as the Harmony id unless another is given, and IlyvionMod.LoadSettingsWhenFinished loads the mod's settings once the game has finished its current loading step, so they aren't first read in the middle of loading a save.
 - TranspilerUtility.PatchOrOriginal runs a transpiler body on a CodeMatcher and, when the IL doesn't match what it expects, logs a standard 'Could not patch ..., IL does not match expectations: ...' error and returns the original instructions unchanged. The CodeMatcher extensions ExpectForward and ExpectBackwards search for an instruction and report a mismatch when none is found; a transpiler can also throw TranspilerMismatchException for its own checks.
 - The CodeInstruction extensions CallsConstructor and CallsConstructorOf tell whether an instruction invokes a given constructor, or any constructor of a given type, through newobj or call, for matching constructor calls in transpilers.
+- WeakTable, a ConditionalWeakTable (keys held weakly, entries dropped when their key is garbage collected) with AddOrUpdate, Clear and enumeration on every RimWorld version, including 1.5 and earlier, where ConditionalWeakTable lacks them.
 
 ## [0.26.0] - 2026-10-20
 
