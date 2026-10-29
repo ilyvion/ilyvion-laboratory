@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - WeakTable, a ConditionalWeakTable (keys held weakly, entries dropped when their key is garbage collected) with AddOrUpdate, Clear and enumeration on every RimWorld version, including 1.5 and earlier, where ConditionalWeakTable lacks them.
 - HttpListenerExtensions, helpers for mods that serve web pages from an HttpListener: WriteBytes writes a response body with its length, WriteFile also sets the content type from the file's extension, and PathParts splits a request URL's path into its segments.
 - NumericField, a number edited through a text field that keeps the field's text in step with the number: when the number changes elsewhere, such as when settings are loaded, the field shows the new number. It can be drawn on its own, with a label, or in a Listing_Standard, can focus itself the first time it's drawn, and its Value can be passed straight to Scribe_Values.Look.
+- HarmonyTargetUtility, for patches that target a method by name: FindMethods finds the methods on a type and on every type nested in it, including compiler-generated ones such as those holding lambdas and local functions, and ExpectSingle, returned from a patch's Prepare method, skips the patch and logs an error naming the candidates unless exactly one method was found.
 
 ## [0.26.0] - 2026-10-20
 
