@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - TranspilerUtility.PatchOrOriginal runs a transpiler body on a CodeMatcher and, when the IL doesn't match what it expects, logs a standard 'Could not patch ..., IL does not match expectations: ...' error and returns the original instructions unchanged. The CodeMatcher extensions ExpectForward and ExpectBackwards search for an instruction and report a mismatch when none is found; a transpiler can also throw TranspilerMismatchException for its own checks.
 - The CodeInstruction extensions CallsConstructor and CallsConstructorOf tell whether an instruction invokes a given constructor, or any constructor of a given type, through newobj or call, for matching constructor calls in transpilers.
 - WeakTable, a ConditionalWeakTable (keys held weakly, entries dropped when their key is garbage collected) with AddOrUpdate, Clear and enumeration on every RimWorld version, including 1.5 and earlier, where ConditionalWeakTable lacks them.
+- HttpListenerExtensions, helpers for mods that serve web pages from an HttpListener: WriteBytes writes a response body with its length, WriteFile also sets the content type from the file's extension, and PathParts splits a request URL's path into its segments.
 
 ## [0.26.0] - 2026-10-20
 
