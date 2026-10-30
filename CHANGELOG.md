@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - TranspilerUtility.IteratorThisField finds the field in which an instance iterator method's compiler-generated iterator keeps 'this', so a transpiler on the iterator's MoveNext can reach the object the iterator belongs to.
 - IlyvionWidgets.LabelOutline draws a label with a 1px outline in a second colour, so it stays legible over a busy background such as a progress bar. It draws the label nine times, so use it sparingly.
 - ThingGizmoSlider, a Gizmo_Slider for gizmos that are created anew every frame to control one Thing (available from RimWorld 1.5). Its hash code stays the same from frame to frame, so the gizmo's tooltip shows up when hovered.
+- ScribeFileUtility, with Save and Load for writing data to and reading it from a file of your own with Scribe, outside the game's own save and load flow. Save writes the meta header and always finalizes the file, even if saving throws; Load skips the header's checks and stops Scribe if reading throws.
 
 ## [0.26.0] - 2026-10-20
 
