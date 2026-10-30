@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- The CodeInstruction extensions LocalVariableIndex, LoadsLocal, LoadSameLocal and StoreSameLocal let a transpiler work out which local variable a matched ldloc, ldloca or stloc uses, and load or store that same local, instead of hard-coding a local's index that changes when the patched method is compiled differently.
+
 ## [0.27.0] - 2026-10-30
 
 ### Added
