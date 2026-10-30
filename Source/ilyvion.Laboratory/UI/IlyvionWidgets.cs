@@ -154,6 +154,49 @@ public static class IlyvionWidgets
         Label(rect, label, textAnchor, gameFont, color, leftMargin, wordWrap);
     }
 
+    /// <summary>
+    /// Draws <paramref name="label"/> with a 1px outline in <paramref name="outlineColor"/>, so it
+    /// stays legible over a busy background such as a progress bar. The outline is made by drawing
+    /// the label eight more times, once per neighbouring pixel, before the label itself, so it
+    /// costs nine label draws; use it sparingly.
+    /// </summary>
+    [SinceVersion(0, 27, 0)]
+    public static void LabelOutline(
+        Rect rect,
+        string label,
+        string? tooltip,
+        TextAnchor textAnchor,
+        GameFont gameFont,
+        Color textColor,
+        Color outlineColor,
+        float leftMargin = 0f,
+        bool wordWrap = true
+    )
+    {
+        if (!tooltip.NullOrEmpty())
+        {
+            TooltipHandler.TipRegion(rect, tooltip);
+        }
+
+        rect.xMin += leftMargin;
+        using var _ = GUIScope.Multiple(null, gameFont, outlineColor, wordWrap, textAnchor);
+        for (var xOffset = -1; xOffset <= 1; xOffset++)
+        {
+            for (var yOffset = -1; yOffset <= 1; yOffset++)
+            {
+                if (xOffset == 0 && yOffset == 0)
+                {
+                    continue;
+                }
+                Rect offsetRect = new(rect) { x = rect.x + xOffset, y = rect.y + yOffset };
+                Widgets.Label(offsetRect, label);
+            }
+        }
+
+        GUI.color = textColor;
+        Widgets.Label(rect, label);
+    }
+
     public static void Label(
         ref Vector2 position,
         float width,
