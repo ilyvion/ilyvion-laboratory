@@ -96,6 +96,50 @@ public static class TranspilerUtility
         return codeMatcher.Instructions();
     }
 
+    /// <summary>
+    /// Finds the field of the compiler-generated iterator created by the instance iterator method
+    /// <paramref name="iteratorMethod"/> that holds <c>this</c>, so a transpiler on the
+    /// iterator's <c>MoveNext</c> can load it. The field is the target of the
+    /// <c>ldarg.0; stfld</c> in <paramref name="iteratorMethod"/>'s own body.
+    /// </summary>
+    /// <returns>
+    /// The field, or <see langword="null"/> if <paramref name="iteratorMethod"/> is not an
+    /// iterator method or does not store <c>this</c> in its iterator.
+    /// </returns>
+    /// <exception cref="ArgumentException"><paramref name="iteratorMethod"/> is static.</exception>
+    public static FieldInfo? IteratorThisField(MethodBase iteratorMethod)
+    {
+        ArgumentNullException.ThrowIfNull(iteratorMethod);
+        if (iteratorMethod.IsStatic)
+        {
+            throw new ArgumentException(
+                $"{iteratorMethod.FullDescription()} is static and has no this to store.",
+                nameof(iteratorMethod)
+            );
+        }
+
+        var iteratorType = AccessTools.EnumeratorMoveNext(iteratorMethod)?.DeclaringType;
+        if (iteratorType is null)
+        {
+            return null;
+        }
+
+        var instructions = PatchProcessor.GetOriginalInstructions(iteratorMethod);
+        for (var i = 1; i < instructions.Count; i++)
+        {
+            if (
+                instructions[i - 1].opcode == OpCodes.Ldarg_0
+                && instructions[i].opcode == OpCodes.Stfld
+                && instructions[i].operand is FieldInfo field
+                && field.DeclaringType == iteratorType
+            )
+            {
+                return field;
+            }
+        }
+        return null;
+    }
+
     private static readonly Dictionary<OpCode, OpCode> ShortToLongBranchOpCodes = new()
     {
         [OpCodes.Br_S] = OpCodes.Br,

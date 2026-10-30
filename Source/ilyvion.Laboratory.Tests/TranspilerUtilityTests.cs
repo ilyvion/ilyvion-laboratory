@@ -250,4 +250,65 @@ internal sealed class TranspilerUtilityTests
         Expect.IsNotNull(caught);
         Expect.AreEqual("ldarg.0 not found.", caught!.Detail);
     }
+
+    private sealed class IteratorOwner
+    {
+        internal IEnumerable<int> Iterate(int count)
+        {
+            for (var i = 0; i < count; i++)
+            {
+                yield return GetHashCode() + i;
+            }
+        }
+
+        internal int NotAnIterator() => GetHashCode();
+
+        internal static IEnumerable<int> StaticIterate()
+        {
+            yield return 0;
+        }
+    }
+
+    [Test]
+    public static void IteratorThisFieldFindsFieldHoldingThis()
+    {
+        var owner = new IteratorOwner();
+        var iterator = owner.Iterate(1);
+
+        var field = TranspilerUtility.IteratorThisField(
+            AccessTools.Method(typeof(IteratorOwner), nameof(IteratorOwner.Iterate))
+        );
+
+        Expect.IsNotNull(field);
+        Expect.IsTrue(ReferenceEquals(owner, field!.GetValue(iterator)));
+    }
+
+    [Test]
+    public static void IteratorThisFieldReturnsNullForNonIterator()
+    {
+        var field = TranspilerUtility.IteratorThisField(
+            AccessTools.Method(typeof(IteratorOwner), nameof(IteratorOwner.NotAnIterator))
+        );
+
+        Expect.IsNull(field);
+    }
+
+    [Test]
+    public static void IteratorThisFieldThrowsForStaticMethod()
+    {
+        ArgumentException? caught = null;
+        try
+        {
+            _ = TranspilerUtility.IteratorThisField(
+                AccessTools.Method(typeof(IteratorOwner), nameof(IteratorOwner.StaticIterate))
+            );
+        }
+        catch (ArgumentException e)
+        {
+            caught = e;
+        }
+
+        Expect.IsNotNull(caught);
+        Expect.AreEqual("iteratorMethod", caught!.ParamName);
+    }
 }
