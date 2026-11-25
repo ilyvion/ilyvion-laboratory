@@ -22,6 +22,11 @@ internal sealed class IlyvionsLaboratoryMod : IlyvionMod
     {
         _mod = this;
 
+#if !v1_7_OR_GREATER
+        // RimWorld 1.7 binds injected fields itself, as soon as the mod assemblies have loaded.
+        InjectedFieldShim.ProcessRunningMods();
+#endif
+
         // Harmony.DEBUG = true;
 #if !v1_3 && !v1_4
         new Harmony(Content.Name).PatchAllUncategorized(Assembly.GetExecutingAssembly());
