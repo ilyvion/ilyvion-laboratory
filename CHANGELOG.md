@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.29.0] - 2026-11-25
+
 ### Added
 
 - On RimWorld 1.6 and earlier, mods depending on ilyvion's Laboratory can use RimWorld 1.7's [InjectedField] attribute (Waylith.Injection.InjectedFieldAttribute), so the same injected field declarations compile and work on every RimWorld version. On 1.7 the game adds real fields; on earlier versions ilyvion's Laboratory keeps the values in a ConditionalWeakTable, and a Default or Initializer value is set the first time a field is read on an instance, not when the instance is created. The accessors need a body that throws instead of being declared extern, and fields can only be added to non-generic classes.
@@ -298,7 +300,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - First implementation of the library.
 
-[Unreleased]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.28.0...HEAD
+[Unreleased]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.29.0...HEAD
+[0.29.0]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.28.0..v0.29.0
 [0.28.0]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.27.0..v0.28.0
 [0.27.0]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.26.0..v0.27.0
 [0.26.0]: https://github.com/ilyvion/ilyvion-laboratory/compare/v0.25.1..v0.26.0
